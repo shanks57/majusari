@@ -9,7 +9,7 @@ class GoodsType extends Model
 {
     use HasFactory;
 
-    protected $table = 'customers';
+    protected $table = 'goods_types';
 
     protected $primaryKey = 'id';
     public $incrementing = false;

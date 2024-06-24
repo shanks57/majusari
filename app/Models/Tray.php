@@ -14,5 +14,5 @@ class Tray extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'code', 'weight', 'capacity'];
+    protected $fillable = ['id', 'code', 'weight', 'capacity','slug'];
 }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->integer('weight');
             $table->integer('capacity');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }
