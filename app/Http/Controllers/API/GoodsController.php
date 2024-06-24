@@ -14,12 +14,10 @@ class GoodsController extends Controller
     public function index()
     {
         try {
-            $goods = Goods::all();
+            $goods = Goods::paginate(request()->all);
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'goods retrieved successfully',
-                'data' => $goods
+                $goods
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

@@ -13,12 +13,10 @@ class MerkController extends Controller
     public function index()
     {
         try {
-            $merks = Merk::all();
+            $merks = Merk::paginate(request()->all);
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Merk data retrieved successfully',
-                'data' => $merks
+                $merks
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

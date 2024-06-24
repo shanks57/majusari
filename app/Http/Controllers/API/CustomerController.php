@@ -18,12 +18,10 @@ class CustomerController extends Controller
     public function index()
     {
         try {
-            $customers = Customer::all();
+            $customers = Customer::paginate(request()->all);
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Customers retrieved successfully',
-                'data' => $customers
+                $customers
             ], 200);
         } catch (QueryException $e) {
             return response()->json([

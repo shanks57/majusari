@@ -13,12 +13,10 @@ class TrayController extends Controller
     public function index()
     {
         try {
-            $trays = Tray::all();
+            $trays = Tray::paginate(request()->all);
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Trays retrieved successfully',
-                'data' => $trays
+                $trays
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

@@ -13,12 +13,10 @@ class ShowcaseController extends Controller
     public function index()
     {
         try {
-            $showcases = Showcase::all();
+            $showcases = Showcase::paginate(request()->all);
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Showcases retrieved successfully',
-                'data' => $showcases
+                $showcases
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
