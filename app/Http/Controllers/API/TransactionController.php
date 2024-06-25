@@ -7,7 +7,7 @@ use App\Models\Goods;
 use App\Models\Transaction;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -203,6 +203,17 @@ class TransactionController extends Controller
             });
         }
 
-        return response()->json($result);
+        $perPage = 15;
+        $currentPage = request()->query('page', 1);
+        $pagedData = array_slice($result, ($currentPage - 1) * $perPage, $perPage, true);
+        $paginatedResult = new \Illuminate\Pagination\LengthAwarePaginator(
+            $pagedData,
+            count($result),
+            $perPage,
+            $currentPage
+        );
+         $paginatedResult->setPath(URL::full());
+         
+        return response()->json($paginatedResult);
     }
 }
