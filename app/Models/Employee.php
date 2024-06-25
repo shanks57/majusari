@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TransactionDetail extends Model
+class Employee extends Model
 {
     use HasFactory;
-    protected $table = 'transaction_details';
+     protected $table = 'employees';
 
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'code', 'goods_id', 'transaction_id'];
+    protected $fillable = [
+        'id','username', 'name', 'phone', 'debt_bond', 'address', 'status'
+    ];
 }
