@@ -7,6 +7,7 @@ use App\Models\Goods;
 use App\Models\Transaction;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -121,51 +122,59 @@ class TransactionController extends Controller
 
     public function getByCode(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'code' => 'required|string|size:5',
-        ]);
-
-        if ($validator->fails()) {
+        $code = $request->query('nota');
+        
+        if (!$code) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'Code parameter is required'
+            ], 400);
         }
 
-        $transaction = Transaction::where('code', $request->code)->with(['customer', 'goods'])->first();
+        $transaction = Transaction::with('goods')
+            ->where('code', $code)
+            ->first();
 
         if (!$transaction) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'transaction not found'
+                'message' => 'Transaction not found'
             ], 404);
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Transaction retrieved successfully',
-            'data' => $transaction
+            'data' => [
+                'id' => $transaction->id,
+                'code' => $transaction->code,
+                'date' => $transaction->date,
+                'customer_id' => $transaction->customer_id,
+                'goods' => [
+                    'id' => $transaction->goods->id,
+                    'name' => $transaction->goods->name,
+                    'size' => $transaction->goods->size,
+                    'rate' => $transaction->goods->rate,
+                    'ask_price' => $transaction->goods->ask_price,
+                    'ask_rate' => $transaction->goods->ask_rate,
+                ]
+            ]
         ]);
     }
 
     public function getGoodsByBarcode(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'id' => 'required|uuid',
-        ]);
+        $id = $request->query('barcode');
 
-        if ($validator->fails()) {
+        if (!$id) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'Code parameter is required'
+            ], 400);
         }
 
-        $good = Goods::find($request->id);
+        $goods = Goods::where('id', $id)->first();
 
-        if (!$good) {
+        if (!$goods) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Goods not found'
@@ -174,9 +183,17 @@ class TransactionController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Goods retrieved successfully',
-            'data' => $good
+            'data' => [
+                'id' => $goods->id,
+                'code' => $goods->code,
+                'name' => $goods->name,
+                'size' => $goods->size,
+                'rate' => $goods->rate,
+                'ask_price' => $goods->ask_price,
+                'ask_rate' => $goods->ask_rate,
+            ]
         ]);
+
     }
 
     // Get all transaksi with goods names grouped by date
@@ -214,6 +231,70 @@ class TransactionController extends Controller
         );
          $paginatedResult->setPath(URL::full());
          
+        return response()->json($paginatedResult);
+    }
+
+    // Search transactions by multiple columns with pagination
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+        $perPage = $request->query('per_page', 15); // Default 15 items per page
+
+        if (!$query) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Query parameter is required'
+            ], 400);
+        }
+
+        $transactions = Transaction::with('goods')
+            ->where('code', 'LIKE', "%{$query}%")
+            ->orWhereHas('goods', function($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('size', 'LIKE', "%{$query}%")
+                  ->orWhere('rate', 'LIKE', "%{$query}%")
+                  ->orWhere('ask_price', 'LIKE', "%{$query}%")
+                  ->orWhere('ask_rate', 'LIKE', "%{$query}%");
+            })
+            ->get()
+            ->groupBy(function ($item) {
+                return \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+            });
+
+            if ($transactions->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No transactions found'
+            ], 404);
+        }
+
+        $result = [];
+
+        foreach ($transactions as $date => $transactionGroup) {
+            $result[$date] = $transactionGroup->map(function ($transaction) {
+                return [
+                    'id' => $transaction->id,
+                    'code' => $transaction->code,
+                    'goods_id' => $transaction->goods->id,
+                    'goods_name' => $transaction->goods->name,
+                    'goods_size' => $transaction->goods->size,
+                    'goods_rate' => $transaction->goods->rate,
+                    'goods_ask_price' => $transaction->goods->ask_price,
+                    'goods_ask_rate' => $transaction->goods->ask_rate,
+                ];
+            });
+        }
+
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $pagedData = array_slice($result, ($currentPage - 1) * $perPage, $perPage, true);
+        $paginatedResult = new LengthAwarePaginator(
+            $pagedData,
+            count($result),
+            $perPage,
+            $currentPage,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
+
         return response()->json($paginatedResult);
     }
 }

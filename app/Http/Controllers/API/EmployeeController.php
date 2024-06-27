@@ -168,4 +168,35 @@ class EmployeeController extends Controller
             ], 500);
         }
     }
+
+    // Search customer by username, name, address, phone
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+        
+        if (!$query) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Query parameter is required'
+            ], 400);
+        }
+
+         $employees = Employee::where('username', 'LIKE', "%{$query}%")
+            ->orWhere('name', 'LIKE', "%{$query}%")
+            ->orWhere('address', 'LIKE', "%{$query}%")
+            ->orWhere('phone', 'LIKE', "%{$query}%")
+            ->paginate();
+
+
+        if ($employees->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No employe types found'
+            ], 404);
+        }
+
+        return response()->json([
+            $employees
+        ]);
+    }
 }

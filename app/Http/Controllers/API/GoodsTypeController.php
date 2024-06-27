@@ -166,4 +166,31 @@ class GoodsTypeController extends Controller
             ], 500);
         }
     }
+
+    // Search goods types by name
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+        
+
+        if (!$query) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Query parameter is required'
+            ], 400);
+        }
+
+        $goodsTypes = GoodsType::where('name', 'LIKE', "%{$query}%")->paginate();
+
+        if ($goodsTypes->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No goods types found'
+            ], 404);
+        }
+
+        return response()->json([
+            $goodsTypes
+        ]);
+    }
 }

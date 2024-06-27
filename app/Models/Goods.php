@@ -31,4 +31,9 @@ class Goods extends Model
         'type_id',
         'tray_id',
     ];
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class);
+    }
 }

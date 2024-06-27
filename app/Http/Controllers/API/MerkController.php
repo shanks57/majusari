@@ -164,4 +164,34 @@ class MerkController extends Controller
             ], 500);
         }
     }
+
+    // Search merks by company and name
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+        
+
+        if (!$query) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Query parameter is required'
+            ], 400);
+        }
+
+         $merks = Merk::where('company', 'LIKE', "%{$query}%")
+            ->orWhere('name', 'LIKE', "%{$query}%")
+            ->paginate();
+
+
+        if ($merks->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No merks types found'
+            ], 404);
+        }
+
+        return response()->json([
+            $merks
+        ]);
+    }
 }

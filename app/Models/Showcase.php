@@ -16,4 +16,9 @@ class Showcase extends Model
     protected $keyType = 'string';
 
     protected $fillable = ['id', 'code', 'name', 'type_id', 'tray_id'];
+
+    public function goodsType()
+    {
+        return $this->belongsTo(GoodsType::class, 'type_id');
+    }
 }

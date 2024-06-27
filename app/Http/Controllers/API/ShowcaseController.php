@@ -166,4 +166,60 @@ class ShowcaseController extends Controller
             ], 500);
         }
     }
+
+    // Search showcase by code, name, or goods type name
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+        $perPage = $request->query('per_page', 15); // Default 15 items per page
+
+        if (!$query) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Query parameter is required'
+            ], 400);
+        }
+
+        $showcases = Showcase::with('goodsType')
+            ->where('code', 'LIKE', "%{$query}%")
+            ->orWhere('name', 'LIKE', "%{$query}%")
+            ->orWhereHas('goodsType', function($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
+            ->paginate($perPage);
+
+        if ($showcases->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No showcases found'
+            ], 404);
+        }
+
+        $data = $showcases->map(function($showcase) {
+            return [
+                'id' => $showcase->id,
+                'code' => $showcase->code,
+                'name' => $showcase->name,
+                'goods_type' => [
+                    'id' => $showcase->goodsType->id,
+                    'name' => $showcase->goodsType->name,
+                ]
+            ];
+        });
+
+        return response()->json([
+            'current_page' => $showcases->currentPage(),
+            'data' => $data,
+            'first_page_url' => $showcases->url(1),
+            'from' => $showcases->firstItem(),
+            'last_page' => $showcases->lastPage(),
+            'last_page_url' => $showcases->url($showcases->lastPage()),
+            'next_page_url' => $showcases->nextPageUrl(),
+            'path' => $showcases->path(),
+            'per_page' => $showcases->perPage(),
+            'prev_page_url' => $showcases->previousPageUrl(),
+            'to' => $showcases->lastItem(),
+            'total' => $showcases->total()
+        ]);
+    }
 }

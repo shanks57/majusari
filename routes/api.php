@@ -16,14 +16,26 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::apiResource('customers', CustomerController::class);
+Route::get('customers-data/search', [CustomerController::class, 'search']);
+
 Route::apiResource('merks', MerkController::class);
+Route::get('merks-data/search', [MerkController::class, 'search']);
+
 Route::apiResource('goods-types', GoodsTypeController::class);
+Route::get('goodsTypes/search', [GoodsTypeController::class, 'search']);
+
 Route::apiResource('trays', TrayController::class);
+
 Route::apiResource('showcases', ShowcaseController::class);
+Route::get('showcase/search', [ShowcaseController::class, 'search']);
+
 Route::apiResource('goods', GoodsController::class);
+
 Route::apiResource('employees', EmployeeController::class);
+Route::get('employees-data/search', [EmployeeController::class, 'search']);
 
 Route::apiResource('transactions', TransactionController::class);
-Route::post('transaction/code', [TransactionController::class, 'getByCode']);
-Route::post('transaction/barcode', [TransactionController::class, 'getGoodsByBarcode']);
+Route::get('transaction/search', [TransactionController::class, 'search']);
+Route::get('transaction/search-by-nota', [TransactionController::class, 'getByCode']);
+Route::get('transaction/search-goods-by-barcode', [TransactionController::class, 'getGoodsByBarcode']);
 Route::get('transaction/grouped-by-date', [TransactionController::class, 'indexWithGoodsGroupedByDate']);

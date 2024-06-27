@@ -183,4 +183,35 @@ class CustomerController extends Controller
             ], 500);
         }
     }
+
+    // Search customer by name, address, phone
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+        
+
+        if (!$query) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Query parameter is required'
+            ], 400);
+        }
+
+         $customers = Customer::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('address', 'LIKE', "%{$query}%")
+            ->orWhere('phone', 'LIKE', "%{$query}%")
+            ->paginate();
+
+
+        if ($customers->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No customers types found'
+            ], 404);
+        }
+
+        return response()->json([
+            $customers
+        ]);
+    }
 }
