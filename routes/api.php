@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\GoodsController;
@@ -39,3 +40,8 @@ Route::get('transaction/search', [TransactionController::class, 'search']);
 Route::get('transaction/search-by-nota', [TransactionController::class, 'getByCode']);
 Route::get('transaction/search-goods-by-barcode', [TransactionController::class, 'getGoodsByBarcode']);
 Route::get('transaction/grouped-by-date', [TransactionController::class, 'indexWithGoodsGroupedByDate']);
+Route::post('transaction/add-transaction', [TransactionController::class, 'createTransaction']);
+
+Route::post('cart/add', [CartController::class, 'add']);
+Route::delete('cart/{cartId}', [CartController::class, 'remove']);
+Route::get('cart/{userId}', [CartController::class, 'getCart']);

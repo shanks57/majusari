@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\Goods;
 use App\Models\Transaction;
+use App\Models\TransactionDetail;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -20,7 +23,7 @@ class TransactionController extends Controller
     public function index()
     {
         try {
-            $transactions = Transaction::with(['customer', 'goods'])->paginate(15);
+            $transactions = Transaction::with(['details.goods', 'customer'])->paginate(15);
 
             return response()->json([
                 $transactions
@@ -39,40 +42,53 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'customer_id' => 'required|exists:customers,id',
-            'goods_id' => 'required|exists:goods,id',
+        $request->validate([
+            'customer_id' => 'required|uuid|exists:customers,id',
+            'user_id' => 'required|integer|exists:users,id',
+            'cart_ids' => 'required|array',
+            'cart_ids.*' => 'uuid|exists:carts,id'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        try{
-            $transaction = Transaction::create([
+        // Buat transaksi baru
+        $transaction = Transaction::create([
             'id' => Str::uuid(),
             'code' => str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),
             'date' => Carbon::now(),
-            'customer_id' => $request->customer_id,
-            'goods_id' => $request->goods_id,
-            ]);
+            'user_id' => $request->user_id,
+            'customer_id' => $request->customer_id
+        ]);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Transaction created successfully',
-                'data' => $transaction
-            ], 201);
-        }catch (\Exception $e) {
+        // Ambil barang dari cart berdasarkan cart_ids
+        $cartItems = Cart::whereIn('id', $request->cart_ids)->get();
+
+        if ($cartItems->isEmpty()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to create transaction',
-                'error' => $e->getMessage()
-            ], 500);
+                'message' => 'No items found in the selected carts'
+            ], 400);
         }
+
+        // Tambahkan detail transaksi
+        foreach ($cartItems as $item) {
+            TransactionDetail::create([
+                'id' => Str::uuid(),
+                'transaction_id' => $transaction->id,
+                'goods_id' => $item->goods_id
+            ]);
+
+            // Update ketersediaan barang
+            // $goods = Goods::find($item->goods_id);
+            // $goods->update(['availability' => false]);
+        }
+
+        // Hapus barang dari cart yang dipilih
+        Cart::whereIn('id', $request->cart_ids)->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Transaction created successfully',
+            'transaction' => $transaction->load('details.goods')
+        ]);
     }
 
     /**
@@ -81,7 +97,7 @@ class TransactionController extends Controller
     public function show(string $id)
     {
         try {
-            $transaction = Transaction::with(['customer', 'goods'])->findOrFail($id);
+            $transaction = Transaction::with(['details.goods', 'customer'])->findOrFail($id);
 
             if (!$transaction) {
                 return response()->json([
@@ -131,7 +147,7 @@ class TransactionController extends Controller
             ], 400);
         }
 
-        $transaction = Transaction::with('goods')
+        $transaction = Transaction::with('details.goods')
             ->where('code', $code)
             ->first();
 
@@ -149,14 +165,16 @@ class TransactionController extends Controller
                 'code' => $transaction->code,
                 'date' => $transaction->date,
                 'customer_id' => $transaction->customer_id,
-                'goods' => [
-                    'id' => $transaction->goods->id,
-                    'name' => $transaction->goods->name,
-                    'size' => $transaction->goods->size,
-                    'rate' => $transaction->goods->rate,
-                    'ask_price' => $transaction->goods->ask_price,
-                    'ask_rate' => $transaction->goods->ask_rate,
-                ]
+                'goods' => $transaction->details->map(function($detail) {
+                    return [
+                        'id' => $detail->goods->id,
+                        'name' => $detail->goods->name,
+                        'size' => $detail->goods->size,
+                        'rate' => $detail->goods->rate,
+                        'ask_price' => $detail->goods->ask_price,
+                        'ask_rate' => $detail->goods->ask_rate,
+                    ];
+                })
             ]
         ]);
     }
@@ -199,42 +217,49 @@ class TransactionController extends Controller
     // Get all transaksi with goods names grouped by date
     public function indexWithGoodsGroupedByDate()
     {
-        $transaksi = Transaction::with('goods')->get()->groupBy(function ($item) {
-            return \Carbon\Carbon::parse($item->date)->format('Y-m-d');
-        });
+        try {
+            $transaksi = Transaction::with('details.goods')->get()->groupBy(function ($item) {
+                return Carbon::parse($item->date)->format('Y-m-d');
+            });
 
-        $result = [];
+            $result = [];
 
-        foreach ($transaksi as $date => $transactions) {
-            $result[$date] = $transactions->map(function ($transaction) {
-                return [
-                    'id' => $transaction->id,
-                    'code' => $transaction->code,
-                    'goods_id' => $transaction->goods->id,
-                    'goods_name' => $transaction->goods->name,
-                    'goods_size' => $transaction->goods->size,
-                    'goods_rate' => $transaction->goods->rate,
-                    'goods_ask_price' => $transaction->goods->ask_price,
-                    'goods_ask_rate' => $transaction->goods->ask_rate,
-                ];
+            foreach ($transaksi as $date => $transactions) {
+            $result[$date] = $transactions->flatMap(function ($transaction) {
+                return $transaction->details->map(function ($detail) {
+                    return [
+                        'goods_id' => $detail->goods->id,
+                        'goods_name' => $detail->goods->name,
+                        'goods_size' => $detail->goods->size,
+                        'goods_rate' => $detail->goods->rate,
+                        'goods_ask_price' => $detail->goods->ask_price,
+                        'goods_ask_rate' => $detail->goods->ask_rate,
+                    ];
+                });
             });
         }
 
-        $perPage = 15;
-        $currentPage = request()->query('page', 1);
-        $pagedData = array_slice($result, ($currentPage - 1) * $perPage, $perPage, true);
-        $paginatedResult = new \Illuminate\Pagination\LengthAwarePaginator(
-            $pagedData,
-            count($result),
-            $perPage,
-            $currentPage
-        );
-         $paginatedResult->setPath(URL::full());
-         
-        return response()->json($paginatedResult);
-    }
+            $perPage = 15;
+            $currentPage = request()->query('page', 1);
+            $pagedData = array_slice($result, ($currentPage - 1) * $perPage, $perPage, true);
+            $paginatedResult = new \Illuminate\Pagination\LengthAwarePaginator(
+                $pagedData,
+                count($result),
+                $perPage,
+                $currentPage
+            );
+            $paginatedResult->setPath(URL::full());
 
-    // Search transactions by multiple columns with pagination
+            return response()->json($paginatedResult);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve transactions',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }   
+
     public function search(Request $request)
     {
         $query = $request->query('query');
@@ -247,21 +272,21 @@ class TransactionController extends Controller
             ], 400);
         }
 
-        $transactions = Transaction::with('goods')
+        $transactions = Transaction::with('details.goods')
             ->where('code', 'LIKE', "%{$query}%")
-            ->orWhereHas('goods', function($q) use ($query) {
+            ->orWhereHas('details.goods', function($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")
-                  ->orWhere('size', 'LIKE', "%{$query}%")
-                  ->orWhere('rate', 'LIKE', "%{$query}%")
-                  ->orWhere('ask_price', 'LIKE', "%{$query}%")
-                  ->orWhere('ask_rate', 'LIKE', "%{$query}%");
+                ->orWhere('size', 'LIKE', "%{$query}%")
+                ->orWhere('rate', 'LIKE', "%{$query}%")
+                ->orWhere('ask_price', 'LIKE', "%{$query}%")
+                ->orWhere('ask_rate', 'LIKE', "%{$query}%");
             })
             ->get()
             ->groupBy(function ($item) {
                 return \Carbon\Carbon::parse($item->date)->format('Y-m-d');
             });
 
-            if ($transactions->isEmpty()) {
+        if ($transactions->isEmpty()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'No transactions found'
@@ -271,17 +296,17 @@ class TransactionController extends Controller
         $result = [];
 
         foreach ($transactions as $date => $transactionGroup) {
-            $result[$date] = $transactionGroup->map(function ($transaction) {
-                return [
-                    'id' => $transaction->id,
-                    'code' => $transaction->code,
-                    'goods_id' => $transaction->goods->id,
-                    'goods_name' => $transaction->goods->name,
-                    'goods_size' => $transaction->goods->size,
-                    'goods_rate' => $transaction->goods->rate,
-                    'goods_ask_price' => $transaction->goods->ask_price,
-                    'goods_ask_rate' => $transaction->goods->ask_rate,
-                ];
+            $result[$date] = $transactionGroup->flatMap(function ($transaction) {
+                return $transaction->details->map(function ($detail) {
+                    return [
+                        'goods_id' => $detail->goods->id,
+                        'goods_name' => $detail->goods->name,
+                        'goods_size' => $detail->goods->size,
+                        'goods_rate' => $detail->goods->rate,
+                        'goods_ask_price' => $detail->goods->ask_price,
+                        'goods_ask_rate' => $detail->goods->ask_rate,
+                    ];
+                });
             });
         }
 
@@ -296,5 +321,67 @@ class TransactionController extends Controller
         );
 
         return response()->json($paginatedResult);
+    }
+
+    public function createTransaction(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'customer_id' => 'required|uuid|exists:customers,id',
+            'cart_ids' => 'required|array',
+            'cart_ids.*' => 'uuid|exists:carts,id'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $transaction = Transaction::create([
+                'id' => Str::uuid(),
+                'code' => str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),
+                'date' => Carbon::now(),
+                'user_id' => $request->user_id,
+                'customer_id' => $request->customer_id
+            ]);
+
+            $cartItems = Cart::whereIn('id', $request->cart_ids)->get();
+
+            if ($cartItems->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No items found in the selected carts'
+                ], 400);
+            }
+
+            foreach ($cartItems as $item) {
+                TransactionDetail::create([
+                    'id' => Str::uuid(),
+                    'transaction_id' => $transaction->id,
+                    'goods_id' => $item->goods_id
+                ]);
+
+                $goods = Goods::find($item->goods_id);
+                if ($goods) {
+                    $goods->update(['availability' => false]);
+                }
+            }
+
+            Cart::whereIn('id', $request->cart_ids)->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Transaction created successfully',
+                'transaction' => $transaction->load('details.goods', 'customer')
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Transaction creation failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

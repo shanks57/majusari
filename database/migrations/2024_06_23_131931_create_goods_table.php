@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->uuid('type_id');
             $table->uuid('tray_id');
+            $table->boolean('availability')->default(true);
             $table->timestamps();
 
             $table->foreign('merk_id')->references('id')->on('merks')->onDelete('cascade');
