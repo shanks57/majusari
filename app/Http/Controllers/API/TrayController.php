@@ -13,7 +13,8 @@ class TrayController extends Controller
     public function index()
     {
         try {
-            $trays = Tray::paginate(request()->all);
+            $trays = Tray::with('showcase')
+                ->paginate(request()->all);
 
             return response()->json([
                 $trays
@@ -33,6 +34,7 @@ class TrayController extends Controller
             'code' => 'required|string|max:255|unique:trays,code',
             'weight' => 'required|integer',
             'capacity' => 'required|integer',
+            'showcase_id' => 'required|uuid|exists:showcases,id',
         ]);
 
         if ($validator->fails()) {
@@ -48,7 +50,7 @@ class TrayController extends Controller
                 'id' => Str::uuid(),
                 'code' => $request->code,
                 'weight' => $request->weight,
-                'slug' => strtoupper(Str::slug($request->code)),
+                'showcase_id' => $request->showcase_id,
                 'capacity' => $request->capacity,
             ]);
 
@@ -69,7 +71,7 @@ class TrayController extends Controller
     public function show($id)
     {
         try {
-            $tray = Tray::find($id);
+            $tray = Tray::with('showcase')->findOrFail($id);
 
             if (!$tray) {
                 return response()->json([
@@ -98,6 +100,7 @@ class TrayController extends Controller
             'code' => 'required|string|max:255|unique:trays,code,'.$id,
             'weight' => 'required|integer',
             'capacity' => 'required|integer',
+            'showcase_id' => 'required|uuid|exists:showcases,id',
         ]);
 
         if ($validator->fails()) {
@@ -121,7 +124,7 @@ class TrayController extends Controller
             $tray->code = $request->code;
             $tray->weight = $request->weight;
             $tray->capacity = $request->capacity;
-            $tray->slug = strtoupper(Str::slug($request->code));
+            $tray->showcase_id = $request->showcase_id;
             $tray->save();
 
             return response()->json([

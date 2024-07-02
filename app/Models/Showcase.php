@@ -15,10 +15,20 @@ class Showcase extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'code', 'name', 'type_id', 'tray_id'];
+    protected $fillable = ['id', 'code', 'name', 'type_id', 'status'];
 
     public function goodsType()
     {
         return $this->belongsTo(GoodsType::class, 'type_id');
+    }
+
+    public function goods()
+    {
+        return $this->hasMany(Goods::class, 'tray_id', 'tray_id'    );
+    }
+
+    public function trays()
+    {
+        return $this->hasMany(Tray::class);
     }
 }

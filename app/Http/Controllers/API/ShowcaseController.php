@@ -13,7 +13,10 @@ class ShowcaseController extends Controller
     public function index()
     {
         try {
-            $showcases = Showcase::paginate(request()->all);
+            $showcases = Showcase::with('goodsType')
+                ->where('status', 'showcase')
+                ->orderBy('code', 'asc')
+                ->paginate();
 
             return response()->json([
                 $showcases
@@ -33,7 +36,6 @@ class ShowcaseController extends Controller
             'code' => 'required|string|max:255|unique:showcases,code',
             'name' => 'required|string|max:255',
             'type_id' => 'required|uuid|exists:goods_types,id',
-            'tray_id' => 'required|uuid|exists:trays,id',
         ]);
 
         if ($validator->fails()) {
@@ -49,6 +51,7 @@ class ShowcaseController extends Controller
                 'id' => Str::uuid(),
                 'code' => $request->code,
                 'name' => $request->name,
+                'status' => 'showcase',
                 'type_id' => $request->type_id,
                 'tray_id' => $request->tray_id,
             ]);
@@ -99,7 +102,6 @@ class ShowcaseController extends Controller
             'code' => 'required|string|max:255|unique:showcases,code,'.$id,
             'name' => 'required|string|max:255',
             'type_id' => 'required|uuid|exists:goods_types,id',
-            'tray_id' => 'required|uuid|exists:trays,id',
         ]);
 
         if ($validator->fails()) {
@@ -123,7 +125,6 @@ class ShowcaseController extends Controller
             $showcase->code = $request->code;
             $showcase->name = $request->name;
             $showcase->type_id = $request->type_id;
-            $showcase->tray_id = $request->tray_id;
             $showcase->save();
 
             return response()->json([
@@ -181,12 +182,15 @@ class ShowcaseController extends Controller
         }
 
         $showcases = Showcase::with('goodsType')
-            ->where('code', 'LIKE', "%{$query}%")
-            ->orWhere('name', 'LIKE', "%{$query}%")
-            ->orWhereHas('goodsType', function($q) use ($query) {
-                $q->where('name', 'LIKE', "%{$query}%");
-            })
-            ->paginate($perPage);
+        ->where('status', 'showcase')
+        ->where(function ($q) use ($query) {
+            $q->where('code', 'LIKE', "%{$query}%")
+                ->orWhere('name', 'LIKE', "%{$query}%")
+                ->orWhereHas('goodsType', function ($q2) use ($query) {
+                    $q2->where('name', 'LIKE', "%{$query}%");
+                });
+        })
+        ->paginate($perPage);
 
         if ($showcases->isEmpty()) {
             return response()->json([
@@ -222,4 +226,41 @@ class ShowcaseController extends Controller
             'total' => $showcases->total()
         ]);
     }
+
+    public function getStats()
+    {
+        try {
+            $showcases = Showcase::where('status', 'showcase')
+                ->get();
+
+            $totalItems = 0;
+            $totalWeight = 0;
+
+            foreach ($showcases as $showcase) {
+                // Filter goods based on availability = true
+                $availableGoods = $showcase->goods()->where('availability', true)->get();
+
+                // Count total items
+                $totalItems = $availableGoods->count();
+
+                // Sum total weight
+                $totalWeight = $availableGoods->sum('size');
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'total_items' => $totalItems,
+                    'total_weight' => $totalWeight,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve showcase stats',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

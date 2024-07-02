@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trays', function (Blueprint $table) {
+        Schema::create('gold_rates', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('code')->unique();
-            $table->integer('weight');
-            $table->integer('capacity');
-            $table->uuid('showcase_id');
+            $table->decimal('new_price', 15, 2);
             $table->timestamps();
-
-            $table->foreign('showcase_id')->references('id')->on('showcases')->onDelete('cascade');
         });
     }
 
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trays');
+        Schema::dropIfExists('gold_rates');
     }
 };

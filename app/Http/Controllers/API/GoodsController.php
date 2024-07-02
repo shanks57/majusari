@@ -41,7 +41,6 @@ class GoodsController extends Controller
             'bid_rate' => 'required|integer',
             'ask_price' => 'required|integer',
             'bid_price' => 'required|integer',
-            'entry_date' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'type_id' => 'required|uuid|exists:goods_types,id',
             'tray_id' => 'required|uuid|exists:trays,id',
@@ -73,10 +72,10 @@ class GoodsController extends Controller
                 'bid_rate' => $request->bid_rate,
                 'ask_price' => $request->ask_price,
                 'bid_price' => $request->bid_price,
-                'entry_date' => $request->entry_date,
                 'image' => $imagePath,
                 'type_id' => $request->type_id,
                 'tray_id' => $request->tray_id,
+                'safe_status' => false
             ]);
 
             return response()->json([
@@ -121,71 +120,70 @@ class GoodsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'color' => 'required|string|max:255',
-            'rate' => 'required|integer',
-            'size' => 'required|string|max:255',
-            'merk_id' => 'required|uuid|exists:merks,id',
-            'ask_rate' => 'required|integer',
-            'bid_rate' => 'required|integer',
-            'ask_price' => 'required|integer',
-            'bid_price' => 'required|integer',
-            'entry_date' => 'required|date',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'type_id' => 'required|uuid|exists:goods_types,id',
-            'tray_id' => 'required|uuid|exists:trays,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 400);
-        }
-
         try {
+            // Validasi request
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'category' => 'required|string|max:255',
+                'color' => 'required|string|max:255',
+                'rate' => 'required|numeric',
+                'size' => 'required|numeric',
+                'merk_id' => 'required|uuid|exists:merks,id',
+                'ask_rate' => 'required|numeric',
+                'bid_rate' => 'required|numeric',
+                'ask_price' => 'required|numeric',
+                'bid_price' => 'required|numeric',
+                'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'type_id' => 'required|uuid|exists:goods_types,id',
+                'tray_id' => 'nullable|uuid|exists:trays,id',
+                'safe_status' => 'required|boolean'
+            ]);
+
+            // Cari data goods berdasarkan ID
             $goods = Goods::find($id);
 
             if (!$goods) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'goods not found'
+                    'message' => 'Goods not found'
                 ], 404);
             }
 
+            // Update fields menggunakan mass assignment
+            $goods->update([
+                'name' => $request->name,
+                'category' => $request->category,
+                'color' => $request->color,
+                'rate' => $request->rate,
+                'size' => $request->size,
+                'merk_id' => $request->merk_id,
+                'ask_rate' => $request->ask_rate,
+                'bid_rate' => $request->bid_rate,
+                'ask_price' => $request->ask_price,
+                'bid_price' => $request->bid_price,
+                'type_id' => $request->type_id,
+                'tray_id' => $request->tray_id,
+                'safe_status' => $request->safe_status,
+            ]);
+
+            // Proses untuk pengelolaan gambar jika ada perubahan
             $imagePath = $goods->image;
             if ($request->hasFile('image')) {
                 if ($imagePath) {
                     Storage::disk('public')->delete($imagePath);
                 }
                 $imagePath = $request->file('image')->store('goods_images', 'public');
+                $goods->update(['image' => $imagePath]);
             }
 
-            $goods->name = $request->name;
-            $goods->category = $request->category;
-            $goods->color = $request->color;
-            $goods->rate = $request->rate;
-            $goods->size = $request->size;
-            $goods->merk_id = $request->merk_id;
-            $goods->ask_rate = $request->ask_rate;
-            $goods->bid_rate = $request->bid_rate;
-            $goods->ask_price = $request->ask_price;
-            $goods->bid_price = $request->bid_price;
-            $goods->entry_date = $request->entry_date;
-            $goods->image = $imagePath;
-            $goods->type_id = $request->type_id;
-            $goods->tray_id = $request->tray_id;
-            $goods->save();
-
+            // Mengembalikan respons berhasil
             return response()->json([
                 'status' => 'success',
-                'message' => 'goods updated successfully',
+                'message' => 'Goods updated successfully',
                 'data' => $goods
             ], 200);
         } catch (\Exception $e) {
+            // Mengembalikan respons jika terjadi kesalahan
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to update goods',
@@ -193,6 +191,7 @@ class GoodsController extends Controller
             ], 500);
         }
     }
+
 
     public function destroy($id)
     {
@@ -223,5 +222,32 @@ class GoodsController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+
+        if (!$query) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Query parameter is required'
+            ], 400);
+        }
+
+        $goods = Goods::with(['goodsType', 'merk'])
+            ->where('name', 'LIKE', "%{$query}%")
+            ->orWhere('rate', 'LIKE', "%{$query}%")
+            ->orWhere('size', 'LIKE', "%{$query}%")
+            ->orWhere('created_at', 'LIKE', "%{$query}%")
+            ->orWhereHas('goodsType', function($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
+            ->orWhereHas('merk', function($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
+            ->paginate(15);
+
+        return response()->json($goods);
     }
 }

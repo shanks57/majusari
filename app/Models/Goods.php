@@ -26,15 +26,30 @@ class Goods extends Model
         'bid_rate',
         'ask_price',
         'bid_price',
-        'entry_date',
         'image',
         'type_id',
         'tray_id',
-        'availability'
+        'availability',
+        'safe_status'
     ];
 
     public function transaction()
     {
         return $this->belongsTo(Transaction::class);
+    }
+
+    public function goodsType()
+    {
+        return $this->belongsTo(GoodsType::class, 'type_id');
+    }
+
+    public function merk()
+    {
+        return $this->belongsTo(Merk::class, 'merk_id');
+    }
+
+    public function showcase()
+    {
+        return $this->belongsTo(Showcase::class, 'tray_id', 'tray_id');
     }
 }

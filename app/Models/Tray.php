@@ -14,5 +14,15 @@ class Tray extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'code', 'weight', 'capacity','slug'];
+    protected $fillable = ['id', 'code', 'weight', 'capacity', 'showcase_id'];
+
+    public function goods()
+    {
+        return $this->hasMany(Goods::class, 'tray_id');
+    }   
+
+    public function showcase()
+    {
+        return $this->belongsTo(Showcase::class);
+    }
 }

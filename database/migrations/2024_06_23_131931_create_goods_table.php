@@ -23,11 +23,11 @@ return new class extends Migration
             $table->integer('bid_rate');
             $table->integer('ask_price');
             $table->integer('bid_price');
-            $table->dateTime('entry_date');
             $table->string('image')->nullable();
             $table->uuid('type_id');
-            $table->uuid('tray_id');
+            $table->uuid('tray_id')->nullable();
             $table->boolean('availability')->default(true);
+            $table->boolean('safe_status');
             $table->timestamps();
 
             $table->foreign('merk_id')->references('id')->on('merks')->onDelete('cascade');

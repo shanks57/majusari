@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\API\GoldRateController;
 use App\Http\Controllers\Api\GoodsController;
 use App\Http\Controllers\Api\GoodsTypeController;
 use App\Http\Controllers\Api\MerkController;
@@ -27,14 +28,19 @@ Route::get('goodsTypes/search', [GoodsTypeController::class, 'search']);
 
 Route::apiResource('trays', TrayController::class);
 
+// etalase
 Route::apiResource('showcases', ShowcaseController::class);
 Route::get('showcase/search', [ShowcaseController::class, 'search']);
 
+// brangkas
+Route::apiResource('showcases', ShowcaseController::class);
+Route::get('showcase/search', [ShowcaseController::class, 'search']);
+
+// goods
 Route::apiResource('goods', GoodsController::class);
+Route::get('goods-data/search', [GoodsController::class, 'search']);
 
-Route::apiResource('employees', EmployeeController::class);
-Route::get('employees-data/search', [EmployeeController::class, 'search']);
-
+// transaction
 Route::apiResource('transactions', TransactionController::class);
 Route::get('transaction/search', [TransactionController::class, 'search']);
 Route::get('transaction/search-by-nota', [TransactionController::class, 'getByCode']);
@@ -42,6 +48,11 @@ Route::get('transaction/search-goods-by-barcode', [TransactionController::class,
 Route::get('transaction/grouped-by-date', [TransactionController::class, 'indexWithGoodsGroupedByDate']);
 Route::post('transaction/add-transaction', [TransactionController::class, 'createTransaction']);
 
+// cart
 Route::post('cart/add', [CartController::class, 'add']);
 Route::delete('cart/{cartId}', [CartController::class, 'remove']);
 Route::get('cart/{userId}', [CartController::class, 'getCart']);
+
+// dashboard
+Route::apiResource('dashboard/gold-rates', GoldRateController::class);
+Route::get('dashboard/showcase/stats', [ShowcaseController::class, 'getStats']);
