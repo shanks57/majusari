@@ -32,7 +32,6 @@ return new class extends Migration
 
             $table->foreign('merk_id')->references('id')->on('merks')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('goods_types')->onDelete('cascade');
-            $table->foreign('tray_id')->references('id')->on('trays')->onDelete('cascade');
         });
     }
 

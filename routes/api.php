@@ -7,6 +7,7 @@ use App\Http\Controllers\API\GoldRateController;
 use App\Http\Controllers\Api\GoodsController;
 use App\Http\Controllers\Api\GoodsTypeController;
 use App\Http\Controllers\Api\MerkController;
+use App\Http\Controllers\API\SafeStorageController;
 use App\Http\Controllers\Api\ShowcaseController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\Api\TrayController;
@@ -39,6 +40,10 @@ Route::get('showcase/search', [ShowcaseController::class, 'search']);
 // goods
 Route::apiResource('goods', GoodsController::class);
 Route::get('goods-data/search', [GoodsController::class, 'search']);
+
+// goods in safe storage
+Route::apiResource('safe-storage', SafeStorageController::class);
+Route::get('safe-storage-data/search', [SafeStorageController::class, 'search']);
 
 // transaction
 Route::apiResource('transactions', TransactionController::class);
