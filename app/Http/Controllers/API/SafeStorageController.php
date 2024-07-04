@@ -256,4 +256,38 @@ class SafeStorageController extends Controller
 
         return response()->json($goods);
     }
+
+    public function showImage($id)
+    {
+        try {
+            $goods = Goods::find($id);
+
+            if (!$goods) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Goods not found'
+                ], 404);
+            }
+
+            $imageUrl = $goods->image ? Storage::url($goods->image) : null;
+
+            if (!$imageUrl) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Image not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'image_url' => $imageUrl
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve image',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
