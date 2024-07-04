@@ -41,11 +41,13 @@ Route::get('showcase/search', [ShowcaseController::class, 'search']);
 Route::apiResource('goods', GoodsController::class);
 Route::get('goods-data/search', [GoodsController::class, 'search']);
 Route::get('goods/{id}/image', [GoodsController::class, 'showImage']);
+Route::get('goods/{id}/barcode', [GoodsController::class, 'generateBarcode']);
 
 // goods in safe storage
 Route::apiResource('safe-storage', SafeStorageController::class);
 Route::get('safe-storage-data/search', [SafeStorageController::class, 'search']);
-Route::get('safe-storage/{id}/image', [GoodsController::class, 'showImage']);
+Route::get('safe-storage/{id}/image', [SafeStorageController::class, 'showImage']);
+Route::get('safe-storage/{id}/barcode', [SafeStorageController::class, 'generateBarcode']);
 
 // transaction
 Route::apiResource('transactions', TransactionController::class);

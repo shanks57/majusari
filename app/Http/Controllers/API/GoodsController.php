@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Milon\Barcode\DNS2D;
 
 class GoodsController extends Controller
 {
@@ -285,6 +286,39 @@ class GoodsController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to retrieve image',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function generateBarcode($id)
+    {
+        try {
+            // Cari data goods berdasarkan ID
+            $goods = Goods::find($id);
+
+            if (!$goods) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Goods not found'
+                ], 404);
+            }
+
+            // Generate barcode menggunakan ID
+            $qrCode = new DNS2D();
+            $qrCodeImage = $qrCode->getBarcodePNG($goods->id, 'QRCODE');
+            // $barcodePNG = base64_decode($barcodeImage);
+
+            // Mengembalikan gambar barcode sebagai respons
+            return response()->json([
+                'status' => 'success',
+                'barcode' => $qrCodeImage
+            ], 200);
+        } catch (\Exception $e) {
+            // Mengembalikan respons jika terjadi kesalahan
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to generate barcode',
                 'error' => $e->getMessage()
             ], 500);
         }
