@@ -16,8 +16,9 @@ class Transaction extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = [ 'id', 'code', 'date', 'customer_id', 'user_id'];
+    protected $fillable = ['id', 'code', 'date', 'user_id', 'customer_id', 'total'];
     protected $dates = ['date'];
+    
     public function customer()
     {
         return $this->belongsTo(Customer::class);

@@ -15,7 +15,7 @@ class Showcase extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'code', 'name', 'type_id', 'status'];
+    protected $fillable = ['id', 'code', 'name', 'type_id'];
 
     public function goodsType()
     {

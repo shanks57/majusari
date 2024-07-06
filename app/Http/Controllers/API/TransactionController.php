@@ -40,56 +40,8 @@ class TransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'customer_id' => 'required|uuid|exists:customers,id',
-            'user_id' => 'required|integer|exists:users,id',
-            'cart_ids' => 'required|array',
-            'cart_ids.*' => 'uuid|exists:carts,id'
-        ]);
 
-        // Buat transaksi baru
-        $transaction = Transaction::create([
-            'id' => Str::uuid(),
-            'code' => str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),
-            'date' => Carbon::now(),
-            'user_id' => $request->user_id,
-            'customer_id' => $request->customer_id
-        ]);
 
-        // Ambil barang dari cart berdasarkan cart_ids
-        $cartItems = Cart::whereIn('id', $request->cart_ids)->get();
-
-        if ($cartItems->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No items found in the selected carts'
-            ], 400);
-        }
-
-        // Tambahkan detail transaksi
-        foreach ($cartItems as $item) {
-            TransactionDetail::create([
-                'id' => Str::uuid(),
-                'transaction_id' => $transaction->id,
-                'goods_id' => $item->goods_id
-            ]);
-
-            // Update ketersediaan barang
-            // $goods = Goods::find($item->goods_id);
-            // $goods->update(['availability' => false]);
-        }
-
-        // Hapus barang dari cart yang dipilih
-        Cart::whereIn('id', $request->cart_ids)->delete();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Transaction created successfully',
-            'transaction' => $transaction->load('details.goods')
-        ]);
-    }
 
     /**
      * Display the specified resource.
@@ -326,23 +278,24 @@ class TransactionController extends Controller
     public function createTransaction(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
             'customer_id' => 'required|uuid|exists:customers,id',
+            'user_id' => 'required|integer|exists:users,id',
             'cart_ids' => 'required|array',
             'cart_ids.*' => 'uuid|exists:carts,id'
         ]);
 
-        DB::beginTransaction();
-
         try {
+            // Buat transaksi baru
             $transaction = Transaction::create([
                 'id' => Str::uuid(),
                 'code' => str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),
                 'date' => Carbon::now(),
                 'user_id' => $request->user_id,
-                'customer_id' => $request->customer_id
+                'customer_id' => $request->customer_id,
+                'total' => 0 // Placeholder untuk total
             ]);
 
+            // Ambil barang dari cart berdasarkan cart_ids
             $cartItems = Cart::whereIn('id', $request->cart_ids)->get();
 
             if ($cartItems->isEmpty()) {
@@ -352,34 +305,37 @@ class TransactionController extends Controller
                 ], 400);
             }
 
-            foreach ($cartItems as $item) {
-                TransactionDetail::create([
-                    'id' => Str::uuid(),
-                    'transaction_id' => $transaction->id,
-                    'goods_id' => $item->goods_id
-                ]);
+            $totalAmount = 0;
 
+            // Tambahkan detail transaksi dan hitung total penjualan
+            foreach ($cartItems as $item) {
                 $goods = Goods::find($item->goods_id);
                 if ($goods) {
-                    $goods->update(['availability' => false]);
+                    $totalAmount += $goods->ask_price;
+
+                    TransactionDetail::create([
+                        'id' => Str::uuid(),
+                        'transaction_id' => $transaction->id,
+                        'goods_id' => $item->goods_id,
+                    ]);
                 }
             }
 
-            Cart::whereIn('id', $request->cart_ids)->delete();
+            // Update total transaksi
+            $transaction->update(['total' => $totalAmount]);
 
-            DB::commit();
+            // Hapus barang dari cart yang dipilih
+            Cart::whereIn('id', $request->cart_ids)->delete();
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Transaction created successfully',
-                'transaction' => $transaction->load('details.goods', 'customer')
+                'data' => $transaction->load('details.goods')
             ]);
         } catch (\Exception $e) {
-            DB::rollBack();
-
             return response()->json([
                 'status' => 'error',
-                'message' => 'Transaction creation failed',
+                'message' => 'Failed to create transaction',
                 'error' => $e->getMessage()
             ], 500);
         }

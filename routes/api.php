@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CustomerController;
+use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\API\GoldRateController;
 use App\Http\Controllers\Api\GoodsController;
@@ -64,4 +65,6 @@ Route::get('cart/{userId}', [CartController::class, 'getCart']);
 
 // dashboard
 Route::apiResource('dashboard/gold-rates', GoldRateController::class);
-Route::get('dashboard/showcase/stats', [ShowcaseController::class, 'getStats']);
+Route::get('dashboard/stats', [DashboardController::class, 'getStats']);
+Route::get('dashboard/sales-summary', [DashboardController::class, 'getSalesSummary']);
+Route::get('dashboard/goods-summary', [DashboardController::class, 'getGoodsSummary']);

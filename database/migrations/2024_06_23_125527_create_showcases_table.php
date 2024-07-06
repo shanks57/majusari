@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->uuid('type_id');
-            $table->string('status');
             $table->timestamps();
 
             $table->foreign('type_id')->references('id')->on('goods_types')->onDelete('cascade');

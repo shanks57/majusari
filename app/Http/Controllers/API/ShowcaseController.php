@@ -51,7 +51,6 @@ class ShowcaseController extends Controller
                 'id' => Str::uuid(),
                 'code' => $request->code,
                 'name' => $request->name,
-                'status' => 'showcase',
                 'type_id' => $request->type_id,
                 'tray_id' => $request->tray_id,
             ]);
@@ -225,42 +224,6 @@ class ShowcaseController extends Controller
             'to' => $showcases->lastItem(),
             'total' => $showcases->total()
         ]);
-    }
-
-    public function getStats()
-    {
-        try {
-            $showcases = Showcase::where('status', 'showcase')
-                ->get();
-
-            $totalItems = 0;
-            $totalWeight = 0;
-
-            foreach ($showcases as $showcase) {
-                // Filter goods based on availability = true
-                $availableGoods = $showcase->goods()->where('availability', true)->get();
-
-                // Count total items
-                $totalItems = $availableGoods->count();
-
-                // Sum total weight
-                $totalWeight = $availableGoods->sum('size');
-            }
-
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'total_items' => $totalItems,
-                    'total_weight' => $totalWeight,
-                ]
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to retrieve showcase stats',
-                'error' => $e->getMessage()
-            ], 500);
-        }
     }
 
 }

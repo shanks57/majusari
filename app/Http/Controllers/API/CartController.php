@@ -39,33 +39,41 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
-            'goods_id' => 'required|uuid|exists:goods,id'
-        ]);
+        try {
+            $request->validate([
+                'user_id' => 'required|integer|exists:users,id',
+                'goods_id' => 'required|uuid|exists:goods,id'
+            ]);
 
-        $goods = Goods::find($request->goods_id);
+            $goods = Goods::find($request->goods_id);
 
-        if (!$goods || $goods->availability === false) {
+            if (!$goods || $goods->availability === false) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Goods not available'
+                ], 400);
+            }
+
+            $cartItem = Cart::create([
+                'id' => Str::uuid(),
+                'user_id' => $request->user_id,
+                'goods_id' => $request->goods_id
+            ]);
+
+            $goods->update(['availability' => false]);
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Goods added to cart',
+                'data' => $cartItem->load('goods')
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Goods not available'
-            ], 400);
+                'message' => 'Failed to add goods to cart',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $cartItem = Cart::create([
-            'id' => Str::uuid(),
-            'user_id' => $request->user_id,
-            'goods_id' => $request->goods_id
-        ]);
-
-        $goods->update(['availability' => false]);
-        
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Goods added to cart',
-            'cart_item' => $cartItem->load('goods')
-        ]);
     }
 
     public function remove($cartId)
