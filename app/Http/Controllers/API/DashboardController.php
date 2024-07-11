@@ -148,5 +148,110 @@ class DashboardController extends Controller
         }
     }
 
+    public function getGoodsSummary(Request $request)
+    {
+        try {
+            $period = $request->input('period', 'year');
 
+            // Menyesuaikan tanggal berdasarkan periode
+            switch ($period) {
+                case 'month':
+                    $startDate = Carbon::now()->startOfMonth();
+                    $endDate = Carbon::now()->endOfMonth();
+                    $dateFormat = 'DAY(created_at)';
+                    $dateAlias = 'day';
+                    break;
+                case 'week':
+                    $startDate = Carbon::now()->startOfWeek();
+                    $endDate = Carbon::now()->endOfWeek();
+                    $dateFormat = 'DAYOFWEEK(created_at)';
+                    $dateAlias = 'day_of_week';
+                    break;
+                default: // 'year'
+                    $startDate = Carbon::now()->startOfYear();
+                    $endDate = Carbon::now()->endOfYear();
+                    $dateFormat = 'MONTH(created_at)';
+                    $dateAlias = 'month';
+                    break;
+            }
+
+            // Mendapatkan ringkasan barang masuk
+            $goodsInSummary = Goods::select(
+                    DB::raw('SUM(size) as total_goods_in'),
+                    DB::raw("$dateFormat as $dateAlias")
+                )
+                ->where('availability', 1)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->groupBy($dateAlias)
+                ->get();
+
+            // Mendapatkan ringkasan barang keluar
+            $goodsOutSummary = DB::table('transaction_details')
+                ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+                ->join('goods', 'transaction_details.goods_id', '=', 'goods.id') // Join dengan tabel goods
+                ->select(
+                    DB::raw('SUM(goods.size) as total_size'), // Menggunakan SUM() untuk menghitung total size
+                    DB::raw("MONTH(transactions.created_at) as month") // Menentukan kolom created_at dari transactions
+                )
+                ->whereBetween('transactions.created_at', [$startDate, $endDate])
+                ->groupBy('month') // Mengelompokkan berdasarkan bulan
+                ->get();
+
+            // Konversi data ke format yang diinginkan
+            $formattedGoodsInData = $goodsInSummary->map(function ($item) use ($dateAlias, $period) {
+                $dateValue = $item->{$dateAlias};
+
+                if ($period == 'week') {
+                    // Konversi nilai hari dalam minggu ke nama hari
+                    $dateName = Carbon::getDays()[$dateValue - 1];
+                } elseif ($period == 'month') {
+                    $dateName = $dateValue;
+                } else {
+                    $dateName = Carbon::create()->month($dateValue)->shortMonthName;
+                }
+
+                return [
+                    $dateAlias => $dateName,
+                    'total_goods_in' => $item->total_goods_in
+                ];
+            });
+
+            $formattedGoodsOutData = $goodsOutSummary->map(function ($item) use ($dateAlias, $period) {
+                $dateValue = $item->{$dateAlias};
+
+                if ($period == 'week') {
+                    // Konversi nilai hari dalam minggu ke nama hari
+                    $dateName = Carbon::getDays()[$dateValue - 1];
+                } elseif ($period == 'month') {
+                    $dateName = $dateValue;
+                } else {
+                    $dateName = Carbon::create()->month($dateValue)->shortMonthName;
+                }
+
+                return [
+                    $dateAlias => $dateName,
+                    'total_goods_out' => $item->total_size
+                ];
+            });
+
+            $totalGoodsIn = $goodsInSummary->sum('total_goods_in');
+            $totalGoodsOut = $goodsOutSummary->sum('total_goods_out');
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'total_goods_in' => $totalGoodsIn,
+                    'total_goods_out' => $totalGoodsOut,
+                    'goods_in_data' => $formattedGoodsInData,
+                    'goods_out_data' => $formattedGoodsOutData
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve goods summary',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

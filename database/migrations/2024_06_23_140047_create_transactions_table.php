@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code', 5)->unique();
             $table->dateTime('date');
             $table->bigInteger('total');
-            $table->unsignedBigInteger('user_id');
+            $table->uuid('user_id');
             $table->uuid('customer_id');
             $table->timestamps();
 
