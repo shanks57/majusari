@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('showcases', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('username')->unique();
+            $table->string('code')->unique();
             $table->string('name');
-            $table->string('phone');
-            $table->integer('debt_bond')->default(0);
-            $table->string('address');
-            $table->boolean('status')->default(true);
+            $table->uuid('type_id');
             $table->timestamps();
+
+            $table->foreign('type_id')->references('id')->on('goods_types')->onDelete('cascade');
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('showcases');
     }
 };

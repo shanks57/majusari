@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trays', function (Blueprint $table) {
+        Schema::create('transaction_details', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('code')->unique();
-            $table->integer('weight');
-            $table->integer('capacity');
-            $table->uuid('showcase_id');
+            $table->uuid('transaction_id');
+            $table->uuid('goods_id');
+            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
+            $table->foreign('goods_id')->references('id')->on('goods')->onDelete('cascade');
             $table->timestamps();
-
-            $table->foreign('showcase_id')->references('id')->on('showcases')->onDelete('cascade');
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trays');
+        Schema::dropIfExists('transaction_details');
     }
 };

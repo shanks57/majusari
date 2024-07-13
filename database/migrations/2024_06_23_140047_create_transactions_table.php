@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('code', 5)->unique();
-            $table->uuid('customer_id');
-            $table->uuid('goods_id');
             $table->dateTime('date');
+            $table->bigInteger('total');
+            $table->uuid('user_id');
+            $table->uuid('customer_id');
             $table->timestamps();
 
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->foreign('goods_id')->references('id')->on('goods')->onDelete('cascade');
         });
     }
 

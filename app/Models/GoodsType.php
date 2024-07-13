@@ -16,4 +16,14 @@ class GoodsType extends Model
     protected $keyType = 'string';
 
     protected $fillable = ['id', 'name', 'additional_cost', 'status', 'slug'];
+
+    public function goods()
+    {
+        return $this->hasMany(Goods::class, 'goods_type_id');
+    }
+
+    public function showcases()
+    {
+        return $this->hasMany(Showcase::class, 'type_id');
+    }
 }

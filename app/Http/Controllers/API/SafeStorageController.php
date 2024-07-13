@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Goods;
@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Milon\Barcode\DNS2D;
 
-class GoodsController extends Controller
+class SafeStorageController extends Controller
 {
-    public function index()
+        public function index()
     {
         try {
-            $goods = Goods::where('safe_status', false)
+            $goods = Goods::where('safe_status', true)
             ->where('availability', true)
             ->paginate();
 
@@ -46,7 +46,7 @@ class GoodsController extends Controller
             'bid_price' => 'required|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'type_id' => 'required|uuid|exists:goods_types,id',
-            'tray_id' => 'required|uuid|exists:trays,id',
+            'tray_id' => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -77,8 +77,8 @@ class GoodsController extends Controller
                 'bid_price' => $request->bid_price,
                 'image' => $imagePath,
                 'type_id' => $request->type_id,
-                'tray_id' => $request->tray_id,
-                'safe_status' => false
+                'tray_id' => null,
+                'safe_status' => true
             ]);
 
             return response()->json([
@@ -195,6 +195,7 @@ class GoodsController extends Controller
         }
     }
 
+
     public function destroy($id)
     {
         try {
@@ -238,7 +239,7 @@ class GoodsController extends Controller
         }
 
         $goods = Goods::with(['goodsType', 'merk'])
-            ->where('safe_status', false)
+            ->where('safe_status', true)
             ->where('availability', true)
             ->where(function($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")

@@ -5,24 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Tray extends Model
+class Cart extends Model
 {
     use HasFactory;
+    protected $table = 'carts';
 
-    protected $table = 'trays';
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'code', 'weight', 'capacity', 'showcase_id'];
+    protected $fillable = ['id', 'user_id', 'goods_id'];
 
     public function goods()
     {
-        return $this->hasMany(Goods::class, 'tray_id');
-    }   
+        return $this->belongsTo(Goods::class);
+    }
 
-    public function showcase()
+    public function user()
     {
-        return $this->belongsTo(Showcase::class);
+        return $this->belongsTo(User::class);
     }
 }

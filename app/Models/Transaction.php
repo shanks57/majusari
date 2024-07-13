@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Transaction extends Model
 {
@@ -15,15 +16,16 @@ class Transaction extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = [ 'id', 'code', 'date', 'customer_id', 'goods_id'];
+    protected $fillable = ['id', 'code', 'date', 'user_id', 'customer_id', 'total'];
     protected $dates = ['date'];
+    
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function goods()
+    public function details(): HasMany
     {
-        return $this->belongsTo(Goods::class, 'goods_id');
+        return $this->hasMany(TransactionDetail::class);
     }
 }
