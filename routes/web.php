@@ -25,3 +25,23 @@ Route::get('/master/customers', function () {
 Route::get('/master/employees', function () {
     return view('pages.master-employees');
 });
+
+Route::get('/goods/showcases', function () {
+    return view('pages.goods-showcases');
+});
+
+Route::get('/goods/trays', function () {
+    return view('pages.goods-trays');
+});
+
+Route::get('/goods/safe', function () {
+    return view('pages.goods-safe');
+});
+
+Route::get('/sales', function () {
+    return view('pages.sales');
+});
+
+Route::get('/profile', function () {
+    return view('pages.profile');
+});

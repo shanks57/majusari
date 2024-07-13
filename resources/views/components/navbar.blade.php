@@ -1,10 +1,12 @@
 <nav class="px-[80px] py-6 bg-white flex justify-between items-center border-b">
     <a href="/" class="text-2xl font-semibold">Majusari</a>
-    <div class="flex justify-center items-center">
-        <a href="/" class="px-6 py-3 hover:bg-purple-100 rounded-md hover:text-purple-700">
+    <div class="flex justify-center items-center gap-2">
+        <a href="/"
+            class="px-6 py-3 rounded-md  {{ request()->is('/') ? 'bg-purple-100 text-purple-700' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
             Dashboard
         </a>
-        <x-dropdown class="px-6 py-3 hover:bg-purple-100 rounded-md hover:text-purple-700 flex items-center gap-1"
+        <x-dropdown
+            class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('master/*') ? 'bg-purple-100 text-purple-700' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
             title="Master">
             <div class="py-1" role="none">
                 <a href="/master/showcases" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
@@ -19,18 +21,20 @@
                     id="menu-item-2">Pegawai</a>
             </div>
         </x-dropdown>
-        <x-dropdown class="px-6 py-3 hover:bg-purple-100 rounded-md hover:text-purple-700 flex items-center gap-1"
+        <x-dropdown
+            class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('goods/*') ? 'bg-purple-100 text-purple-700' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
             title="Barang">
             <div class="py-1" role="none">
-                <a href="/barang/etalase" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                <a href="/goods/showcases" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                     id="menu-item-0">Etalase</a>
-                <a href="/barang/detail-baki" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
-                    tabindex="-1" id="menu-item-1">Detail Baki</a>
-                <a href="/barang/brankas" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                <a href="/goods/trays" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                    id="menu-item-1">Detail Baki</a>
+                <a href="/goods/safe" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                     id="menu-item-2">Brankas</a>
             </div>
         </x-dropdown>
-        <a href="/penjualan" class="px-6 py-3 hover:bg-purple-100 rounded-md hover:text-purple-700">
+        <a href="/sales"
+            class="px-6 py-3 rounded-md  {{ request()->is('sales') ? 'bg-purple-100 text-purple-700' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
             Penjualan
         </a>
 
