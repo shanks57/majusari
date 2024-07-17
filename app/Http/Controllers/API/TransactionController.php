@@ -279,7 +279,7 @@ class TransactionController extends Controller
     {
         $request->validate([
             'customer_id' => 'required|uuid|exists:customers,id',
-            'user_id' => 'required|integer|exists:users,id',
+            'user_id' => 'required|uuid|exists:users,id',
             'cart_ids' => 'required|array',
             'cart_ids.*' => 'uuid|exists:carts,id'
         ]);

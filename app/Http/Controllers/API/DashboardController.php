@@ -9,7 +9,7 @@ use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -158,19 +158,22 @@ class DashboardController extends Controller
                 case 'month':
                     $startDate = Carbon::now()->startOfMonth();
                     $endDate = Carbon::now()->endOfMonth();
-                    $dateFormat = 'DAY(created_at)';
+                    $dateFormatGoodsIn = 'DAY(created_at)';
+                    $dateFormatGoodsOut = 'DAY(transactions.created_at)';
                     $dateAlias = 'day';
                     break;
                 case 'week':
                     $startDate = Carbon::now()->startOfWeek();
                     $endDate = Carbon::now()->endOfWeek();
-                    $dateFormat = 'DAYOFWEEK(created_at)';
+                    $dateFormatGoodsIn = 'DAYOFWEEK(created_at)';
+                    $dateFormatGoodsOut = 'DAYOFWEEK(transactions.created_at)';
                     $dateAlias = 'day_of_week';
                     break;
                 default: // 'year'
                     $startDate = Carbon::now()->startOfYear();
                     $endDate = Carbon::now()->endOfYear();
-                    $dateFormat = 'MONTH(created_at)';
+                    $dateFormatGoodsIn = 'MONTH(created_at)';
+                    $dateFormatGoodsOut = 'MONTH(transactions.created_at)';
                     $dateAlias = 'month';
                     break;
             }
@@ -178,7 +181,7 @@ class DashboardController extends Controller
             // Mendapatkan ringkasan barang masuk
             $goodsInSummary = Goods::select(
                     DB::raw('SUM(size) as total_goods_in'),
-                    DB::raw("$dateFormat as $dateAlias")
+                    DB::raw("$dateFormatGoodsIn as $dateAlias")
                 )
                 ->where('availability', 1)
                 ->whereBetween('created_at', [$startDate, $endDate])
@@ -188,13 +191,13 @@ class DashboardController extends Controller
             // Mendapatkan ringkasan barang keluar
             $goodsOutSummary = DB::table('transaction_details')
                 ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
-                ->join('goods', 'transaction_details.goods_id', '=', 'goods.id') // Join dengan tabel goods
+                ->join('goods', 'transaction_details.goods_id', '=', 'goods.id')
                 ->select(
-                    DB::raw('SUM(goods.size) as total_size'), // Menggunakan SUM() untuk menghitung total size
-                    DB::raw("MONTH(transactions.created_at) as month") // Menentukan kolom created_at dari transactions
+                    DB::raw('SUM(goods.size) as total_goods_out'),
+                    DB::raw("$dateFormatGoodsOut as $dateAlias")
                 )
                 ->whereBetween('transactions.created_at', [$startDate, $endDate])
-                ->groupBy('month') // Mengelompokkan berdasarkan bulan
+                ->groupBy($dateAlias)
                 ->get();
 
             // Konversi data ke format yang diinginkan
@@ -230,7 +233,7 @@ class DashboardController extends Controller
 
                 return [
                     $dateAlias => $dateName,
-                    'total_goods_out' => $item->total_size
+                    'total_goods_out' => $item->total_goods_out
                 ];
             });
 
