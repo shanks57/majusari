@@ -20,6 +20,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/not-authorized', function (Request $request) {
+    return response()->json([
+         "error" => true,
+        "message" => "Unauthorized. Please log in to access this resource.",
+        "code" => 401
+    ], 401);
+})->name('not.authorized');
+
 Route::middleware('auth:sanctum')->group(function () {
     
     // auth
