@@ -83,7 +83,7 @@ class SafeStorageController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'goods created successfully',
+                'message' => 'goods in safestorage created successfully',
                 'data' => $goods
             ], 201);
         } catch (\Exception $e) {
@@ -109,7 +109,7 @@ class SafeStorageController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'goods retrieved successfully',
+                'message' => 'goods in safestorage retrieved successfully',
                 'data' => $goods
             ], 200);
         } catch (\Exception $e) {
@@ -182,7 +182,7 @@ class SafeStorageController extends Controller
             // Mengembalikan respons berhasil
             return response()->json([
                 'status' => 'success',
-                'message' => 'Goods updated successfully',
+                'message' => 'Goods in safestorage updated successfully',
                 'data' => $goods
             ], 200);
         } catch (\Exception $e) {
@@ -216,7 +216,7 @@ class SafeStorageController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'goods deleted successfully'
+                'message' => 'goods in safestorage deleted successfully'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

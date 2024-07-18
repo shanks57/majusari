@@ -41,7 +41,7 @@ class CartController extends Controller
     {
         try {
             $request->validate([
-                'user_id' => 'required|integer|exists:users,id',
+                'user_id' => 'required|uuid|exists:users,id',
                 'goods_id' => 'required|uuid|exists:goods,id'
             ]);
 
