@@ -1,14 +1,13 @@
 <?php
 
+use App\Http\Controllers\EtalaseController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('pages.dashboard');
 });
 
-Route::get('/master/showcases', function () {
-    return view('pages.master-showcases');
-});
+Route::get('/master/showcases', [EtalaseController::class, 'index'])->name("master-showcase");
 
 Route::get('/master/types', function () {
     return view('pages.master-types');
