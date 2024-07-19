@@ -3,6 +3,8 @@
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EtalaseController;
+use App\Http\Controllers\GoodSafeController;
+use App\Http\Controllers\GoodShowcaseController;
 use App\Http\Controllers\GoodsTypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -21,16 +23,12 @@ Route::get('/master/customers', [CustomerController::class, 'index'])->name("mas
 
 Route::get('/master/employees', [UserController::class, 'index'])->name("master-employee");
 
-Route::get('/goods/showcases', function () {
-    return view('pages.goods-showcases');
-});
+Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("/goods/showcase");
+
+Route::get('/goods/safe', [GoodSafeController::class, 'index'])->name("/goods/safe");
 
 Route::get('/goods/trays', function () {
     return view('pages.goods-trays');
-});
-
-Route::get('/goods/safe', function () {
-    return view('pages.goods-safe');
 });
 
 Route::get('/sales', function () {
