@@ -3,6 +3,9 @@
 
 <x-layout>
     <x-header title="Etalase">
+        <x-button-add url="{{ route('goods-types.index') }}">
+            Tambah Etalase
+        </x-button-add>
     </x-header>
     <div class="container py-4 mx-auto">
         <div class="mb-4">
@@ -38,7 +41,7 @@
                         <td class="px-6 py-3 text-left">{{ $etalase->baki ?? 0 }}</td>
                         <td class="px-6 py-3 text-center">
                             <button class="px-3 py-1 text-white bg-orange-500 rounded">
-                                <i class="ph ph-folder-open"></i> 
+                                <i class="ph ph-folder-open"></i>
                                 Tambah Baki</button>
                             <button class="px-3 py-1 text-white bg-purple-500 rounded">
                                 <i class="ph ph-folder-plus"></i> Kelola Baki</button>
@@ -50,11 +53,13 @@
                 </tbody>
             </table>
         </div>
-        <div class="flex items-center justify-between mt-4 mb-16">
+        <div class="flex items-center justify-between mt-4 mb-16 px-">
             <div id="dataTableInfo" class="text-gray-600"></div>
-            <div id="dataTableLength" class="flex items-center"></div>
-            <div id="dataTableInfoEntry" class="text-gray-600"></div>
-            <div id="dataTablePagination" class="flex items-center"></div>
+            <div class="flex items-center space-x-8">
+                <div id="dataTableLength" class="flex items-center"></div>
+                <div id="dataTableInfoEntry" class="text-gray-600"></div>
+                <div id="dataTablePagination" class="flex items-center px-4"></div>
+            </div>
         </div>
     </div>
 </x-layout>

@@ -2,6 +2,9 @@
 @include('components.datatables')
 <x-layout>
     <x-header title="Brankas">
+        <x-button-add url="{{ route('goods-types.index') }}">
+        Tambah Barang Brangkas
+        </x-button-add>
     </x-header>
     <div class="container py-4 mx-auto">
         <div class="mb-4">
@@ -66,11 +69,13 @@
                 </tbody>
             </table>
         </div>
-        <div class="flex items-center justify-between mt-4 mb-16">
+        <div class="flex items-center justify-between mt-4 mb-16 px-">
             <div id="dataTableInfo" class="text-gray-600"></div>
-            <div id="dataTableLength" class="flex items-center"></div>
-            <div id="dataTableInfoEntry" class="text-gray-600"></div>
-            <div id="dataTablePagination" class="flex items-center"></div>
+            <div class="flex items-center space-x-8">
+                <div id="dataTableLength" class="flex items-center"></div>
+                <div id="dataTableInfoEntry" class="text-gray-600"></div>
+                <div id="dataTablePagination" class="flex items-center px-4"></div>
+            </div>
         </div>
     </div>
 </x-layout>
