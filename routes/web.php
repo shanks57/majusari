@@ -6,6 +6,7 @@ use App\Http\Controllers\EtalaseController;
 use App\Http\Controllers\GoodSafeController;
 use App\Http\Controllers\GoodShowcaseController;
 use App\Http\Controllers\GoodsTypeController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,9 +32,7 @@ Route::get('/goods/trays', function () {
     return view('pages.goods-trays');
 });
 
-Route::get('/sales', function () {
-    return view('pages.sales');
-});
+Route::get('/sales', [SalesController::class, 'index'])->name("sale.index");
 
 Route::get('/profile', function () {
     return view('pages.profile');
