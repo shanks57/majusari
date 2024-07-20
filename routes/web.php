@@ -7,6 +7,7 @@ use App\Http\Controllers\GoodSafeController;
 use App\Http\Controllers\GoodShowcaseController;
 use App\Http\Controllers\GoodsTypeController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\GoodTrayController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,9 +29,9 @@ Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("
 
 Route::get('/goods/safe', [GoodSafeController::class, 'index'])->name("/goods/safe");
 
-Route::get('/goods/trays', function () {
-    return view('pages.goods-trays');
-});
+Route::get('/goods/trays', [GoodTrayController::class, 'index'])->name("/goods/tray");
+Route::get('/goods/trays/{id}', [GoodTrayController::class, 'find'])->name("find-goods-tray");
+
 
 Route::get('/sales', [SalesController::class, 'index'])->name("sale.index");
 
