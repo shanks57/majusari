@@ -7,7 +7,6 @@
     <title>{{ config('app.name') }} - @yield('title')</title>
 
     @vite('resources/css/app.css')
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>

@@ -10,6 +10,7 @@ class GoodsTypeController extends Controller
     public function index()
     {
         $types = GoodsType::all();
-        return view('pages.master-types', compact('types'));
+        $title = 'Jenis Barang';
+        return view('pages.master-types', compact('types', 'title'));
     }
 }

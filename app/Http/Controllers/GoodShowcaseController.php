@@ -12,6 +12,7 @@ class GoodShowcaseController extends Controller
         $goodShowcases = Goods::where('availability', 1)
             ->where('safe_status', 0)
             ->get();
-        return view('pages.goods-showcases', compact('goodShowcases'));
+        $title = 'Barang';
+        return view('pages.goods-showcases', compact('goodShowcases', 'title'));
     }
 }

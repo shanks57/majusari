@@ -1,19 +1,22 @@
 @section('title', 'Jenis Barang')
 @include('components.datatables')
-<x-layout>
+
+<x-layout x-data="{ open: false }">
     <x-header title="Jenis Barang">
-        <x-button-add url="{{ route('goods-types.index') }}">
-        Tambah Jenis Barang
+        <x-button-add  @click="open = !open">
+            Tambah Jenis Barang
         </x-button-add>
     </x-header>
-     <div class="container py-4 mx-auto">
-        <div class="mb-4">
+
+    <div class="container py-4 mx-auto">
+        <div class="mb-4 relative w-full mx-auto">
             <input type="text" id="searchEtalase"
-                class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-[#79799B]"
+                class="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#79799B]"
                 placeholder="Cari di etalase">
+            <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-        <div class="overflow-hidden shadow-lg rounded-xl">
-            <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 rounded">
+        <div class="overflow-hidden shadow-lg rounded-t-lg border border-gray-200">
+            <table id="etalaseTable" class="display min-w-full bg-white border border-gray-200">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
@@ -34,12 +37,14 @@
                         </td>
                         <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
                         <td class="px-6 py-3 text-left">{{ $type->name }}</td>
-                        <td class="px-6 py-3 text-left">{{ $type->additional_cost }}</td>
+                        <td class="px-6 py-3 text-left">
+                            {{ 'Rp.' . number_format($type->additional_cost, 0, ',', '.') }}
+                        </td>
                         <td class="px-6 py-3 text-left">
                             @if ($type->status == 1)
-                                <span class="text-[#12B76A]">Aktif</span>
+                            <span class="text-[#12B76A]">Aktif</span>
                             @else
-                                <span class="text-[#F04438]">Tidak Aktif</span>
+                            <span class="text-[#F04438]">Tidak Aktif</span>
                             @endif
                         </td>
                         <td class="px-6 py-3 text-center">
@@ -53,13 +58,46 @@
                 </tbody>
             </table>
         </div>
-        <div class="flex items-center justify-between mt-4 mb-16 px-">
-            <div id="dataTableInfo" class="text-gray-600"></div>
+        <div class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
+            <div id="dataTableInfo" class="px-4 py-3"></div>
             <div class="flex items-center space-x-8">
                 <div id="dataTableLength" class="flex items-center"></div>
-                <div id="dataTableInfoEntry" class="text-gray-600"></div>
-                <div id="dataTablePagination" class="flex items-center px-4"></div>
+                <div class="flex items-center justify-between px-2.5 py-3">
+                    <div id="dataTableInfoEntry" class=""></div>
+                    <div id="dataTablePagination" class="flex items-center px-4"></div>
+                </div>
             </div>
         </div>
     </div>
+
+        <!-- Modal -->
+        {{-- <div x-show="open" class="fixed inset-0 bg-gray-900 bg-opacity-50">
+            <div class="absolute top-0 right-0 w-1/2 p-6 mt-4 mr-4 space-y-4 bg-white border shadow-lg rounded-xl border-[#D9D9D9]">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-medium text-[#344054]">Jenis Barang Baru</h2>
+                    <button type="button" @click="open = false" class="text-red-500">
+                        <i class="text-2xl ph ph-x-circle"></i>
+                    </button>
+                </div>
+                <div class="border-b border-[#D0D5DD]"></div>
+                <div class="">
+                    <label for="jenisBarang" class="block text-sm text-[#344054] leading-5">Jenis Barang</label>
+                    <input type="text" id="jenisBarang"
+                        class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 text-[#667085]"
+                        placeholder="Masukkan Jenis Barang">
+                </div>
+                <div class="">
+                    <label for="tambahanBiaya" class="block text-sm text-[#344054] leading-5">Tambahan Biaya</label>
+                    <input type="number" id="tambahanBiaya"
+                        class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 text-[#667085]"
+                        placeholder="Masukkan Tambahan Biaya">
+                </div>
+                <div class="flex justify-end">
+                    <button class="flex items-center justify-center px-4 py-3 text-[#F8F8F8] bg-[#EAECF0] rounded-lg font-medium text-sm leading-5"
+                        disabled>Simpan <i class="ml-1.5 ph ph-floppy-disk"></i></button>
+                    <button class="flex items-center justify-center px-4 py-3 text-[#F8F8F8] bg-[#7F56D9] rounded-lg font-medium text-sm leading-5"
+                        disabled>Simpan <i class="ml-1.5 ph ph-floppy-disk"></i></button>
+                </div>
+            </div>
+        </div> --}}
 </x-layout>
