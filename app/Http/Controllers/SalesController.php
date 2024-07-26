@@ -11,6 +11,7 @@ class SalesController extends Controller
     {
         $sales = TransactionDetail::orderBy('created_at', 'desc')
             ->get();
-        return view('pages.sales', compact('sales'));
+        $title = 'Penjualan';
+        return view('pages.sales', compact('sales', 'title'));
     }
 }

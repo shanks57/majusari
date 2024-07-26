@@ -10,6 +10,7 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::all();
-        return view('pages.master-customers', compact('customers'));
+        $title = 'Pelanggan';
+        return view('pages.master-customers', compact('customers', 'title'));
     }
 }

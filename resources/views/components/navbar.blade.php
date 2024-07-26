@@ -1,12 +1,12 @@
 <nav class="px-[80px] py-6 bg-white flex justify-between items-center border-b">
-    <a href="/" class="text-2xl font-semibold">Majusari</a>
-    <div class="flex justify-center items-center gap-2">
+    <a href="/" class="text-2xl font-semibold font-inter">Majusari</a>
+    <div class="flex items-center justify-center gap-2 text-lg font-medium leading-7">
         <a href="/"
-            class="px-6 py-3 rounded-md  {{ request()->is('/') ? 'bg-purple-100 text-purple-700' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
+            class="px-6 py-3 rounded-md  {{ request()->is('/') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
             Dashboard
         </a>
         <x-dropdown
-            class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('master/*') ? 'bg-purple-100 text-purple-700' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
+            class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('master/*') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
             title="Master">
             <div class="py-1" role="none">
                 <a href="/master/showcases" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
@@ -22,7 +22,7 @@
             </div>
         </x-dropdown>
         <x-dropdown
-            class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('goods/*') ? 'bg-purple-100 text-purple-700' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
+            class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('goods/*') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
             title="Barang">
             <div class="py-1" role="none">
                 <a href="/goods/showcases" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
@@ -34,13 +34,13 @@
             </div>
         </x-dropdown>
         <a href="/sales"
-            class="px-6 py-3 rounded-md  {{ request()->is('sales') ? 'bg-purple-100 text-purple-700' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
+            class="px-6 py-3 rounded-md  {{ request()->is('sales') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
             Penjualan
         </a>
 
     </div>
-    <div class="flex gap-4 items-center">
-        <div class="rounded-full w-10 h-10 bg-purple-500 text-white flex justify-center items-center">
+    <div class="flex items-center gap-4">
+        <div class="flex items-center justify-center w-10 h-10 text-white bg-purple-500 rounded-full">
             AW
         </div>
         <div>

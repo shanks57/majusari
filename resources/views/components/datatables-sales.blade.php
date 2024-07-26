@@ -29,10 +29,10 @@
             "lengthMenu": [10, 25, 50, 75, 100],
             "language": {
                 "paginate": {
-                    "previous": '<i class="ph-bold ph-caret-left"></i>',
-                    "next": '<i class="ph-bold ph-caret-right"></i>'
+                    "previous": '<i class="ph-bold ph-caret-left w-4 h-4"></i>',
+                    "next": '<i class="ph-bold ph-caret-right w-4 h-4"></i>'
                 },
-                "lengthMenu": "Tampilkan _MENU_ data per halaman",
+                "lengthMenu": "Baris per halaman _MENU_",
                 "zeroRecords": "Tidak ada data yang ditemukan",
                 "infoEmpty": "Tidak ada data yang tersedia",
                 "info": "",
@@ -44,9 +44,7 @@
                 var adjustedEnd = Math.min(end, totalRows);
                 var dataRangeInfo = adjustedStart + ' - ' + adjustedEnd + ' dari ' + totalRows +
                     ' data';
-                $('#dataTableInfo').html('Menampilkan halaman ' + (Math.floor(settings
-                        ._iDisplayStart / settings._iDisplayLength) + 1) + ' dari ' + Math
-                    .ceil(totalRows / settings._iDisplayLength));
+                $('#dataTableInfo').html('Menampilkan ' + adjustedEnd + ' Data ' + '{{ $title }}');
                 $('#dataTableInfoEntry').html(dataRangeInfo);
                 return '';
             },

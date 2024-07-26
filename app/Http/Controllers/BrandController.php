@@ -10,6 +10,7 @@ class BrandController extends Controller
     public function index()
     {
         $brands = Merk::all();
-        return view('pages.master-brands', compact('brands'));
+        $title = 'Merk Barang';
+        return view('pages.master-brands', compact('brands', 'title'));
     }
 }

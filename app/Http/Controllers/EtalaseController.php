@@ -10,7 +10,8 @@ class EtalaseController extends Controller
     public function index()
     {
         $etalases = Showcase::all();
-        return view('pages.master-showcases', compact('etalases'));
+        $title = 'Etalase';
+        return view('pages.master-showcases', compact('etalases', 'title'));
     }
 }
 

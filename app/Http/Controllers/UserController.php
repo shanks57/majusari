@@ -10,6 +10,7 @@ class UserController extends Controller
     public function index()
     {
         $employees = User::all();
-        return view('pages.master-employees', compact('employees'));
+        $title = 'Pegawai';
+        return view('pages.master-employees', compact('employees', 'title'));
     }
 }

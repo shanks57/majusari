@@ -12,6 +12,7 @@ class GoodSafeController extends Controller
         $goodsafes = Goods::where('availability', 1)
             ->where('safe_status', 1)
             ->get();
-        return view('pages.goods-safe', compact('goodsafes'));
+        $title = 'Brangkas';
+        return view('pages.goods-safe', compact('goodsafes', 'title'));
     }
 }

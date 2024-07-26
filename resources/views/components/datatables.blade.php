@@ -25,10 +25,10 @@
                 "lengthMenu": [10, 25, 50, 75, 100],
                 "language": {
                     "paginate": {
-                        "previous": '<i class="ph-bold ph-caret-left"></i>',
-                        "next": '<i class="ph-bold ph-caret-right"></i>'
+                        "previous": '<i class="ph-bold ph-caret-left w-4 h-4"></i>',
+                        "next": '<i class="ph-bold ph-caret-right w-4 h-4"></i>'
                     },
-                    "lengthMenu": "Tampilkan _MENU_ data per halaman",
+                    "lengthMenu": "Baris per halaman _MENU_",
                     "zeroRecords": "Tidak ada data yang ditemukan",
                     "infoEmpty": "Tidak ada data yang tersedia",
                     "info": "",
@@ -36,10 +36,10 @@
                 },
                 "infoCallback": function( settings, start, end, max, total, pre ) {
                     // Menampilkan halaman _PAGE_ dari _PAGES_
-                    var pageInfo = 'Menampilkan halaman ' + (Math.floor(settings._iDisplayStart / settings._iDisplayLength) + 1) + ' dari ' + Math.ceil(total / settings._iDisplayLength);
+                    var pageInfo = 'Menampilkan ' + end + ' Data ' + '{{ $title }}';
 
                     // Menampilkan _START_ hingga _END_ dari _TOTAL_ data
-                    var dataRangeInfo = start + ' - ' + end + ' dari ' + total + ' data';
+                    var dataRangeInfo = start + ' - ' + end + ' dari ' + total + ' entri';
                     
                     $('#dataTableInfo').html(pageInfo);
                     $('#dataTableInfoEntry').html(dataRangeInfo);
@@ -53,6 +53,10 @@
                     $('.dataTables_paginate .paginate_button').addClass('border rounded px-2 py-1 mx-1');
                     $('.dataTables_paginate .paginate_button.previous, .dataTables_paginate .paginate_button.next').addClass('border-0');
                     $('.dataTables_paginate .paginate_button.current').addClass('bg-gray-200');
+                },
+                "initComplete": function(settings, json) {
+                    // Tambahkan class Tailwind ke dropdown
+                    $('.dataTables_length select').addClass('form-select p-1 text-sm rounded border border-[#EBEBEF] ');
                 }
             });
 

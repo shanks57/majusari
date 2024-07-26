@@ -6,13 +6,16 @@ export default {
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
+        "node_modules/preline/dist/*.js",
     ],
     theme: {
         extend: {
             fontFamily: {
-                sans: ["Inter var", ...defaultTheme.fontFamily.sans],
+                inter: ["Inter var", "sans-serif"],
+                sans: ["Manrope", ...defaultTheme.fontFamily.sans],
             },
+            colors: {},
         },
     },
-    plugins: [],
+    plugins: [require("preline/plugin")],
 };
