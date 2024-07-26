@@ -19,7 +19,7 @@ class GoodTrayController extends Controller
 
     public function find($id)
     {
-        $tray = Tray::find($id);
+        $tray = Tray::with('showcase')->find($id);
         if (!$tray) {
             abort(404);
         }
@@ -34,13 +34,11 @@ class GoodTrayController extends Controller
         ->where('safe_status', 0)
         ->get();
 
-        // Ambil barang yang memenuhi kriteria
         $goods = Goods::where('tray_id', $id)
                     ->where('availability', 1)
                     ->where('safe_status', 0)
                     ->get();
 
-        // Jumlahkan berat barang
         $totalWeight = $goods->sum('size');
 
         return view('pages.trays-show', compact('tray', 'goods', 'countGoods', 'totalWeight'));

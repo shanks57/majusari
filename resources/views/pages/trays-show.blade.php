@@ -3,7 +3,7 @@
     <div class="container py-4 mx-auto">
         <a href="/" class="flex items-center gap-4 mb-4 text-gray-500 hover:text-gray-700">
             <i class="text-2xl ph ph-caret-left"></i>
-            <h1 class="text-2xl ">Etalase {{ $tray->code }}</h1>
+            <h1 class="text-2xl ">Etalase {{ $tray->showcase->code }}</h1>
         </a>
 
 
