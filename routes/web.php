@@ -17,7 +17,10 @@ Route::get('/', function () {
 
 Route::get('/master/showcases', [EtalaseController::class, 'index'])->name("master-showcase");
 
-Route::get('/master/types', [GoodsTypeController::class, 'index'])->name("master-type");
+Route::get('/master/types', [GoodsTypeController::class, 'index']);
+Route::post('/goods-types/store', [GoodsTypeController::class, 'store'])->name('goods-types.store');
+Route::put('/goods-types/update/{id}', [GoodsTypeController::class, 'update']);
+
 
 Route::get('/master/brands', [BrandController::class, 'index'])->name("master-brand");
 
