@@ -137,3 +137,4 @@
 </x-layout>
 
 @include('components.modal.goods-showcase.success-modal')
+@include('components.modal.goods-showcase.error-modal')

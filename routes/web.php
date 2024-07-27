@@ -33,11 +33,12 @@ Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("
 Route::patch('/goods/{id}/move-to-safe', [GoodShowcaseController::class, 'moveToSafe'])
     ->name('goods.moveToSafe');
 Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
-// routes/web.php
 Route::get('/goods/{id}/print-barcode', [GoodShowcaseController::class, 'printBarcode'])->name('goods-showcase.printBarcode');
 
 
-Route::get('/goods/safe', [GoodSafeController::class, 'index'])->name("/goods/safe");
+Route::get('/goods/safe', [GoodSafeController::class, 'index'])->name("goods.safe");
+Route::patch('/goods/{id}/move-to-showcase', [GoodSafeController::class, 'moveToShowcase'])->name('goods.moveToShowcase');
+Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
 
 Route::get('/goods/trays', [GoodTrayController::class, 'index'])->name("/goods/tray");
 Route::get('/goods/trays/{id}', [GoodTrayController::class, 'find'])->name("find-goods-tray");

@@ -34,11 +34,9 @@ class GoodShowcaseController extends Controller
 
     public function destroy($id)
     {
-        // Find the item by ID and delete it
         $goodShowcase = Goods::findOrFail($id);
         $goodShowcase->delete();
 
-        // Redirect back with a success message
         return redirect()->route('goods.showcase')->with('success', 'Berhasil Menghapus Data Barang di Etalase');
     }
 
@@ -46,7 +44,6 @@ class GoodShowcaseController extends Controller
     {
         $goodShowcase = Goods::findOrFail($id);
 
-        // Generate barcode
         $qrCode = new DNS2D();
         $qrCodeImage = $qrCode->getBarcodePNG($id, 'QRCODE');
 

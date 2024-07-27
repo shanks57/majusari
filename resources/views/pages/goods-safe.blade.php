@@ -3,18 +3,18 @@
 <x-layout>
     <x-header title="Brankas">
         <x-button-add url="{{ route('goods-types.index') }}">
-        Tambah Barang Brangkas
+            Tambah Barang Brangkas
         </x-button-add>
     </x-header>
     <div class="container py-4 mx-auto">
-        <div class="mb-4 relative w-full mx-auto">
+        <div class="relative w-full mx-auto mb-4">
             <input type="text" id="searchEtalase"
                 class="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#79799B]"
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-       <div class="overflow-hidden shadow-lg rounded-t-lg border border-gray-200">
-            <table id="etalaseTable" class="display min-w-full bg-white border border-gray-200">
+        <div class="overflow-hidden border border-gray-200 rounded-t-lg shadow-lg">
+            <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
@@ -62,15 +62,65 @@
                             </span>
                         </td>
                         <td class="px-6 py-3 text-center">
-                            <button class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded border border-[#DCDCDC]">
-                                <i class="ph ph-dots-three-vertical"></i></i> Opsi</button>
+                            <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
+                                <button id="hs-dropright" type="button"
+                                    class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]"
+                                    aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                                    <i class="ph ph-dots-three-outline-vertical"></i> Opsi
+                                </button>
+                                <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl p-3"
+                                    role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
+                                    <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
+                                        href="{{ route('goods-showcase.printBarcode', ['id' => $goodsafe->id]) }}"
+                                        target="_blank">
+                                        <i class="ph ph-barcode"></i>
+                                        Cetak Barcode
+                                    </a>
+                                    <button type="button"
+                                        class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 "
+                                        aria-haspopup="dialog" aria-expanded="false"
+                                        aria-controls="hs-image-goods-modal-{{ $goodsafe->id }}"
+                                        data-hs-overlay="#hs-image-goods-modal-{{ $goodsafe->id }}">
+                                        <i class="ph ph-images-square"></i>
+                                        Tampilkan Foto
+                                    </button>
+                                    <button type="button"
+                                        class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 "
+                                        aria-haspopup="dialog" aria-expanded="false"
+                                        aria-controls="hs-move-to-showcase-modal-{{ $goodsafe->id }}"
+                                        data-hs-overlay="#hs-move-to-showcase-modal-{{ $goodsafe->id }}">
+                                        <i class="ph ph-grid-nine"></i>
+                                        Pindahkan Ke Etalase
+                                    </button>
+                                    <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 "
+                                        href="#">
+                                        <i class="ph ph-pencil-line"></i>
+                                        Edit
+                                    </a>
+                                    <button type="button"
+                                        class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054]  w-full focus:outline-none focus:bg-gray-100"
+                                        aria-haspopup="dialog" aria-expanded="false"
+                                        aria-controls="hs-delete-modal-{{ $goodsafe->id }}"
+                                        data-hs-overlay="#hs-delete-modal-{{ $goodsafe->id }}">
+                                        <i class="ph ph-trash"></i>
+                                        Hapus
+                                    </button>
+                                </div>
+                            </div>
                         </td>
                     </tr>
+                    {{-- Modal show image goods --}}
+                    @include('components.modal.goods-safe.image-goods')
+                    {{-- Modal move to showcase --}}
+                    @include('components.modal.goods-safe.modal-move-to-showcase')
+                    {{-- Modal delete goods in safe --}}
+                    @include('components.modal.goods-safe.modal-delete')
                     @endforeach
                 </tbody>
             </table>
         </div>
-        <div class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
+        <div
+            class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
             <div id="dataTableInfo" class="px-4 py-3"></div>
             <div class="flex items-center space-x-8">
                 <div id="dataTableLength" class="flex items-center"></div>
@@ -82,3 +132,6 @@
         </div>
     </div>
 </x-layout>
+
+@include('components.modal.goods-safe.success-modal')
+@include('components.modal.goods-safe.error-modal')
