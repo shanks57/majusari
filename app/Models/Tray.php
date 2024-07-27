@@ -25,4 +25,14 @@ class Tray extends Model
     {
         return $this->belongsTo(Showcase::class);
     }
+
+    // Method untuk mendapatkan sisa kapasitas
+    public function getRemainingCapacityAttribute()
+    {
+        // Hitung jumlah goods saat ini di tray ini
+        $currentGoodsCount = $this->goods()->count();
+
+        // Hitung sisa kapasitas
+        return $this->capacity - $currentGoodsCount;
+    }
 }

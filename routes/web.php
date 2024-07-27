@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\GoodsController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EtalaseController;
@@ -28,9 +29,16 @@ Route::get('/master/customers', [CustomerController::class, 'index'])->name("mas
 
 Route::get('/master/employees', [UserController::class, 'index'])->name("master-employee");
 
-Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("/goods/showcase");
+Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("goods.showcase");
+Route::patch('/goods/{id}/move-to-safe', [GoodShowcaseController::class, 'moveToSafe'])
+    ->name('goods.moveToSafe');
+Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
+Route::get('/goods/{id}/print-barcode', [GoodShowcaseController::class, 'printBarcode'])->name('goods-showcase.printBarcode');
 
-Route::get('/goods/safe', [GoodSafeController::class, 'index'])->name("/goods/safe");
+
+Route::get('/goods/safe', [GoodSafeController::class, 'index'])->name("goods.safe");
+Route::patch('/goods/{id}/move-to-showcase', [GoodSafeController::class, 'moveToShowcase'])->name('goods.moveToShowcase');
+Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
 
 Route::get('/goods/trays', [GoodTrayController::class, 'index'])->name("/goods/tray");
 Route::get('/goods/trays/{id}', [GoodTrayController::class, 'find'])->name("find-goods-tray");

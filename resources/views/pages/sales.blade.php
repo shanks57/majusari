@@ -14,14 +14,14 @@
     </x-header>
 
     <div class="container py-4 mx-auto">
-        <div class="mb-4 relative w-full mx-auto">
+        <div class="relative w-full mx-auto mb-4">
             <input type="text" id="searchEtalase"
-                class="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#79799B]"
+                class="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#79799B] text-sm"
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-        <div class="overflow-hidden shadow-lg rounded-t-lg border border-gray-200">
-            <table id="etalaseTable" class="display min-w-full bg-white border border-gray-200">
+        <div class="overflow-hidden border border-gray-200 rounded-t-lg shadow-lg">
+            <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
@@ -29,9 +29,11 @@
                         </th>
                         <th class="py-3 px-6 text-left !font-normal">No</th>
                         <th class="py-3 px-6 text-left !font-normal">Tgl Penjualan</th>
+                        <th class="py-3 px-6 text-left !font-normal">Gambar</th>
                         <th class="py-3 px-6 text-left !font-normal">ID & Nama Barang</th>
                         <th class="py-3 px-6 text-left !font-normal">Berat & Kadar</th>
                         <th class="py-3 px-6 text-left !font-normal">Harga Jual & Nilai Tukar</th>
+                        <th class="py-3 px-6 text-left !font-normal">Pegawai</th>
                         <th class="py-3 px-6 text-center !font-normal"></th>
                     </tr>
                 </thead>
@@ -52,6 +54,8 @@
                         <td class="bg-[#F9F5FF]"></td>
                         <td class="bg-[#F9F5FF]"></td>
                         <td class="bg-[#F9F5FF]"></td>
+                        <td class="bg-[#F9F5FF]"></td>
+                        <td class="bg-[#F9F5FF]"></td>
                     </tr>
                     @php
                     $lastDate = $currentDate;
@@ -62,8 +66,26 @@
                             <input type="checkbox" class="select-row">
                         </td>
                         <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-3 text-left text-transparent">{{ $currentDate }}</td>
-                        <td class="px-6 py-3 text-left">{{ $sale->transaction->code }} - {{ $sale->goods->name }}</td>
+                        <td class="px-6 py-3 text-left text-transparent">
+                            {{ $currentDate }}
+                        </td>
+                        <td class="px-6 py-3 text-left">
+                            <button type="button" aria-haspopup="dialog" aria-expanded="false"
+                                aria-controls="hs-image-sale-modal-{{ $sale->id }}"
+                                data-hs-overlay="#hs-image-sale-modal-{{ $sale->id }}">
+                                <img src="storage/{{ $sale->goods->image }}" class="rounded-full size-10"
+                                    alt="{{ $sale->goods->name }}">
+                            </button>
+
+                            {{-- modal image sale --}}
+                            @include('components.modal.image-sale')
+                            
+                        </td>
+                        <td class="px-6 py-3 font-semibold leading-6 text-left">
+                            <span
+                                class="px-2 py-1 border boreder-[#D0D5DD] border-s rounded-full">{{ $sale->transaction->code }}
+                                - {{ $sale->goods->name }}</span>
+                        </td>
                         <td class="px-6 py-3 text-left">{{ $sale->goods->size }} <span
                                 class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $sale->goods->rate }}%</span>
                         </td>
@@ -71,9 +93,13 @@
                                 Bawah {{ 'Rp.' . number_format($sale->goods->bid_price, 0, ',', '.') }} <span
                                     class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $sale->goods->bid_rate }}%</span></span>
                         </td>
+                        <td class="px-6 py-3 text-left">
+                            {{ $sale->transaction->user->name }}
+                        </td>
                         <td class="px-6 py-3 text-center">
-                            <button class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded border border-[#DCDCDC]">
-                                <i class="ph ph-dots-three-vertical"></i> Opsi
+                            <button
+                                class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]">
+                                <i class="ph ph-dots-three-outline-vertical"></i> Opsi
                             </button>
                         </td>
                     </tr>
