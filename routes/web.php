@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\GoodsController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EtalaseController;
@@ -28,7 +29,13 @@ Route::get('/master/customers', [CustomerController::class, 'index'])->name("mas
 
 Route::get('/master/employees', [UserController::class, 'index'])->name("master-employee");
 
-Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("/goods/showcase");
+Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("goods.showcase");
+Route::patch('/goods/{id}/move-to-safe', [GoodShowcaseController::class, 'moveToSafe'])
+    ->name('goods.moveToSafe');
+Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
+// routes/web.php
+Route::get('/goods/{id}/print-barcode', [GoodShowcaseController::class, 'printBarcode'])->name('goods-showcase.printBarcode');
+
 
 Route::get('/goods/safe', [GoodSafeController::class, 'index'])->name("/goods/safe");
 

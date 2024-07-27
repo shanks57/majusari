@@ -48,6 +48,11 @@ class Goods extends Model
         return $this->belongsTo(Merk::class, 'merk_id');
     }
 
+    public function tray()
+    {
+        return $this->belongsTo(Tray::class, 'tray_id');
+    }
+
     public function showcase()
     {
         return $this->belongsTo(Showcase::class, 'tray_id', 'tray_id');
