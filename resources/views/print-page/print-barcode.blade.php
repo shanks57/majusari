@@ -14,9 +14,8 @@
             width: 80%;
             margin: 0 auto;
         }
-        .barcode img, .qrcode img {
-            width: 1cm;
-            height: 1cm;
+        .barcode img {
+            height: 10px;
         }
         .info {
             margin-top: 1px;
@@ -35,7 +34,7 @@
             <img src="data:image/png;base64,{{ $barcode }}" alt="{{ $goodShowcase->id }}">
         </div>
         <div class="info">
-            <span>{{ $goodShowcase->id }}</span>
+            <span>{{ $goodShowcase->code }}</span>
             <br>
             <span>{{ $goodShowcase->rate }} % | {{ $goodShowcase->size }} gr</span>
         </div>

@@ -34,11 +34,13 @@ class SafeStorageController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'code' => 'string|unique:goods,code|',
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
-            'rate' => 'required|integer',
-            'size' => 'required|string|max:255',
+            'rate' => 'required|numeric|min:0',
+            'size' => 'required|numeric|min:0',
+            'dimensions' => 'required|integer',
             'merk_id' => 'required|uuid|exists:merks,id',
             'ask_rate' => 'required|integer',
             'bid_rate' => 'required|integer',
@@ -47,6 +49,8 @@ class SafeStorageController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'type_id' => 'required|uuid|exists:goods_types,id',
             'tray_id' => 'nullable',
+            'date_entry' => 'required'
+
         ]);
 
         if ($validator->fails()) {
@@ -65,11 +69,13 @@ class SafeStorageController extends Controller
 
             $goods = Goods::create([
                 'id' => Str::uuid(),
+                'code' => $request->code,
                 'name' => $request->name,
                 'category' => $request->category,
                 'color' => $request->color,
                 'rate' => $request->rate,
                 'size' => $request->size,
+                'dimensions' => $request->dimensions,
                 'merk_id' => $request->merk_id,
                 'ask_rate' => $request->ask_rate,
                 'bid_rate' => $request->bid_rate,
@@ -78,7 +84,8 @@ class SafeStorageController extends Controller
                 'image' => $imagePath,
                 'type_id' => $request->type_id,
                 'tray_id' => null,
-                'safe_status' => true
+                'safe_status' => true,
+                'date_entry' => $request->date_entry,
             ]);
 
             return response()->json([
@@ -129,8 +136,9 @@ class SafeStorageController extends Controller
                 'name' => 'required|string|max:255',
                 'category' => 'required|string|max:255',
                 'color' => 'required|string|max:255',
-                'rate' => 'required|numeric',
-                'size' => 'required|numeric',
+                'rate' => 'required|numeric|min:0',
+                'size' => 'required|numeric|min:0',
+                'dimensions' => 'required|integer',
                 'merk_id' => 'required|uuid|exists:merks,id',
                 'ask_rate' => 'required|numeric',
                 'bid_rate' => 'required|numeric',
@@ -139,7 +147,7 @@ class SafeStorageController extends Controller
                 'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'type_id' => 'required|uuid|exists:goods_types,id',
                 'tray_id' => 'nullable',
-                'safe_status' => 'required|boolean'
+                'date_entry' => 'required'
             ]);
 
             // Cari data goods berdasarkan ID
@@ -159,6 +167,7 @@ class SafeStorageController extends Controller
                 'color' => $request->color,
                 'rate' => $request->rate,
                 'size' => $request->size,
+                'dimensions' => $request->dimensions,
                 'merk_id' => $request->merk_id,
                 'ask_rate' => $request->ask_rate,
                 'bid_rate' => $request->bid_rate,
@@ -166,7 +175,7 @@ class SafeStorageController extends Controller
                 'bid_price' => $request->bid_price,
                 'type_id' => $request->type_id,
                 'tray_id' => $request->tray_id,
-                'safe_status' => $request->safe_status,
+                'date_entry' => $request->date_entry,
             ]);
 
             // Proses untuk pengelolaan gambar jika ada perubahan

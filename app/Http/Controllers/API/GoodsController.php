@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Milon\Barcode\DNS1D;
 use Milon\Barcode\DNS2D;
 
 class GoodsController extends Controller
@@ -35,18 +36,22 @@ class GoodsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'code' => 'string|unique:goods,code|',
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
-            'rate' => 'required|integer',
-            'size' => 'required|string|max:255',
+            'rate' => 'required|numeric|min:0',
+            'size' => 'required|numeric|min:0',
+            'dimensions' => 'required|integer',
             'merk_id' => 'required|uuid|exists:merks,id',
             'ask_rate' => 'required|integer',
             'bid_rate' => 'required|integer',
             'ask_price' => 'required|integer',
             'bid_price' => 'required|integer',
+            'date_entry' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'type_id' => 'required|uuid|exists:goods_types,id',
             'tray_id' => 'required|uuid|exists:trays,id',
+            'position' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -65,11 +70,13 @@ class GoodsController extends Controller
 
             $goods = Goods::create([
                 'id' => Str::uuid(),
+                'code' => $request->code,
                 'name' => $request->name,
                 'category' => $request->category,
                 'color' => $request->color,
                 'rate' => $request->rate,
                 'size' => $request->size,
+                'dimensions' => $request->dimensions,
                 'merk_id' => $request->merk_id,
                 'ask_rate' => $request->ask_rate,
                 'bid_rate' => $request->bid_rate,
@@ -78,6 +85,8 @@ class GoodsController extends Controller
                 'image' => $imagePath,
                 'type_id' => $request->type_id,
                 'tray_id' => $request->tray_id,
+                'position' => $request->position,
+                'date_entry' => $request->date_entry,
                 'safe_status' => false
             ]);
 
@@ -129,8 +138,9 @@ class GoodsController extends Controller
                 'name' => 'required|string|max:255',
                 'category' => 'required|string|max:255',
                 'color' => 'required|string|max:255',
-                'rate' => 'required|numeric',
-                'size' => 'required|numeric',
+                'rate' => 'required|numeric|min:0',
+                'size' => 'required|numeric|min:0',
+                'dimensions' => 'required|integer',
                 'merk_id' => 'required|uuid|exists:merks,id',
                 'ask_rate' => 'required|numeric',
                 'bid_rate' => 'required|numeric',
@@ -139,7 +149,8 @@ class GoodsController extends Controller
                 'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'type_id' => 'required|uuid|exists:goods_types,id',
                 'tray_id' => 'nullable',
-                'safe_status' => 'required|boolean'
+                'position' => 'nullable',
+                'date_entry' => 'required'
             ]);
 
             // Cari data goods berdasarkan ID
@@ -159,6 +170,7 @@ class GoodsController extends Controller
                 'color' => $request->color,
                 'rate' => $request->rate,
                 'size' => $request->size,
+                'dimensions' => $request->dimensions,
                 'merk_id' => $request->merk_id,
                 'ask_rate' => $request->ask_rate,
                 'bid_rate' => $request->bid_rate,
@@ -166,7 +178,8 @@ class GoodsController extends Controller
                 'bid_price' => $request->bid_price,
                 'type_id' => $request->type_id,
                 'tray_id' => $request->tray_id,
-                'safe_status' => $request->safe_status,
+                'position' => $request->position,
+                'date_entry' => $request->date_entry,
             ]);
 
             // Proses untuk pengelolaan gambar jika ada perubahan
@@ -305,14 +318,14 @@ class GoodsController extends Controller
             }
 
             // Generate barcode menggunakan ID
-            $qrCode = new DNS2D();
-            $qrCodeImage = $qrCode->getBarcodePNG($goods->id, 'QRCODE');
+            $barCode = new DNS1D();
+            $barcodeImage = $barCode->getBarcodePNG($goods->code, 'C128');
             // $barcodePNG = base64_decode($barcodeImage);
 
             // Mengembalikan gambar barcode sebagai respons
             return response()->json([
                 'status' => 'success',
-                'barcode' => $qrCodeImage
+                'barcode' => $barcodeImage
             ], 200);
         } catch (\Exception $e) {
             // Mengembalikan respons jika terjadi kesalahan
