@@ -3,7 +3,7 @@
     <div class="container py-4 mx-auto">
         <a href="/" class="flex items-center gap-4 mb-4 text-gray-500 hover:text-gray-700">
             <i class="text-2xl ph ph-caret-left"></i>
-            <h1 class="text-2xl ">Etalase {{ $tray->showcase->code }}</h1>
+            <h1 class="text-2xl ">Etalase {{ $tray->showcase->name }}</h1>
         </a>
 
 
@@ -29,7 +29,7 @@
             @foreach ($goods as $good)
                 <div class="p-4 transition-shadow bg-white border cursor-pointer hover:shadow-md">
                     <div class="flex items-center justify-between mb-3">
-                        <p class="text-lg font-semibold">{{ $good->name }}</p>
+                        <p class="text-lg font-semibold">{{ $good->name }}100{{ $loop->iteration }}</p>
                         <i class="ph ph-caret-right"></i>
                     </div>
                     <div class="flex justify-between">

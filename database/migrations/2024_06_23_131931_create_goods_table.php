@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('goods', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('code')->unique();
             $table->string('name');
             $table->string('category');
             $table->string('color');
-            $table->integer('rate');
-            $table->string('size');
+            $table->float('rate', 8, 3);
+            $table->float('size', 8, 3);
+            $table->string('dimensions');
             $table->uuid('merk_id');
             $table->integer('ask_rate');
             $table->integer('bid_rate');
@@ -26,8 +28,10 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->uuid('type_id');
             $table->uuid('tray_id')->nullable();
+            $table->string('position')->nullable();
             $table->boolean('availability')->default(true);
             $table->boolean('safe_status');
+            $table->date('date_entry');
             $table->timestamps();
 
             $table->foreign('merk_id')->references('id')->on('merks')->onDelete('cascade');

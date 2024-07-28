@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Goods;
 use Illuminate\Http\Request;
-use Milon\Barcode\DNS2D;
+use Milon\Barcode\DNS1D;
+
 
 class GoodShowcaseController extends Controller
 {
@@ -44,12 +45,16 @@ class GoodShowcaseController extends Controller
     {
         $goodShowcase = Goods::findOrFail($id);
 
-        $qrCode = new DNS2D();
-        $qrCodeImage = $qrCode->getBarcodePNG($id, 'QRCODE');
+        // Membuat instance dari DNS1D untuk barcode 1D
+        $barcodeGenerator = new DNS1D();
+        
+        // Menghasilkan barcode dalam format C39 (Code 39)
+        $barcodeImage = $barcodeGenerator->getBarcodePNG($goodShowcase->code, 'C128');
 
         return view('print-page.print-barcode', [
             'goodShowcase' => $goodShowcase,
-            'barcode' => $qrCodeImage,
+            'barcode' => $barcodeImage,
         ]);
     }
+
 }

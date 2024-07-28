@@ -16,11 +16,13 @@ class Goods extends Model
 
     protected $fillable = [
         'id',
+        'code',
         'name',
         'category',
         'color',
         'rate',
         'size',
+        'dimensions',
         'merk_id',
         'ask_rate',
         'bid_rate',
@@ -29,8 +31,10 @@ class Goods extends Model
         'image',
         'type_id',
         'tray_id',
+        'position',
         'availability',
-        'safe_status'
+        'safe_status',
+        'date_entry'
     ];
 
     public function transaction()
