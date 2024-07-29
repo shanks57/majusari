@@ -11,7 +11,7 @@ class GoodsTypeController extends Controller
     public function index()
     {
         $title = 'Jenis Barang';
-        $types = GoodsType::all();
+        $types = GoodsType::orderBy('updated_at', 'desc')->get();
         return view('pages.master-types', compact('title','types'));
     }
 

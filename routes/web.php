@@ -20,12 +20,17 @@ Route::get('/master/showcases', [EtalaseController::class, 'index'])->name("mast
 
 // master type
 Route::get('/master/types', [GoodsTypeController::class, 'index'])->name('master.types');
-Route::post('/goods-types/store', [GoodsTypeController::class, 'store'])->name('master.types.store');
-Route::put('/goods-types/{id}/update', [GoodsTypeController::class, 'update'])->name('master.types.update');
-Route::delete('/goods-types/{id}', [GoodsTypeController::class, 'destroy'])->name('master.destroy');
-// end route master tipe
+Route::post('/master-types/store', [GoodsTypeController::class, 'store'])->name('master.types.store');
+Route::put('/master-types/{id}/update', [GoodsTypeController::class, 'update'])->name('master.types.update');
+Route::delete('/master-types/{id}', [GoodsTypeController::class, 'destroy'])->name('master.types.destroy');
+// end route master type
 
-Route::get('/master/brands', [BrandController::class, 'index'])->name("master-brand");
+// master merk/brand
+Route::get('/master/brands', [BrandController::class, 'index'])->name('master-brands');
+Route::post('/master-brands/store', [BrandController::class, 'store'])->name('master.brands.store');
+Route::put('/master-brands/{id}/update', [BrandController::class, 'update'])->name('master.brands.update');
+Route::delete('/master-brands/{id}', [BrandController::class, 'destroy'])->name('master.brands.destroy');
+// end route master merk/brand
 
 Route::get('/master/customers', [CustomerController::class, 'index'])->name("master-customer");
 

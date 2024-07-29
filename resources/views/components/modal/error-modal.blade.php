@@ -12,7 +12,7 @@
             </svg>
 
             <div class="my-4">
-                <p class="text-gray-700">{{ session('error') }}</p>
+                <p class="text-center text-gray-700">{{ session('error') }}</p>
             </div>
             <button @click="open = false" type="button"
                 class="flex items-center px-4 py-3 gap-1.5 text-sm font-medium rounded-lg bg-white text-[#606060] border border-[#D0D5DD]">
