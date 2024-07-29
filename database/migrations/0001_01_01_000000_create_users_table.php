@@ -16,10 +16,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->unique();
             $table->string('phone')->nullable();
-            $table->string('debt_receipt')->nullable();
+            $table->integer('debt_receipt')->nullable();
+            $table->integer('wages')->nullable();
             $table->text('address')->nullable();
             $table->boolean('status')->default(true);
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

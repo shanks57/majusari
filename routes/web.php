@@ -18,16 +18,27 @@ Route::get('/', function () {
 
 Route::get('/master/showcases', [EtalaseController::class, 'index'])->name("master-showcase");
 
-Route::get('/master/types', [GoodsTypeController::class, 'index']);
-Route::post('/goods-types/store', [GoodsTypeController::class, 'store'])->name('goods-types.store');
-Route::put('/goods-types/update/{id}', [GoodsTypeController::class, 'update']);
+// master type
+Route::get('/master/types', [GoodsTypeController::class, 'index'])->name('master.types');
+Route::post('/master-types/store', [GoodsTypeController::class, 'store'])->name('master.types.store');
+Route::put('/master-types/{id}/update', [GoodsTypeController::class, 'update'])->name('master.types.update');
+Route::delete('/master-types/{id}', [GoodsTypeController::class, 'destroy'])->name('master.types.destroy');
+// end route master type
 
-
-Route::get('/master/brands', [BrandController::class, 'index'])->name("master-brand");
+// master merk/brand
+Route::get('/master/brands', [BrandController::class, 'index'])->name('master-brands');
+Route::post('/master-brands/store', [BrandController::class, 'store'])->name('master.brands.store');
+Route::put('/master-brands/{id}/update', [BrandController::class, 'update'])->name('master.brands.update');
+Route::delete('/master-brands/{id}', [BrandController::class, 'destroy'])->name('master.brands.destroy');
+// end route master merk/brand
 
 Route::get('/master/customers', [CustomerController::class, 'index'])->name("master-customer");
 
-Route::get('/master/employees', [UserController::class, 'index'])->name("master-employee");
+// route master emplyee
+Route::get('/master/employees', [UserController::class, 'index'])->name("master.employees");
+Route::post('/master-employees/store', [UserController::class, 'store'])->name('master.employees.store');
+Route::put('/master-employees/{id}/update', [UserController::class, 'update'])->name('master.employees.update');
+// end route master emplyee
 
 Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("goods.showcase");
 Route::patch('/goods/{id}/move-to-safe', [GoodShowcaseController::class, 'moveToSafe'])

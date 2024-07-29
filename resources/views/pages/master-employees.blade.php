@@ -3,18 +3,18 @@
 <x-layout>
     <x-header title="Pegawai">
         <x-button-add url="{{ route('goods-types.index') }}">
-        Tambah Pegawai Baru
+            Tambah Pegawai Baru
         </x-button-add>
     </x-header>
     <div class="container py-4 mx-auto">
-       <div class="mb-4 relative w-full mx-auto">
+        <div class="relative w-full mx-auto mb-4">
             <input type="text" id="searchEtalase"
                 class="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#79799B]"
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-        <div class="overflow-hidden shadow-lg rounded-t-lg border border-gray-200">
-            <table id="etalaseTable" class="display min-w-full bg-white border border-gray-200">
+        <div class="overflow-hidden border border-gray-200 rounded-t-lg shadow-lg">
+            <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
@@ -40,25 +40,34 @@
                         <td class="px-6 py-3 text-left">{{ $employee->username }}</td>
                         <td class="px-6 py-3 text-left">{{ $employee->name }}</td>
                         <td class="px-6 py-3 text-left">{{ $employee->phone }}</td>
-                        <td class="px-6 py-3 text-left">{{ $employee->debt_receipt }}</td>
+                        <td class="px-6 py-3 text-left">
+                            {{ $employee->debt_receipt == 0 ? 'Tidak Ada' : 'Rp.' . number_format($employee->debt_receipt, 0, ',', '.') }}
+                        </td>
                         <td class="px-6 py-3 text-left">{{ $employee->address }}</td>
                         <td class="px-6 py-3 text-left">
                             @if ($employee->status == 1)
-                                <span class="text-[#12B76A]">Aktif</span>
+                            <span class="text-[#12B76A]">Aktif</span>
                             @else
-                                <span class="text-[#F04438]">Tidak Aktif</span>
+                            <span class="text-[#F04438]">Tidak Aktif</span>
                             @endif
                         </td>
                         <td class="px-6 py-3 text-center">
-                            <button class="px-3 py-1 text-white bg-purple-500 rounded">
+                            <button class="px-3 py-1 text-white bg-[#344054] rounded-lg">
+                                <i class="ph ph-key"></i> Set Password</button>
+                            <button class="px-3 py-1 text-white bg-purple-500 rounded-lg"
+                            aria-haspopup="dialog"
+                                aria-expanded="false" aria-controls="hs-edit-modal-{{ $employee->id }}"
+                                data-hs-overlay="#hs-edit-modal-{{ $employee->id }}">
                                 <i class="ph ph-pencil-line"></i> Edit</button>
                         </td>
                     </tr>
+                    @include('components.modal.master-employee.edit')
                     @endforeach
                 </tbody>
             </table>
         </div>
-        <div class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
+        <div
+            class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
             <div id="dataTableInfo" class="px-4 py-3"></div>
             <div class="flex items-center space-x-8">
                 <div id="dataTableLength" class="flex items-center"></div>
@@ -70,3 +79,9 @@
         </div>
     </div>
 </x-layout>
+
+@include('components.modal.master-employee.add')
+@include('components.modal.error-modal')
+@include('components.modal.master-employee.add-success-modal')
+@include('components.modal.master-employee.edit-success-modal')
+
