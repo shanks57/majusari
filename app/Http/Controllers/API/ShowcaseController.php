@@ -14,7 +14,6 @@ class ShowcaseController extends Controller
     {
         try {
             $showcases = Showcase::with('goodsType')
-                ->where('status', 'showcase')
                 ->orderBy('code', 'asc')
                 ->paginate();
 
