@@ -34,7 +34,11 @@ Route::delete('/master-brands/{id}', [BrandController::class, 'destroy'])->name(
 
 Route::get('/master/customers', [CustomerController::class, 'index'])->name("master-customer");
 
-Route::get('/master/employees', [UserController::class, 'index'])->name("master-employee");
+// route master emplyee
+Route::get('/master/employees', [UserController::class, 'index'])->name("master.employees");
+Route::post('/master-employees/store', [UserController::class, 'store'])->name('master.employees.store');
+Route::put('/master-employees/{id}/update', [UserController::class, 'update'])->name('master.employees.update');
+// end route master emplyee
 
 Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("goods.showcase");
 Route::patch('/goods/{id}/move-to-safe', [GoodShowcaseController::class, 'moveToSafe'])
