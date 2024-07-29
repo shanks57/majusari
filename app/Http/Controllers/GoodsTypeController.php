@@ -19,18 +19,23 @@ class GoodsTypeController extends Controller
     {
         $request->validate([
             'jenisBarang' => 'required|string|max:255',
-            'tambahanBiaya' => 'required|numeric',
+            'tambahanBiaya' => 'required|numeric|min:0',
         ]);
 
-        $goodsType = new GoodsType();
-        $goodsType->id = (string) Str::uuid();
-        $goodsType->name = $request->input('jenisBarang');
-        $goodsType->additional_cost = $request->input('tambahanBiaya');
-        $goodsType->status = true; // or set based on your logic
-        $goodsType->slug = Str::slug($goodsType->name);
-        $goodsType->save();
+        try {
+            $goodsType = new GoodsType();
+            $goodsType->id = (string) Str::uuid();
+            $goodsType->name = $request->input('jenisBarang');
+            $goodsType->additional_cost = $request->input('tambahanBiaya');
+            $goodsType->status = true;
+            $goodsType->slug = Str::slug($goodsType->name);
+            
+            $goodsType->save();
 
-        return response()->json(['message' => 'Data successfully saved']);
+            return redirect()->route('master.types')->with('success', 'Berhasil Menambah Data Tipe Barang');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
+        }
     }
 
     public function update(Request $request, $id)
@@ -38,15 +43,40 @@ class GoodsTypeController extends Controller
         $request->validate([
             'jenisBarang' => 'required|string|max:255',
             'tambahanBiaya' => 'required|numeric|min:0',
+            'status' => 'boolean',
         ]);
 
-        $goodsType = GoodsType::findOrFail($id);
-        $goodsType->update([
-            'name' => $request->jenisBarang,
-            'additional_cost' => $request->tambahanBiaya,
-        ]);
+        try {
+            $goodsType = GoodsType::findOrFail($id);
+            
+            $goodsType->name = $request->input('jenisBarang');
+            $goodsType->additional_cost = $request->input('tambahanBiaya');
+            $goodsType->status = $request->boolean('status');
+            $goodsType->slug = Str::slug($goodsType->name);
 
-        return response()->json(['success' => true]);
+            $goodsType->save();
+
+            return redirect()->route('master.types')->with('success', 'Berhasil Memperbarui Data Tipe Barang');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->route('master.types')->withErrors(['error' => 'Data Tipe Barang tidak ditemukan.']);
+        } catch (\Exception $e) {
+
+            return redirect()->back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui data. Silakan coba lagi.']);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $type = GoodsType::findOrFail($id);
+
+            $type->delete();
+
+            return redirect()->route('master.types')->with('success', 'Data berhasil dihapus.');
+        } catch (\Exception $e) {
+
+            return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan saat menghapus data. Silakan coba lagi.']);
+        }
     }
 
 }

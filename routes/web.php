@@ -18,10 +18,12 @@ Route::get('/', function () {
 
 Route::get('/master/showcases', [EtalaseController::class, 'index'])->name("master-showcase");
 
-Route::get('/master/types', [GoodsTypeController::class, 'index']);
-Route::post('/goods-types/store', [GoodsTypeController::class, 'store'])->name('goods-types.store');
-Route::put('/goods-types/update/{id}', [GoodsTypeController::class, 'update']);
-
+// master type
+Route::get('/master/types', [GoodsTypeController::class, 'index'])->name('master.types');
+Route::post('/goods-types/store', [GoodsTypeController::class, 'store'])->name('master.types.store');
+Route::put('/goods-types/{id}/update', [GoodsTypeController::class, 'update'])->name('master.types.update');
+Route::delete('/goods-types/{id}', [GoodsTypeController::class, 'destroy'])->name('master.destroy');
+// end route master tipe
 
 Route::get('/master/brands', [BrandController::class, 'index'])->name("master-brand");
 
