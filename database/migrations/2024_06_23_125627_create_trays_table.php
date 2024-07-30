@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('capacity');
             $table->uuid('showcase_id');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('showcase_id')->references('id')->on('showcases')->onDelete('cascade');
         });

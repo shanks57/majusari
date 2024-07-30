@@ -52,16 +52,22 @@
                             @endif
                         </td>
                         <td class="px-6 py-3 text-center">
-                            <button class="px-3 py-1 text-white bg-[#344054] rounded-lg">
-                                <i class="ph ph-key"></i> Set Password</button>
-                            <button class="px-3 py-1 text-white bg-purple-500 rounded-lg"
-                            aria-haspopup="dialog"
+                            <button <button x-data="{ passwordIsNull: {{ $employee->password ? 'false' : 'true' }} }"
+                                :data-hs-overlay="passwordIsNull ? '#hs-set-password-modal-{{ $employee->id }}' : '#hs-alert-set-password-modal-{{ $employee->id }}'"
+                                class="px-3 py-1 text-white bg-[#344054] rounded-lg" aria-haspopup="dialog"
+                                aria-expanded="false"
+                                :aria-controls="passwordIsNull ? 'hs-set-password-modal-{{ $employee->id }}' : 'hs-alert-set-password-modal-{{ $employee->id }}'">
+                                <i class="ph ph-key"></i> Set Password
+                            </button>
+                            <button class="px-3 py-1 text-white bg-purple-500 rounded-lg" aria-haspopup="dialog"
                                 aria-expanded="false" aria-controls="hs-edit-modal-{{ $employee->id }}"
                                 data-hs-overlay="#hs-edit-modal-{{ $employee->id }}">
                                 <i class="ph ph-pencil-line"></i> Edit</button>
                         </td>
                     </tr>
                     @include('components.modal.master-employee.edit')
+                    @include('components.modal.master-employee.set-password')
+                    @include('components.modal.master-employee.alert-set-password')
                     @endforeach
                 </tbody>
             </table>
@@ -84,4 +90,3 @@
 @include('components.modal.error-modal')
 @include('components.modal.master-employee.add-success-modal')
 @include('components.modal.master-employee.edit-success-modal')
-
