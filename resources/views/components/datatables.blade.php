@@ -56,7 +56,7 @@
                 },
                 "initComplete": function(settings, json) {
                     // Tambahkan class Tailwind ke dropdown
-                    $('.dataTables_length select').addClass('form-select p-1 text-sm rounded border border-[#EBEBEF] ');
+                    $('.dataTables_length select').addClass('py-2 px-2.5 pe-6 border-gray-200 rounded-lg text-xs disabled:opacity-50 disabled:pointer-events-none ');
                 }
             });
 

@@ -31,6 +31,7 @@ class BrandController extends Controller
             $merk->slug = Str::slug($merk->name);
             
             $merk->save();
+            
             session()->flash('success', 'Berhasil Menambah Data Merek Barang');
             return redirect()->route('master.brands');
            

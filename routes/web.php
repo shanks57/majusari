@@ -16,7 +16,10 @@ Route::get('/', function () {
     return view('pages.dashboard');
 });
 
-Route::get('/master/showcases', [EtalaseController::class, 'index'])->name("master-showcase");
+Route::get('/master/showcases', [EtalaseController::class, 'index'])->name("master.showcase");
+Route::post('/master-showcase/store', [EtalaseController::class, 'store'])->name('master.showcase.store');
+Route::post('/master/showcase/add-trays', [EtalaseController::class, 'addTrays'])->name('master.showcase.add-trays');
+Route::delete('/master-showcase/{id}', [EtalaseController::class, 'destroy'])->name('master.showcase.destroy');
 
 // master type
 Route::get('/master/types', [GoodsTypeController::class, 'index'])->name('master.types');
