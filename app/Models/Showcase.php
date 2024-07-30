@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Showcase extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes; 
 
     protected $table = 'showcases';
 
@@ -15,6 +16,7 @@ class Showcase extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $dates = ['deleted_at']; 
     protected $fillable = ['id', 'code', 'name', 'type_id'];
 
     public function goodsType()

@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GoodsType extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'goods_types';
 
@@ -16,6 +17,8 @@ class GoodsType extends Model
     protected $keyType = 'string';
 
     protected $fillable = ['id', 'name', 'additional_cost', 'status', 'slug'];
+
+    protected $dates = ['deleted_at'];
 
     public function goods()
     {

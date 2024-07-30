@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->uuid('type_id');
             $table->timestamps();
-
+            $table->softDeletes();
             $table->foreign('type_id')->references('id')->on('goods_types')->onDelete('cascade');
         });
     }

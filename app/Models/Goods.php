@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Goods extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     
     protected $table = 'goods';
     protected $primaryKey = 'id';
@@ -36,6 +37,8 @@ class Goods extends Model
         'safe_status',
         'date_entry'
     ];
+
+    protected $dates = ['deleted_at'];
 
     public function transaction()
     {

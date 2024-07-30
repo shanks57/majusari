@@ -38,6 +38,8 @@ Route::get('/master/customers', [CustomerController::class, 'index'])->name("mas
 Route::get('/master/employees', [UserController::class, 'index'])->name("master.employees");
 Route::post('/master-employees/store', [UserController::class, 'store'])->name('master.employees.store');
 Route::put('/master-employees/{id}/update', [UserController::class, 'update'])->name('master.employees.update');
+Route::put('/master-employees/{id}/set-password', [UserController::class, 'setPassword'])->name('master.employees.set-password');
+Route::put('/employees/{id}/reset-password', [UserController::class, 'resetPassword'])->name('employees.reset-password');
 // end route master emplyee
 
 Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("goods.showcase");

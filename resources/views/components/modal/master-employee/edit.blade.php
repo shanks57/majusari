@@ -87,7 +87,7 @@
                             <label for="status" class="text-sm text-gray-500 me-3">Tidak Aktif</label>
                             <input type="hidden" name="status" value="0">
                             <input type="checkbox" id="status" name="status" x-model="form.status"
-                                :value="form.status ? 1 : 0" class="relative w-[3.25rem] h-7 p-px bg-gray-100 border-transparent text-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:ring-blue-600 disabled:opacity-50 disabled:pointer-events-none checked:bg-none checked:text-blue-600 checked:border-blue-600 focus:checked:border-blue-600 
+                                :value="form.status ? 1 : 0" class="relative w-[3.25rem] h-7 p-px bg-gray-100 border-transparent text-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:ring-[#7F56D9] disabled:opacity-50 disabled:pointer-events-none checked:bg-none checked:text-[#7F56D9] checked:border-[#7F56D9] focus:checked:border-[#7F56D9] 
                           before:inline-block before:size-6 before:bg-white checked:before:bg-blue-200 before:translate-x-0 checked:before:translate-x-full before:rounded-full before:shadow before:transform before:ring-0 before:transition before:ease-in-out before:duration-200">
                             <label for="status" class="text-sm text-gray-500 ms-3">Aktif</label>
                         </div>

@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
@@ -83,4 +86,49 @@ class UserController extends Controller
             return redirect()->back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui data. Silakan coba lagi.']);
         }
     }
+
+    public function setPassword(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'password' => 'required|string|min:8|confirmed',
+                'status' => 'required|boolean',
+            ]);
+
+            $employee = User::findOrFail($id);
+
+            $employee->password = Hash::make($request->input('password'));
+            $employee->status = $request->input('status') ? 1 : 0;
+            $employee->save();
+
+            return redirect()->route('master.employees')->with('success-edit', 'Password pegawai berhasil diperbarui');
+            
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('master.employees')->with('error', 'Pegawai tidak ditemukan.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->validator)->withInput();
+        } catch (Exception $e) {
+            return redirect()->route('master.employees')->with('error', 'Terjadi kesalahan saat memperbarui password.');
+        }
+    }
+
+    public function resetPassword($id)
+    {
+        // Fetch the employee by ID
+        $employee = User::findOrFail($id);
+
+        // Set the password to null
+        $employee->password = null;
+
+        // Save the changes
+        $employee->save();
+
+        // Set session variable to trigger modal
+        session()->flash('reset_success', $employee->id);
+
+
+        // Redirect back to the previous page
+        return redirect()->back();
+    }
+
 }

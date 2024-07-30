@@ -33,6 +33,7 @@ return new class extends Migration
             $table->boolean('safe_status');
             $table->date('date_entry');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('merk_id')->references('id')->on('merks')->onDelete('cascade');
             $table->foreign('type_id')->references('id')->on('goods_types')->onDelete('cascade');
