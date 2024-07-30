@@ -33,4 +33,14 @@ class Showcase extends Model
     {
         return $this->hasMany(Tray::class);
     }
+
+    protected static function boot()
+    {
+       parent::boot();
+
+       static::deleting(function ($showcase) {
+           // Menghapus tray yang terkait
+           $showcase->trays()->delete();
+       });
+    }
 }
