@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\GoodsController;
+use App\Http\Controllers\API\GoodsController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EtalaseController;

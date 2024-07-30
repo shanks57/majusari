@@ -4,15 +4,15 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\DashboardController;
-use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\API\GoldRateController;
-use App\Http\Controllers\Api\GoodsController;
-use App\Http\Controllers\Api\GoodsTypeController;
-use App\Http\Controllers\Api\MerkController;
+use App\Http\Controllers\API\GoodsController;
+use App\Http\Controllers\API\GoodsTypeController;
+use App\Http\Controllers\API\MerkController;
 use App\Http\Controllers\API\SafeStorageController;
-use App\Http\Controllers\Api\ShowcaseController;
+use App\Http\Controllers\API\ShowcaseController;
 use App\Http\Controllers\API\TransactionController;
-use App\Http\Controllers\Api\TrayController;
+use App\Http\Controllers\API\TrayController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,14 +22,14 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/not-authorized', function (Request $request) {
     return response()->json([
-         "error" => true,
+        "error" => true,
         "message" => "Unauthorized. Please log in to access this resource.",
         "code" => 401
     ], 401);
 })->name('not.authorized');
 
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     // auth
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -88,5 +88,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('dashboard/stats', [DashboardController::class, 'getStats']);
     Route::get('dashboard/sales-summary', [DashboardController::class, 'getSalesSummary']);
     Route::get('dashboard/goods-summary', [DashboardController::class, 'getGoodsSummary']);
-
 });
