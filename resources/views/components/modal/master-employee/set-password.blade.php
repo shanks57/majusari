@@ -30,10 +30,10 @@
                         <!-- Toggle Password Input -->
                         <div class="relative w-full mb-4">
                             <label for="password" class="block mb-2 text-sm text-[#344054]">Set Password</label>
-                            <input id="hs-toggle-password" type="password" name="password" x-model="form.password"
+                            <input id="hs-toggle-password-{{ $employee->id }}" type="password" name="password" x-model="form.password"
                                 class="block w-full py-3 text-base border-gray-200 rounded-lg ps-4 pe-10 "
                                 placeholder="Masukkan Password Baru" required>
-                            <button type="button" data-hs-toggle-password='{"target": "#hs-toggle-password"}'
+                            <button type="button" data-hs-toggle-password='{"target": "#hs-toggle-password-{{ $employee->id }}"}'
                                 class="absolute inset-y-0 z-20 flex items-center px-3 pt-4 mt-4 text-gray-400 cursor-pointer end-0 rounded-e-md focus:outline-none focus:text-blue-600 dark:text-neutral-600 dark:focus:text-blue-500">
                                 <svg class="shrink-0 size-4" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -59,12 +59,12 @@
                         <div class="relative w-full mb-4">
                             <label for="password_confirmation" class="block text-sm text-[#344054]">Konfirmasi
                                 Password</label>
-                            <input id="hs-toggle-password-confirmation" type="password" name="password_confirmation"
+                            <input id="hs-toggle-password-confirmation-{{ $employee->id }}" type="password" name="password_confirmation"
                                 x-model="form.password_confirmation"
                                 class="block w-full py-3 text-base border-gray-200 rounded-lg ps-4 pe-10"
                                 placeholder="Konfirmasi Password Baru" required>
                             <button type="button"
-                                data-hs-toggle-password='{"target": "#hs-toggle-password-confirmation"}'
+                                data-hs-toggle-password='{"target": "#hs-toggle-password-confirmation-{{ $employee->id }}"}'
                                 class="absolute inset-y-0 z-20 flex items-center px-3 pt-3 mt-3 text-gray-400 cursor-pointer end-0 rounded-e-md focus:outline-none focus:text-blue-600 dark:text-neutral-600 dark:focus:text-blue-500">
                                 <svg class="shrink-0 size-4" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"

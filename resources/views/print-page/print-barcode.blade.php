@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toko Emas Majusari -     Cetak Barcode</title>
+    <title>Toko Emas Majusari - Cetak Barcode</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
         }
+
         .print-section {
             width: 80%;
             margin: 0 auto;
         }
+
         .barcode img {
             height: 10px;
         }
+
         .info {
             margin-top: 1px;
             font-size: 10px;
         }
+
     </style>
-    <script>
-        window.onload = function() {
-            window.print();
+    <script type="text/javascript">
+        window.print();
+        window.onafterprint = back;
+
+        function back() {
+            window.history.back();
         }
     </script>
 </head>
+
 <body>
     <div class="print-section">
         <div class="barcode">
@@ -40,4 +49,5 @@
         </div>
     </div>
 </body>
+
 </html>
