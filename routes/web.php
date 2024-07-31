@@ -46,6 +46,8 @@ Route::put('/employees/{id}/reset-password', [UserController::class, 'resetPassw
 // end route master emplyee
 
 Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("goods.showcase");
+Route::post('/goods/showcases-store', [GoodShowcaseController::class, 'store'])->name('goods.showcaseStore');
+Route::patch('/goods-showcase/{id}/update', [GoodShowcaseController::class, 'update'])->name('goods.showcaseUpdate');
 Route::patch('/goods/{id}/move-to-safe', [GoodShowcaseController::class, 'moveToSafe'])
     ->name('goods.moveToSafe');
 Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
@@ -53,6 +55,8 @@ Route::get('/goods/{id}/print-barcode', [GoodShowcaseController::class, 'printBa
 
 
 Route::get('/goods/safe', [GoodSafeController::class, 'index'])->name("goods.safe");
+Route::post('/goods/safe-store', [GoodSafeController::class, 'store'])->name('goods.safeStore');
+Route::patch('/goods-safe/{id}/update', [GoodSafeController::class, 'update'])->name('goods.safeUpdate');
 Route::patch('/goods/{id}/move-to-showcase', [GoodSafeController::class, 'moveToShowcase'])->name('goods.moveToShowcase');
 Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
 

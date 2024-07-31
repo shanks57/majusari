@@ -92,11 +92,13 @@
                                         <i class="ph ph-grid-nine"></i>
                                         Pindahkan Ke Etalase
                                     </button>
-                                    <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 "
-                                        href="#">
+                                    <button type="button" class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 w-full"
+                                        aria-haspopup="dialog" aria-expanded="false"
+                                        aria-controls="hs-edit-modal-{{ $goodsafe->id }}"
+                                        data-hs-overlay="#hs-edit-modal-{{ $goodsafe->id }}">
                                         <i class="ph ph-pencil-line"></i>
                                         Edit
-                                    </a>
+                                    </button>
                                     <button type="button"
                                         class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054]  w-full focus:outline-none focus:bg-gray-100"
                                         aria-haspopup="dialog" aria-expanded="false"
@@ -113,6 +115,8 @@
                     @include('components.modal.goods-safe.image-goods')
                     {{-- Modal move to showcase --}}
                     @include('components.modal.goods-safe.modal-move-to-showcase')
+                    {{-- Modal Edit --}}
+                    @include('components.modal.goods-safe.edit')
                     {{-- Modal delete goods in safe --}}
                     @include('components.modal.goods-safe.modal-delete')
                     @endforeach
@@ -133,5 +137,53 @@
     </div>
 </x-layout>
 
+@include('components.modal.goods-safe.add')
 @include('components.modal.goods-safe.success-modal')
 @include('components.modal.goods-safe.error-modal')
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('imageUploader', (existingImageUrl) => ({
+            imageUrl: existingImageUrl || '',
+            dragging: false,
+            selectedFile: null,
+
+            handleDrop(event) {
+                this.dragging = false;
+                const file = event.dataTransfer.files[0];
+                if (file) {
+                    this.readFile(file);
+                    this.selectedFile = file;
+                    this.updateFileInput(file);
+                }
+            },
+
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.readFile(file);
+                    this.selectedFile = file;
+                }
+            },
+
+            updateFileInput(file) {
+                // Create a new DataTransfer object to set the files
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                this.$refs.fileInput.files = dataTransfer.files;
+            },
+
+            readFile(file) {
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.imageUrl = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload a valid image file.');
+                }
+            }
+        }));
+    });
+</script>

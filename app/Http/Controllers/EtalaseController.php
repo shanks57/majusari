@@ -12,9 +12,9 @@ class EtalaseController extends Controller
 {
     public function index()
     {
-        $etalases = Showcase::withCount('trays') // Hitung jumlah tray
+        $etalases = Showcase::withCount('trays')
         ->with(['trays' => function($query) {
-            $query->orderBy('created_at', 'desc'); // Atur urutan jika diperlukan
+            $query->orderBy('created_at', 'desc');
         }])
         ->orderBy('updated_at', 'desc')
         ->get();

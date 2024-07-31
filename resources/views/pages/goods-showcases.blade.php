@@ -82,7 +82,7 @@
                                 <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl p-3"
                                     role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
                                     <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
-                                        href="{{ route('goods-showcase.printBarcode', ['id' => $goodShowcase->id]) }}" target="_blank">
+                                        href="{{ route('goods-showcase.printBarcode', ['id' => $goodShowcase->id]) }}">
                                         <i class="ph ph-barcode"></i>
                                         Cetak Barcode
                                     </a>
@@ -94,11 +94,13 @@
                                         <i class="ph ph-vault"></i>
                                         Pindahkan Ke Brankas
                                     </button>
-                                    <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 "
-                                        href="#">
+                                    <button type="button" class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 w-full"
+                                        aria-haspopup="dialog" aria-expanded="false"
+                                        aria-controls="hs-edit-modal-{{ $goodShowcase->id }}"
+                                        data-hs-overlay="#hs-edit-modal-{{ $goodShowcase->id }}">
                                         <i class="ph ph-pencil-line"></i>
                                         Edit
-                                    </a>
+                                    </button>
                                     <button type="button"
                                         class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054]  w-full focus:outline-none focus:bg-gray-100"
                                         aria-haspopup="dialog" aria-expanded="false"
@@ -115,6 +117,7 @@
                     {{-- modal pindah ke brankas --}}
                     @include('components.modal.goods-showcase.modal-move-to-safe')
                     {{-- modal edit --}}
+                    @include('components.modal.goods-showcase.edit')
                     {{-- modal hapus --}}
                     @include('components.modal.goods-showcase.modal-delete')
                     @endforeach
@@ -136,5 +139,53 @@
     </div>
 </x-layout>
 
+@include('components.modal.goods-showcase.add')
 @include('components.modal.goods-showcase.success-modal')
 @include('components.modal.goods-showcase.error-modal')
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('imageUploader', (existingImageUrl) => ({
+            imageUrl: existingImageUrl || '',
+            dragging: false,
+            selectedFile: null,
+
+            handleDrop(event) {
+                this.dragging = false;
+                const file = event.dataTransfer.files[0];
+                if (file) {
+                    this.readFile(file);
+                    this.selectedFile = file;
+                    this.updateFileInput(file);
+                }
+            },
+
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.readFile(file);
+                    this.selectedFile = file;
+                }
+            },
+
+            updateFileInput(file) {
+                // Create a new DataTransfer object to set the files
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                this.$refs.fileInput.files = dataTransfer.files;
+            },
+
+            readFile(file) {
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.imageUrl = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload a valid image file.');
+                }
+            }
+        }));
+    });
+</script>
