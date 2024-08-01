@@ -38,7 +38,7 @@
                         </td>
                         <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
                         <td class="px-6 py-3 text-left">
-                            {{ \Carbon\Carbon::parse($goodShowcase->created_at)->translatedFormat('d F Y') }}
+                            {{ \Carbon\Carbon::parse($goodShowcase->date_entry)->translatedFormat('d F Y') }}
                         </td>
                         <td class="px-6 py-3 text-left">
                             <button type="button" aria-haspopup="dialog" aria-expanded="false"
@@ -141,6 +141,7 @@
 
 @include('components.modal.goods-showcase.add')
 @include('components.modal.goods-showcase.success-modal')
+@include('components.modal.master-trays.success-modal')
 @include('components.modal.goods-showcase.error-modal')
 
 <script>

@@ -22,12 +22,20 @@ class GoodSafeController extends Controller
         $brands = Merk::all();
         $title = 'Brangkas';
         $showcases = Showcase::all();
-        $trays = Tray::with('goods')->get()->map(function ($tray) {
-            $tray->remaining_capacity = $tray->capacity - $tray->goods->count();
-            return $tray;
-        });
 
-        return view('pages.goods-safe', compact('goodsafes', 'showcases', 'trays','title', 'brands', 'types'));
+        $trays = Tray::select('id', 'code', 'showcase_id', 'capacity')->get();
+
+        $occupiedPositions = Goods::select('tray_id', 'position')
+            ->where('availability', 1)
+            ->where('safe_status', 0)
+            ->get()
+            ->groupBy('tray_id')
+            ->map(function ($goods) {
+                return $goods->pluck('position')->toArray();
+            })
+            ->toArray();
+
+        return view('pages.goods-safe', compact('goodsafes', 'showcases', 'trays','title', 'brands', 'types', 'occupiedPositions'));
     }
 
     public function store(Request $request)
@@ -55,7 +63,7 @@ class GoodSafeController extends Controller
             $imagePath = $request->file('image')->store('goods_images', 'public');
 
             // Create a new showcase entry
-            Goods::create([
+            $good = Goods::create([
                 'id' => (string) Str::uuid(),
                 'code' => $request->code,
                 'name' => $request->name,
@@ -76,7 +84,17 @@ class GoodSafeController extends Controller
                 'date_entry' => $request->date_entry,
             ]);
 
-            session()->flash('success', 'Berhasil Menambah Data Barang Brangkas');
+            $goodShowcases = Goods::find($good->id);
+
+            session()->flash('nameShowcase', $goodShowcases->name);
+            session()->flash('imageShowcase', $goodShowcases->image);
+            session()->flash('rateShowcase', $goodShowcases->rate);
+            session()->flash('sizeShowcase', $goodShowcases->size);
+            session()->flash('dateShowcase', $goodShowcases->date_entry);
+            session()->flash('goodType', $goodShowcases->goodsType->name);
+            session()->flash('merk', $goodShowcases->merk->name);
+
+            session()->flash('success-store', 'Berhasil Menambah Data Barang Brangkas');
             return redirect()->route('goods.safe');
         } catch (\Exception $e) {
 
@@ -126,7 +144,17 @@ class GoodSafeController extends Controller
                 $showcase->save();
             }
 
-            session()->flash('success', 'Sukses Update Barang Brangkas');
+            $goodShowcases = Goods::find($showcase->id);
+
+            session()->flash('nameShowcase', $goodShowcases->name);
+            session()->flash('imageShowcase', $goodShowcases->image);
+            session()->flash('rateShowcase', $goodShowcases->rate);
+            session()->flash('sizeShowcase', $goodShowcases->size);
+            session()->flash('dateShowcase', $goodShowcases->date_entry);
+            session()->flash('goodType', $goodShowcases->goodsType->name);
+            session()->flash('merk', $goodShowcases->merk->name);
+
+            session()->flash('success-store', 'Sukses Update Barang Brangkas');
             return redirect()->route('goods.safe');
         } catch (\Exception $e) {
 
@@ -143,7 +171,7 @@ class GoodSafeController extends Controller
             return redirect()->route('goods.safe')->with('error', 'Item not found');
         }
 
-        $trayId = $request->input('tray-select');
+        $trayId = $request->input('tray_id');
 
         $tray = Tray::find($trayId);
 
@@ -151,15 +179,9 @@ class GoodSafeController extends Controller
             return redirect()->route('goods.safe')->with('error', 'Tray not found');
         }
 
-        $currentGoodsCount = Goods::where('tray_id', $trayId)->count();
-        $remainingCapacity = $tray->capacity - $currentGoodsCount;
-
-        if ($remainingCapacity <= 0) {
-            return redirect()->route('goods.safe')->with('error', 'Tray capacity is full');
-        }
-
         $good->safe_status = 0;
         $good->tray_id = $trayId;
+        $good->position = $request->input('position');;
         $good->save();
 
         return redirect()->route('goods.safe')->with('success', 'Berhasil Memindahkan Data Etalase');

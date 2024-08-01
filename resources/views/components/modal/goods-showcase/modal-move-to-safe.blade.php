@@ -26,7 +26,9 @@
                     </div>
                     <div class="flex flex-col items-start gap-1">
                         <span class="text-sm font-semibold">{{ $goodShowcase->tray->showcase->name}} Baki {{ $goodShowcase->tray->code}}</span>
-                        <span class="text-xs text-[#9A9A9A] font-inter">{{ $goodShowcase->created_at->format('d F Y') }}</span>
+                        <span class="text-xs text-[#9A9A9A] font-inter">
+                            {{ \Carbon\Carbon::parse($goodShowcase->date_entry)->translatedFormat('d F Y') }}
+                        </span>
                     </div>
                 </div>
             </div>

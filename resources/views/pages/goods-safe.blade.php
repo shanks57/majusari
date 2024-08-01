@@ -37,7 +37,7 @@
                         </td>
                         <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
                         <td class="px-6 py-3 text-left">
-                            {{ \Carbon\Carbon::parse($goodsafe->created_at)->translatedFormat('d F Y') }}
+                            {{ \Carbon\Carbon::parse($goodsafe->date_entry)->translatedFormat('d F Y') }}
                         </td>
                         <td class="px-6 py-3 text-left">
                             {{ $goodsafe->name }} - {{ $goodsafe->merk->name }}
@@ -71,8 +71,7 @@
                                 <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl p-3"
                                     role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
                                     <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
-                                        href="{{ route('goods-showcase.printBarcode', ['id' => $goodsafe->id]) }}"
-                                        target="_blank">
+                                        href="{{ route('goods-showcase.printBarcode', ['id' => $goodsafe->id]) }}">
                                         <i class="ph ph-barcode"></i>
                                         Cetak Barcode
                                     </a>
@@ -138,6 +137,7 @@
 </x-layout>
 
 @include('components.modal.goods-safe.add')
+@include('components.modal.master-trays.success-modal')
 @include('components.modal.goods-safe.success-modal')
 @include('components.modal.goods-safe.error-modal')
 

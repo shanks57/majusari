@@ -65,7 +65,7 @@ class GoodShowcaseController extends Controller
             $imagePath = $request->file('image')->store('goods_images', 'public');
 
             // Create a new showcase entry
-            Goods::create([
+            $good = Goods::create([
                 'id' => (string) Str::uuid(),
                 'code' => $request->code,
                 'name' => $request->name,
@@ -88,7 +88,18 @@ class GoodShowcaseController extends Controller
                 'date_entry' => $request->date_entry,
             ]);
 
-            session()->flash('success', 'Berhasil Menambah Data Barang Etalase');
+            $goodShowcases = Goods::find($good->id);
+
+            session()->flash('nameShowcase', $goodShowcases->name);
+            session()->flash('imageShowcase', $goodShowcases->image);
+            session()->flash('rateShowcase', $goodShowcases->rate);
+            session()->flash('sizeShowcase', $goodShowcases->size);
+            session()->flash('dateShowcase', $goodShowcases->date_entry);
+            session()->flash('showcase', $goodShowcases->tray->showcase->name);
+            session()->flash('goodType', $goodShowcases->goodsType->name);
+            session()->flash('trayCode', $goodShowcases->tray->code);
+            session()->flash('merk', $goodShowcases->merk->name);
+            session()->flash('success-store', 'Berhasil Menambah Data Barang Etalase');
             return redirect()->route('goods.showcase');
         } catch (\Exception $e) {
 
@@ -138,7 +149,19 @@ class GoodShowcaseController extends Controller
                 $showcase->save();
             }
 
-            session()->flash('success', 'Sukses Update Barang Etalase');
+            $goodShowcases = Goods::find($showcase->id);
+
+            session()->flash('nameShowcase', $goodShowcases->name);
+            session()->flash('imageShowcase', $goodShowcases->image);
+            session()->flash('rateShowcase', $goodShowcases->rate);
+            session()->flash('sizeShowcase', $goodShowcases->size);
+            session()->flash('dateShowcase', $goodShowcases->date_entry);
+            session()->flash('showcase', $goodShowcases->tray->showcase->name);
+            session()->flash('goodType', $goodShowcases->goodsType->name);
+            session()->flash('trayCode', $goodShowcases->tray->code);
+            session()->flash('merk', $goodShowcases->merk->name);
+
+            session()->flash('success-store', 'Sukses Update Barang Etalase');
             return redirect()->route('goods.showcase');
         } catch (\Exception $e) {
 
@@ -168,7 +191,6 @@ class GoodShowcaseController extends Controller
         }
     }
 
-
     public function destroy($id)
     {
         try {
@@ -184,7 +206,6 @@ class GoodShowcaseController extends Controller
             return redirect()->route('goods.showcase')->with('error', 'Terjadi kesalahan saat menghapus data barang di etalase. Silakan coba lagi.');
         }
     }
-
 
     public function printBarcode($id)
     {
@@ -205,6 +226,4 @@ class GoodShowcaseController extends Controller
             return redirect()->route('goods.showcase')->with('error', 'Terjadi kesalahan saat menghasilkan barcode. Silakan coba lagi.');
         }
     }
-
-
 }

@@ -62,6 +62,9 @@ Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'
 
 Route::get('/goods/trays', [GoodTrayController::class, 'index'])->name("/goods/tray");
 Route::get('/goods/trays/{id}', [GoodTrayController::class, 'find'])->name("find-goods-tray");
+Route::post('/goods/trays-store', [GoodTrayController::class, 'store'])->name('goods.trayStore');
+Route::patch('/goods-trays/{id}/move-to-safe', [GoodTrayController::class, 'moveToSafe'])
+    ->name('goods-tray.moveToSafe');
 
 
 Route::get('/sales', [SalesController::class, 'index'])->name("sale.index");
