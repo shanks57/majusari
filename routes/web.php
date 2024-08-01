@@ -69,3 +69,16 @@ Route::get('/sales', [SalesController::class, 'index'])->name("sale.index");
 Route::get('/profile', function () {
     return view('pages.profile');
 });
+
+Route::get('/login', function () {
+    return view('pages.login');
+});
+
+Route::get('/forgot-password', function () {
+    return view('pages.forgot-password');
+});
+
+
+Route::get('/reset-password', function () {
+    return view('pages.reset-password');
+});
