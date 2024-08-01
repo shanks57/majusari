@@ -1,4 +1,9 @@
-<div id="hs-move-to-showcase-modal-{{ $goodsafe->id }}"
+<div x-data="{ 
+        form: { 
+            tray_id: '', 
+            position: ''
+        } 
+    }" id="hs-move-to-showcase-modal-{{ $goodsafe->id }}"
     class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none"
     role="dialog" tabindex="-1" aria-labelledby="hs-move-to-showcase-modal-{{ $goodsafe->id }}-label">
     <div
@@ -14,49 +19,85 @@
             <div class="">
                 <p class="mb-4 text-sm text-black">Apakah anda ingin memindahkan barang berikut untuk dipindahkan ke
                     etalase</p>
-                <div class="flex items-center justify-stretch p-3 border border-[#D9D9D9] rounded-xl">
-                    <div class="flex items-center gap-3 justify-start text-[#232323]">
-                        <img src="{{ asset('storage/' . $goodsafe->image) }}" class="object-cover rounded-lg size-14"
+                <div class="flex justify-center items-center p-2 border border-[#D9D9D9] rounded-xl">
+                    <!-- Column 1: Image and Details -->
+                    <div class="flex w-full items-center gap-3 text-[#232323]">
+                        <img src="{{ asset('storage/' . $goodsafe->image) }}" class="object-cover rounded-lg w-14 h-14"
                             alt="{{ $goodsafe->name }}">
-                        <div class="flex flex-col items-start gap-1 mr-4">
+                        <div class="flex flex-col items-start gap-1 w-full">
                             <span class="text-sm"> - {{ $goodsafe->goodsType->name }} ({{ $goodsafe->rate }}%) </span>
                             <span class="text-sm">Merek {{ $goodsafe->merk->name }} </span>
                             <span class="text-xs">{{ $goodsafe->size }}gr </span>
+                            <span
+                                class="text-xs text-[#9A9A9A] font-inter">
+                            {{ \Carbon\Carbon::parse($goodsafe->date_entry)->translatedFormat('d F Y') }}
+                            </span>
                         </div>
                     </div>
-                    <div class="flex flex-col items-start gap-1">
+
+                    <!-- Column 2: Form -->
+                    <div class="flex w-full flex-col items-start gap-1">
                         <form method="POST" action="{{ route('goods.moveToShowcase', ['id' => $goodsafe->id]) }}">
                             @csrf
                             @method('PATCH')
-                            <div class="text-xs font-semibold">
-                                <div class="mb-1">
-                                    <label for="showcase-select" class="block mb-2 text-xs font-medium">Pilih
-                                        Etalase</label>
-                                    <select id="showcase-select"
-                                        class="block w-full px-4 py-3 text-xs border border-gray-200 rounded-lg pe-9 focus:outline-none disabled:opacity-50 disabled:pointer-events-none" required>
-                                        <option value="" selected disabled>Pilih Etalase</option>
-                                        @foreach($showcases as $showcase)
-                                        <option value="{{ $showcase->id }}">{{ $showcase->name }}</option>
-                                        @endforeach
-                                    </select>
+
+                                <div x-data="showcaseForm()" class="flex flex-col gap-1 w-full">
+                                    <!-- Showcase Selection -->
+                                    <div class="w-full mb-4">
+                                        <label for="showcase_id" class="block text-sm text-gray-600">Etalase</label>
+                                        <select id="showcase_id" name="showcase_id" x-model="form.showcase_id"
+                                            @change="updateTrays()"
+                                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                            required>
+                                            <option value="" disabled selected>Pilih etalase</option>
+                                            @foreach ($showcases as $showcase)
+                                            <option value="{{ $showcase->id }}">{{ $showcase->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('showcase_id')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Tray Selection -->
+                                    <div class="w-full mb-4">
+                                        <label for="tray_id" class="block text-sm text-gray-600">Baki</label>
+                                        <select id="tray_id" name="tray_id" x-model="form.tray_id"
+                                            @change="updatePositions()"
+                                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                            required>
+                                            <option value="" disabled selected>Pilih Baki</option>
+                                            <template x-for="tray in filteredTrays" :key="tray.id">
+                                                <option :value="tray.id" x-text="tray.code"></option>
+                                            </template>
+                                        </select>
+                                        @error('tray_id')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Position Selection -->
+                                    <div class="w-full mb-4">
+                                        <label for="position" class="block text-sm text-gray-600">Position</label>
+                                        <select id="position" name="position" x-model="form.position"
+                                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                            required>
+                                            <option value="" disabled selected>Pilih Position</option>
+                                            <template x-for="position in availablePositions" :key="position">
+                                                <option :value="position" x-text="position"></option>
+                                            </template>
+                                        </select>
+                                        @error('position')
+                                        <span class="text-sm text-red-500">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <label for="tray-select" class="block mb-2 text-xs font-medium">Pilih Baki</label>
-                                    <select id="tray-select" name="tray-select"
-                                        class="block w-full px-4 py-3 text-xs border border-gray-200 rounded-lg pe-9 focus:outline-none disabled:opacity-50 disabled:pointer-events-none" required>
-                                        <option value="" selected disabled>Pilih Baki</option>
-                                    </select>
-                                </div>
-
-                            </div>
-                            <span
-                                class="text-xs text-[#9A9A9A] font-inter">{{ $goodsafe->created_at->format('d F Y') }}</span>
                     </div>
                 </div>
+
             </div>
             <div class="flex items-center justify-center gap-4">
-
                 <button type="submit"
                     class="flex items-center px-4 py-3 gap-1.5 text-sm font-medium rounded-lg bg-[#6634BB] text-[#F8F8F8]">
                     <span>Ya <i class="ph ph-check"></i></span>
@@ -73,31 +114,36 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const showcases = @json($showcases);
-        const trays = @json($trays);
+    function showcaseForm() {
+        return {
+            form: {
+                showcase_id: '',
+                tray_id: '',
+                position: '',
+            },
+            trays: @json($trays),
+            occupiedPositions: @json($occupiedPositions),
+            filteredTrays: [],
+            availablePositions: [],
+            updateTrays() {
+                this.filteredTrays = this.trays.filter(tray => tray.showcase_id == this.form.showcase_id);
+                this.form.tray_id = '';
+                this.updatePositions();
+            },
+            updatePositions() {
+                const selectedTray = this.trays.find(tray => tray.id == this.form.tray_id);
+                const capacity = selectedTray ? selectedTray.capacity : 0;
 
-        const showcaseSelect = document.getElementById('showcase-select');
-        const traySelect = document.getElementById('tray-select');
+                // Get occupied positions for the selected tray
+                const occupied = this.occupiedPositions[this.form.tray_id] || [];
 
-        showcaseSelect.addEventListener('change', function () {
-            const selectedShowcaseId = this.value;
-
-            // Kosongkan opsi baki sebelumnya
-            traySelect.innerHTML = '<option value="" selected disabled>Pilih Baki</option>';
-
-            // Filter baki berdasarkan etalase yang dipilih
-            const filteredTrays = trays.filter(tray => tray.showcase_id == selectedShowcaseId);
-
-            // Tambahkan opsi baki ke dropdown baki
-            filteredTrays.forEach(tray => {
-                const option = document.createElement('option');
-                option.value = tray.id;
-                option.textContent =
-                    `${tray.code} - Sisa Kapasitas: ${tray.remaining_capacity}`;
-                traySelect.appendChild(option);
-            });
-        });
-    });
+                // Generate positions excluding occupied ones
+                this.availablePositions = Array.from({
+                    length: capacity
+                }, (_, i) => i + 1).filter(pos => !occupied.includes(pos));
+                this.form.position = '';
+            },
+        }
+    }
 
 </script>
