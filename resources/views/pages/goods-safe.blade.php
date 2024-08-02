@@ -2,9 +2,9 @@
 @include('components.datatables')
 <x-layout>
     <x-header title="Brankas">
-        <x-button-add url="{{ route('goods-types.index') }}">
+        {{-- <x-button-add url="{{ route('goods-types.index') }}">
             Tambah Barang Brangkas
-        </x-button-add>
+        </x-button-add> --}}
     </x-header>
     <div class="container py-4 mx-auto">
         <div class="relative w-full mx-auto mb-4">
