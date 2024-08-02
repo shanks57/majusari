@@ -9,6 +9,7 @@
     #etalaseTable_wrapper .dataTables_paginate {
         display: none;
     }
+
 </style>
 @endpush
 
@@ -58,6 +59,12 @@
                 $('.dataTables_paginate .paginate_button.previous, .dataTables_paginate .paginate_button.next')
                     .addClass('border-0');
                 $('.dataTables_paginate .paginate_button.current').addClass('bg-gray-200');
+            },
+            "initComplete": function (settings, json) {
+                // Tambahkan class Tailwind ke dropdown
+                $('.dataTables_length select').addClass(
+                    'py-2 px-2.5 pe-6 border-gray-200 rounded-lg text-xs disabled:opacity-50 disabled:pointer-events-none '
+                    );
             }
         });
 
@@ -82,5 +89,6 @@
             }
         });
     });
+
 </script>
 @endpush
