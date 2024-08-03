@@ -3,6 +3,7 @@
         form: {
             id: '{{ $employee->id }}',
             name: '{{ $employee->name }}',
+            email: '{{ $employee->email }}',
             username: '{{ $employee->username }}',
             phone: '{{ $employee->phone }}',
             wages: '{{ $employee->wages }}',
@@ -38,6 +39,15 @@
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
+                     <div class="w-full mb-4">
+                        <label for="email" class="block text-sm text-[#344054]">Nama Email</label>
+                        <input type="email" id="email" name="email" x-model="form.email"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            placeholder="Masukkan Nama Pengguna" required>
+                        @error('email')
+                        <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <div class="w-full mb-4">
                         <label for="username" class="block text-sm text-[#344054]">Nama Pengguna</label>
                         <input type="text" id="username" name="username" x-model="form.username"
@@ -49,9 +59,9 @@
                     </div>
                     <div class="w-full mb-4">
                         <label for="phone" class="block text-sm text-[#344054]">Nomor Handphone</label>
-                        <input type="number" id="phone" name="phone" x-model="form.phone"
+                        <input type="text" id="phone" name="phone" x-model="form.phone"
                             class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
-                            placeholder="Masukkan Nomor Handphone" required>
+                            placeholder="Masukkan Nomor Handphone" required minlength="10" maxlength="15">
                         @error('phone')
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                         @enderror
@@ -95,9 +105,9 @@
                 </div>
                 <div class="flex items-center justify-end px-4 gap-x-2">
                     <button type="submit"
-                        :disabled="!form.name || !form.username || !form.phone || form.wages === '' || form.wages < 0 || form.debt_receipt === '' || form.debt_receipt < 0 || !form.address"
+                        :disabled="!form.name || !form.email || !form.username || !form.phone || form.wages === '' || form.wages < 0 || form.debt_receipt === '' || form.debt_receipt < 0 || !form.address"
                         class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white"
-                        :class="{ 'opacity-50 cursor-not-allowed': !form.name || !form.username || !form.phone || form.wages === '' || form.wages < 0 || form.debt_receipt === '' || form.debt_receipt < 0 || !form.address }">
+                        :class="{ 'opacity-50 cursor-not-allowed': !form.name || !form.email || !form.username || !form.phone || form.wages === '' || form.wages < 0 || form.debt_receipt === '' || form.debt_receipt < 0 || !form.address }">
                         <span>Simpan</span>
                         <i class="ph ph-floppy-disk ml-1.5"></i>
                     </button>

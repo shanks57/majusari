@@ -85,40 +85,31 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::post('/sale/search-code', [SalesController::class, 'searchCode'])->name('sale.search-code');
     Route::post('/sale/insert-to-cart', [SalesController::class, 'insertToCart'])->name('sale.insert-to-cart');
     // end route penjualan
+
+    // start profile
+    Route::get('/profile', function () {
+        return view('pages.profile');
+    })->name('pages.profile');
+
+    Route::put('/profile/update/{id}', [UserController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile/{id}/set-password', [UserController::class, 'updatePassword'])->name('profile.set-password');
+    
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 // cart
 
 // end cart
 
-Route::get('/profile', function () {
-    return view('pages.profile');
-})->name('pages.profile');
-
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-
-// Route::get('/forgot-password', function () {
-//     return view('auth.forgot-password');
-// });
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-});
-
-Route::get('/reset-password', function () {
-    return view('auth.reset-password');
-});
-
 Route::get('/notification', function () {
     return view('pages.notification');
 });
-// Route::get('/reset-password', function () {
-//     return view('auth.reset-password');
-// });
+
