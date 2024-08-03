@@ -24,7 +24,9 @@
                     </div>
                     <div class="flex flex-col items-start gap-1">
                         <span class="text-sm font-semibold">{{ session('showcase')}} Baki {{ session('trayCode')}}</span>
-                        <span class="text-xs text-[#9A9A9A] font-inter">{{ session('dateShowcase') }}</span>
+                        <span class="text-xs text-[#9A9A9A] font-inter">
+                            {{ \Carbon\Carbon::parse(session('dateShowcase'))->translatedFormat('d F Y') }}
+                        </span>
                     </div>
                 </div>
             <button @click="open = false" type="button"
