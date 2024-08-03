@@ -97,7 +97,10 @@ Route::get('/forgot-password', function () {
     return view('pages.forgot-password');
 });
 
-
 Route::get('/reset-password', function () {
     return view('pages.reset-password');
+});
+
+Route::get('/notification', function () {
+    return view('pages.notification');
 });
