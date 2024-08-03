@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -23,6 +24,7 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
             'username' => 'required|string|max:255',
             'phone' => 'required|string',
             'debt_receipt' => 'required|numeric|min:0',
@@ -35,12 +37,15 @@ class UserController extends Controller
             $employee = new User();
             $employee->id = (string) Str::uuid();
             $employee->name = $request->input('name');
+            $employee->email = $request->input('email');
             $employee->username = $request->input('username');
             $employee->phone = $request->input('phone');
             $employee->debt_receipt = $request->input('debt_receipt');
             $employee->wages = $request->input('wages');
             $employee->address = $request->input('address');
             $employee->status = $request->input('status');
+            
+            $employee->assignRole('admin');
             
             $employee->save();
             session()->flash('success', 'Berhasil Menambah Pegawai Baru');
@@ -55,6 +60,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
             'username' => 'required|string|max:255',
             'phone' => 'required|numeric',
             'wages' => 'required|numeric|min:0',
@@ -67,6 +73,7 @@ class UserController extends Controller
             $employee = User::findOrFail($id);
             
             $employee->name = $request->input('name');
+            $employee->email = $request->input('email');
             $employee->username = $request->input('username');
             $employee->phone = $request->input('phone');
             $employee->debt_receipt = $request->input('debt_receipt');
@@ -112,23 +119,41 @@ class UserController extends Controller
         }
     }
 
-    public function resetPassword($id)
+    public function updateProfile(Request $request, $id)
     {
-        // Fetch the employee by ID
-        $employee = User::findOrFail($id);
+        // Validasi data yang dikirim dari form
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'phone' => 'required|digits_between:10,15',
+        ]);
 
-        // Set the password to null
-        $employee->password = null;
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
-        // Save the changes
-        $employee->save();
+        $user = User::findOrFail($id);
 
-        // Set session variable to trigger modal
-        session()->flash('reset_success', $employee->id);
+        // Perbarui data pengguna
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->phone = $request->input('phone');
+        $user->save();
 
-
-        // Redirect back to the previous page
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
     }
 
+    public function updatePassword(Request $request, $id)
+    {
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->back()->with('success', 'Password berhasil diperbarui!');
+    }
 }

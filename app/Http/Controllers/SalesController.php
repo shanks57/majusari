@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Goods;
 use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class SalesController extends Controller
@@ -66,10 +67,9 @@ class SalesController extends Controller
 
         Cart::create([
             'id' => $id,
-            'user_id' => $userId,
+            'user_id' => Auth::user()->id,
             'goods_id' => $goodsId,
             'new_selling_price' => $sellingPrice,
-            // 'user_id' => auth()->id(),
         ]);
     
         $good = Goods::find($goodsId);

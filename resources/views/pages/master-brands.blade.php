@@ -49,6 +49,7 @@
                                 data-hs-overlay="#hs-edit-modal-{{ $brand->id }}">
                                 <i class="ph ph-pencil-line"></i> Edit
                             </button>
+                            
                             <button class="px-3 py-1 text-white bg-red-500 rounded-lg" aria-haspopup="dialog"
                                 aria-expanded="false" aria-controls="hs-delete-modal-{{ $brand->id }}"
                                 data-hs-overlay="#hs-delete-modal-{{ $brand->id }}">
