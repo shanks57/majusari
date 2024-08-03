@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasRoles, HasApiTokens, SoftDeletes;
 
@@ -24,7 +24,7 @@ class User extends Authenticatable
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'username', 'name', 'phone', 'debt_receipt', 'wages' ,'address', 'status','password',
+        'id', 'username', 'name', 'phone', 'debt_receipt', 'wages' ,'address', 'status','password', 'email', 'email_verified_at',
     ];
 
     protected $dates = ['deleted_at'];
