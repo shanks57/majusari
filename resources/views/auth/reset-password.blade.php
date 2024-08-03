@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ config("app.name") }} - @yield('title')</title>
+    <title>{{ config("app.name") }} - Reset Password</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     @vite('resources/css/app.css') @vite('resources/js/app.js')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -14,24 +14,24 @@
     @stack('styles')
 </head>
 
-<body class="h-screen flex">
-    <div class="w-1/2 bg-gray-200 hidden lg:block bg-cover bg-bottom p-8" style="background-image: url(/images/login-image.png);">
-        <h1 class="text-white text-5xl leading-normal">Selamat Datang <br> <span class="italic">di</span> Toko Emas <br> Majusari</h1>
+<body class="flex h-screen">
+    <div class="hidden w-1/2 p-8 bg-gray-200 bg-bottom bg-cover lg:block" style="background-image: url(/images/login-image.png);">
+        <h1 class="text-5xl leading-normal text-white">Selamat Datang <br> <span class="italic">di</span> Toko Emas <br> Majusari</h1>
     </div>
-    <div class="flex flex-col justify-center w-full lg:w-1/2 p-8">
+    <div class="flex flex-col justify-center w-full p-8 lg:w-1/2">
         <div class="max-w-md mx-auto">
-            <h1 class="text-3xl mb-3 max-w-sm text-center">
+            <h1 class="max-w-sm mb-3 text-3xl text-center">
                 Lupa Password
             </h1>
-            <p class="mb-6 text-center text-xs">
+            <p class="mb-6 text-xs text-center">
                 Masukkan email yang valid untuk melakukan reset password
             </p>
             <form>
                 <div class="mb-6" x-data="{ show: false }">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password Baru</label>
+                    <label class="block mb-2 text-sm font-bold text-gray-700" for="password">Password Baru</label>
                     <div class="relative">
-                        <input :type="show ? 'text' : 'password'" class="appearance-none border border-gray-400 outline-none rounded-lg text-sm w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" placeholder="Masukkan Password" />
-                        <button @click="show = !show" type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-700">
+                        <input :type="show ? 'text' : 'password'" class="w-full px-3 py-3 text-sm leading-tight text-gray-700 border border-gray-400 rounded-lg outline-none appearance-none focus:outline-none focus:shadow-outline" id="password" placeholder="Masukkan Password" />
+                        <button @click="show = !show" type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-700">
                             <!-- You can add an eye icon here for show/hide password functionality -->
                             <i x-show="!show" class="ph ph-eye"></i>
                             <i x-show="show" class="ph ph-eye-slash"></i>
@@ -39,10 +39,10 @@
                     </div>
                 </div>
                 <div class="mb-6" x-data="{ show: false }">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Ulangi Password Baru</label>
+                    <label class="block mb-2 text-sm font-bold text-gray-700" for="password">Ulangi Password Baru</label>
                     <div class="relative">
-                        <input :type="show ? 'text' : 'password'" class="appearance-none border border-gray-400 outline-none rounded-lg text-sm w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" placeholder="Masukkan Password" />
-                        <button @click="show = !show" type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-700">
+                        <input :type="show ? 'text' : 'password'" class="w-full px-3 py-3 text-sm leading-tight text-gray-700 border border-gray-400 rounded-lg outline-none appearance-none focus:outline-none focus:shadow-outline" id="password" placeholder="Masukkan Password" />
+                        <button @click="show = !show" type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-700">
                             <!-- You can add an eye icon here for show/hide password functionality -->
                             <i x-show="!show" class="ph ph-eye"></i>
                             <i x-show="show" class="ph ph-eye-slash"></i>
@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="mb-6">
-                    <button class="w-full disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline bg-purple-500 hover:bg-purple-600" type="button">
+                    <button class="w-full px-4 py-2 font-bold text-white bg-purple-500 rounded disabled:bg-gray-300 focus:outline-none focus:shadow-outline hover:bg-purple-600" type="button">
                         Kirim
                     </button>
                 </div>

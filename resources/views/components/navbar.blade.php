@@ -27,31 +27,43 @@
     </div>
     <div class="flex items-center gap-6">
         <a href="/notification" class="flex items-center justify-center w-10 h-10 text-white bg-purple-100 rounded-full">
-            <i class="ph ph-bell text-purple-500 text-2xl"></i>
+            <i class="text-2xl text-purple-500 ph ph-bell"></i>
         </a>
-        <div x-data="{ open: false }" class="relative inline-block text-left">
-            <button class="flex items-center gap-3" {{ $attributes }} type="button" @click="open = !open" id="menu-button" aria-expanded="true" aria-haspopup="true">
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center justify-center w-10 h-10 text-white bg-purple-500 rounded-full">
-                        AW
-                    </div>
-                    <div class="text-left">
-                        <span class="block text-sm">Andika Wijaya</span>
-                        <span class="text-xs text-gray-500">andikawijaya@majusari.com</span>
-                    </div>
+        @php
+        $name = Auth::user()->name;
+        $nameParts = explode(' ', $name); // Pisahkan nama berdasarkan spasi
+        $initials = strtoupper(substr($nameParts[0], 0, 1)); // Ambil huruf awal dari nama pertama
+
+        if (isset($nameParts[1])) {
+        $initials .= strtoupper(substr($nameParts[1], 0, 1)); // Tambahkan huruf awal dari nama belakang jika ada
+        }
+        @endphp
+        <div class="hs-dropdown relative inline-flex [--gpu-acceleration:false]">
+            <button id="hs-dropdown-scale-animation" type="button" id="hs-dropdown-scale-animation" type="button" class="flex items-center gap-4 hs-dropdown-toggle" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                <div class="flex items-center justify-center w-10 h-10 text-white bg-purple-500 rounded-full">
+                    {{ $initials }}
                 </div>
-                <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                <div class="text-start">
+                    <span class="block text-sm">{{ Auth::user()->name }}</span>
+                    <span class="text-xs text-gray-500">{{ Auth::user()->email }}</span>
+                </div>
+                <svg class="hs-dropdown-open:rotate-180 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 9 6 6 6-6" />
                 </svg>
             </button>
+            <div class="hs-dropdown-menu w-72 hs-dropdown-open:scale-100 hs-dropdown-open:opacity-100 scale-95 opacity-0 z-10 ease-in-out transition-[transform,opacity] duration-200 min-w-60 bg-white shadow-md rounded-lg p-2 dark:bg-neutral-800 dark:border dark:border-neutral-700 dark:divide-neutral-700 hidden" role="menu" aria-orientation="vertical" aria-labelledby="hs-dropdown-scale-animation">
+                <a href="/profile" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700" href="#">
+                    Profile
+                </a>
 
-            <div x-show="open" class="absolute right-0 z-10 mt-2 w-fit origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                <a href="/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-1">Profile</a>
-                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-1">Logout</a>
+                <form method="POST" action="{{ route('logout') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="flex w-full items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700">
+                        Logout
+                    </button>
+                </form>
 
             </div>
         </div>
-
-
     </div>
 </nav>
