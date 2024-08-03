@@ -132,7 +132,7 @@
                     <div class="w-full mb-4">
                         <label for="rate" class="block text-sm text-gray-600">Kadar</label>
                         <input type="number" id="rate" name="rate" x-model="form.rate"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" step="0.001" min=0
+                            class="w-full px-3 py-2 mt-1 border rounded-lg" step="0.001" min=0 max=100
                             placeholder="Masukkan kadar %" required>
                         @error('rate')
                         <span class="text-sm text-red-500">{{ $message }}</span>
@@ -141,8 +141,8 @@
 
                     <div class="w-full mb-4">
                         <label for="dimensions" class="block text-sm text-gray-600">Size</label>
-                        <input type="text" id="dimensions" name="dimensions" x-model="form.dimensions"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan size" required>
+                        <input type="number" id="dimensions" name="dimensions" x-model="form.dimensions"
+                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan size" min=0 max=100 required>
                         @error('dimensions')
                         <span class="text-sm text-red-500">{{ $message }}</span>
                         @enderror
@@ -163,7 +163,7 @@
                     <div class="w-full mb-4">
                         <label for="ask_rate" class="block text-sm text-gray-600">Nilai Tukar Atas</label>
                         <input type="number" id="ask_rate" name="ask_rate" x-model="form.ask_rate"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar atas"
+                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar atas" min=0 max=100
                             required>
                         @error('ask_rate')
                         <span class="text-sm text-red-500">{{ $message }}</span>
@@ -173,7 +173,7 @@
                     <div class="w-full mb-4">
                         <label for="bid_rate" class="block text-sm text-gray-600">Nilai Tukar Bawah</label>
                         <input type="number" id="bid_rate" name="bid_rate" x-model="form.bid_rate"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar bawah"
+                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar bawah" min=0 max=100
                             required>
                         @error('bid_rate')
                         <span class="text-sm text-red-500">{{ $message }}</span>

@@ -21,33 +21,33 @@
                     etalase</p>
                 <div class="flex justify-center items-center p-2 border border-[#D9D9D9] rounded-xl">
                     <!-- Column 1: Image and Details -->
-                    <div class="flex w-full items-center gap-3 text-[#232323]">
+                    <div class="flex flex-col w-full items-center gap-3 text-[#232323] text-center">
                         <img src="{{ asset('storage/' . $goodsafe->image) }}" class="object-cover rounded-lg w-14 h-14"
                             alt="{{ $goodsafe->name }}">
-                        <div class="flex flex-col items-start gap-1 w-full">
+                        <div class="flex flex-col items-center justify-center w-full gap-1 text-center">
                             <span class="text-sm"> - {{ $goodsafe->goodsType->name }} ({{ $goodsafe->rate }}%) </span>
                             <span class="text-sm">Merek {{ $goodsafe->merk->name }} </span>
                             <span class="text-xs">{{ $goodsafe->size }}gr </span>
                             <span
-                                class="text-xs text-[#9A9A9A] font-inter">
+                                class="text-sm text-[#9A9A9A] font-inter">
                             {{ \Carbon\Carbon::parse($goodsafe->date_entry)->translatedFormat('d F Y') }}
                             </span>
                         </div>
                     </div>
 
                     <!-- Column 2: Form -->
-                    <div class="flex w-full flex-col items-start gap-1">
+                    <div class="flex flex-col items-start w-full gap-1">
                         <form method="POST" action="{{ route('goods.moveToShowcase', ['id' => $goodsafe->id]) }}">
                             @csrf
                             @method('PATCH')
 
-                                <div x-data="showcaseForm()" class="flex flex-col gap-1 w-full">
+                                <div x-data="showcaseForm()" class="flex flex-col w-full gap-1">
                                     <!-- Showcase Selection -->
-                                    <div class="w-full mb-4">
-                                        <label for="showcase_id" class="block text-sm text-gray-600">Etalase</label>
+                                    <div class="w-full mb-2">
+                                        <label for="showcase_id" class="block text-xs text-gray-600">Etalase</label>
                                         <select id="showcase_id" name="showcase_id" x-model="form.showcase_id"
                                             @change="updateTrays()"
-                                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054] text-xs"
                                             required>
                                             <option value="" disabled selected>Pilih etalase</option>
                                             @foreach ($showcases as $showcase)
@@ -60,11 +60,11 @@
                                     </div>
 
                                     <!-- Tray Selection -->
-                                    <div class="w-full mb-4">
-                                        <label for="tray_id" class="block text-sm text-gray-600">Baki</label>
+                                    <div class="w-full mb-2">
+                                        <label for="tray_id" class="block text-xs text-gray-600">Baki</label>
                                         <select id="tray_id" name="tray_id" x-model="form.tray_id"
                                             @change="updatePositions()"
-                                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054] text-xs"
                                             required>
                                             <option value="" disabled selected>Pilih Baki</option>
                                             <template x-for="tray in filteredTrays" :key="tray.id">
@@ -77,10 +77,10 @@
                                     </div>
 
                                     <!-- Position Selection -->
-                                    <div class="w-full mb-4">
-                                        <label for="position" class="block text-sm text-gray-600">Position</label>
+                                    <div class="w-full mb-2">
+                                        <label for="position" class="block text-xs text-gray-600">Position</label>
                                         <select id="position" name="position" x-model="form.position"
-                                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054] text-xs"
                                             required>
                                             <option value="" disabled selected>Pilih Position</option>
                                             <template x-for="position in availablePositions" :key="position">
