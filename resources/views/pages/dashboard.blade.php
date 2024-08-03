@@ -3,15 +3,9 @@
     <x-header title="Dashboard">
     </x-header>
     <div x-data="{ activeTab: 'summary' }" class="flex mb-6 mt-4 bg-gray-100 w-fit p-1 rounded-lg">
-        <button id="tab-summary" @click="activeTab = 'summary'" :class="{'bg-white': activeTab === 'summary'}"
-            class="tab-button py-2 px-4 rounded"
-            :class="{'active': activeTab === 'summary', 'bg-white': activeTab !== 'summary'}">Ringkasan</button>
-        <button id="tab-sales" @click="activeTab = 'sales'" :class="{'bg-white': activeTab === 'sales'}"
-            class="tab-button py-2 px-4 rounded mx-2"
-            :class="{'active': activeTab === 'sales', 'bg-white': activeTab !== 'sales'}">Penjualan</button>
-        <button id="tab-weight" @click="activeTab = 'weight'" :class="{'bg-white': activeTab === 'weight'}"
-            class="tab-button py-2 px-4 rounded"
-            :class="{'active': activeTab === 'weight', 'bg-white': activeTab !== 'weight'}">Berat Barang</button>
+        <button id="tab-summary" @click="activeTab = 'summary'" :class="{'bg-white': activeTab === 'summary'}" class="tab-button py-2 px-4 rounded" :class="{'active': activeTab === 'summary', 'bg-white': activeTab !== 'summary'}">Ringkasan</button>
+        <button id="tab-sales" @click="activeTab = 'sales'" :class="{'bg-white': activeTab === 'sales'}" class="tab-button py-2 px-4 rounded mx-2" :class="{'active': activeTab === 'sales', 'bg-white': activeTab !== 'sales'}">Penjualan</button>
+        <button id="tab-weight" @click="activeTab = 'weight'" :class="{'bg-white': activeTab === 'weight'}" class="tab-button py-2 px-4 rounded" :class="{'active': activeTab === 'weight', 'bg-white': activeTab !== 'weight'}">Berat Barang</button>
     </div>
     <div id="tab-content-summary" class="tab-content">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -74,10 +68,10 @@
                     <div>
                         <h2 class="text-xl font-bold mb-1">Kurs Emas</h2>
                         <div class="text-xs text-[#9A9A9A]">Harga Emas Hari Ini,
-                            {{ Carbon\Carbon::now()->format('d M Y') }}</div>
+                            {{ Carbon\Carbon::now()->format('d M Y') }}
+                        </div>
                     </div>
-                    <button type="button" class="bg-[#6634BB] text-[#F8F8F8] py-3 px-4 rounded-lg h-fit font-medium text-sm"
-                    aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal" data-hs-overlay="#hs-add-modal">Update
+                    <button type="button" class="bg-[#6634BB] text-[#F8F8F8] py-3 px-4 rounded-lg h-fit font-medium text-sm" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal" data-hs-overlay="#hs-add-modal">Update
                         Kurs</button>
                 </div>
                 <div class="mt-4">
@@ -123,12 +117,41 @@
     </div>
     <div id="tab-content-sales" class="tab-content hidden">
         <!-- Empty content for now -->
+        <div class="bg-white p-4 border rounded-lg col-span-7">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Ringkasan Penjualan</h2>
+                <div class="relative">
+                    <button class="bg-gray-200 text-gray-700 py-2 px-4 rounded">Tahun Ini</button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded border hidden">
+                        <!-- Dropdown menu here -->
+                    </div>
+                </div>
+            </div>
+            <div class="text-3xl font-bold">Rp 60.000.000 <span class="text-green-500 text-lg">+23.2%</span></div>
+            <div>Total Penjualan (RP) Tahun Ini</div>
+            <canvas id="sales-chart-detail" class="h-64 mt-4"></canvas>
+        </div>
+
     </div>
     <div id="tab-content-weight" class="tab-content hidden">
+        <div class="bg-white p-4 border rounded-lg col-span-7">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Ringkasan Penjualan</h2>
+                <div class="relative">
+                    <button class="bg-gray-200 text-gray-700 py-2 px-4 rounded">Tahun Ini</button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded border hidden">
+                        <!-- Dropdown menu here -->
+                    </div>
+                </div>
+            </div>
+            <div class="text-3xl font-bold">Rp 60.000.000 <span class="text-green-500 text-lg">+23.2%</span></div>
+            <div>Total Penjualan (RP) Tahun Ini</div>
+            <canvas id="weight-chart" class="h-64 mt-4"></canvas>
+        </div>
         <!-- Empty content for now -->
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const tabs = document.querySelectorAll('.tab-button');
             const contents = document.querySelectorAll('.tab-content');
 
@@ -180,10 +203,86 @@
                     }
                 }
             });
-        });
 
+            const ctxDetail = document.getElementById('sales-chart-detail').getContext('2d');
+            const salesDataDetail = [60, 70, 100, 80, 70, 50, 75, 60, 30, 50, 60, 100];
+            const backgroundColorsDetail = salesDataDetail.map((value, index) => {
+                return index === 6 ? '#E9D2F7' : '#E6E6E6'; // Purple for July, gray for others
+            });
+
+            const salesChartDetail = new Chart(ctxDetail, {
+                type: 'bar',
+                data: {
+                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT',
+                        'NOV', 'DEC'
+                    ],
+                    datasets: [{
+                        label: 'Sales',
+                        data: salesData,
+                        backgroundColor: backgroundColorsDetail,
+                        borderColor: backgroundColorsDetail,
+                        borderWidth: 0,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false // This removes the grid lines
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false // This removes the grid lines
+                            }
+                        }
+                    }
+                }
+            });
+
+            const weightChartElement = document.getElementById('weight-chart').getContext('2d');
+            const weightData = [60, 70, 100, 80, 70, 50, 75, 60, 30, 50, 60, 100];
+            const bgColorWeight = weightData.map((value, index) => {
+                return index === 6 ? '#E9D2F7' : '#E6E6E6'; // Purple for July, gray for others
+            });
+
+            const weightChart = new Chart(weightChartElement, {
+                type: 'bar',
+                data: {
+                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT',
+                        'NOV', 'DEC'
+                    ],
+                    datasets: [{
+                        label: 'Sales',
+                        data: salesData,
+                        backgroundColor: bgColorWeight,
+                        borderColor: bgColorWeight,
+                        borderWidth: 0,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false // This removes the grid lines
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false // This removes the grid lines
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
     </script>
-@include('components.modal.dashboard.update-kurs')
-@include('components.modal.error-modal')
-@include('components.modal.dashboard.success-modal')
+    @include('components.modal.dashboard.update-kurs')
+    @include('components.modal.error-modal')
+    @include('components.modal.dashboard.success-modal')
 </x-layout>
