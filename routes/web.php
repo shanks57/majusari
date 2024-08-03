@@ -75,7 +75,15 @@ Route::patch('/goods-trays/{id}/move-to-safe', [GoodTrayController::class, 'move
     ->name('goods-tray.moveToSafe');
 // end route detail baki
 
+// route penjualan
 Route::get('/sales', [SalesController::class, 'index'])->name("sale.index");
+Route::post('/sale/search-code', [SalesController::class, 'searchCode'])->name('sale.search-code');
+Route::post('/sale/insert-to-cart', [SalesController::class, 'insertToCart'])->name('sale.insert-to-cart');
+// end route penjualan
+
+// cart
+
+// end cart
 
 Route::get('/profile', function () {
     return view('pages.profile');
