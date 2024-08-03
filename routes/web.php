@@ -15,7 +15,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth','verified')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     // start dashboard
     Route::get('/', [DashboardController::class, 'index'])->name("dashboard-page");
     Route::post('/kurs-emas/store', [DashboardController::class, 'updateKurs'])->name('dashboard.kurs.update');
@@ -99,13 +99,12 @@ Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
+// Route::get('/forgot-password', function () {
+//     return view('auth.forgot-password');
+// });
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
- 
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
@@ -120,3 +119,6 @@ Route::get('/reset-password', function () {
 Route::get('/notification', function () {
     return view('pages.notification');
 });
+// Route::get('/reset-password', function () {
+//     return view('auth.reset-password');
+// });

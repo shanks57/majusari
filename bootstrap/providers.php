@@ -2,7 +2,8 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    Spatie\Permission\PermissionServiceProvider::class,
+    App\Providers\FortifyServiceProvider::class,
     Laravel\Sanctum\SanctumServiceProvider::class,
     Milon\Barcode\BarcodeServiceProvider::class,
+    Spatie\Permission\PermissionServiceProvider::class,
 ];
