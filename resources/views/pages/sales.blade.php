@@ -4,12 +4,13 @@
     <x-header title="Penjualan">
         <x-slot name="secondary">
             <x-button-add url="{{ route('goods-types.index') }}" bgColor="bg-white" textColor="text-[#606060]"
-                icon="ph ph-barcode" borderButton="border" borderColor="border-[#DFDFDF]">
+                icon="ph ph-barcode" borderButton="border" borderColor="border-[#DFDFDF]"
+                dataHsOverlay='#hs-add-modal1'>
                 Cek Nota
             </x-button-add>
         </x-slot>
-        <x-button-add url="{{ route('goods-types.index') }}">
-            Tambah Barang Etalase
+        <x-button-add>
+            Penjualan baru
         </x-button-add>
     </x-header>
 
@@ -120,3 +121,8 @@
         </div>
     </div>
 </x-layout>
+
+@include('components.modal.sales.new-sale')
+@include('components.modal.sales.modal-form')
+@include('components.modal.sales.success-cart')
+@include('components.modal.error-modal')

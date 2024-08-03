@@ -14,7 +14,7 @@ class Cart extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'user_id', 'goods_id'];
+    protected $fillable = ['id', 'user_id', 'goods_id', 'new_selling_price'];
 
     public function goods()
     {
