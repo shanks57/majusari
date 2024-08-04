@@ -93,13 +93,15 @@ Route::middleware('auth', 'verified')->group(function () {
 
     Route::put('/profile/update/{id}', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::put('/profile/{id}/set-password', [UserController::class, 'updatePassword'])->name('profile.set-password');
-    
+
+    Route::get('/cart', function () {
+        return view('pages.cart');
+    })->name('pages.cart');
+
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
-// cart
 
-// end cart
 
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
@@ -112,4 +114,3 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 Route::get('/notification', function () {
     return view('pages.notification');
 });
-
