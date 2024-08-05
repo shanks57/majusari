@@ -1,6 +1,6 @@
 @section('title', 'Profile')
 <x-layout>
-    <x-header title="Profile">
+    <x-header title="Profile" subtitle="Profile">
     </x-header>
 
     @php

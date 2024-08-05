@@ -2,7 +2,7 @@
 @include('components.datatables')
 
 <x-layout>
-    <x-header title="Jenis Barang">
+    <x-header title="Jenis Barang" subtitle="Jenis Barang">
         <x-button-add>
             Tambah Jenis Barang
         </x-button-add>

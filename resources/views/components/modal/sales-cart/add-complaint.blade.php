@@ -1,0 +1,45 @@
+<div 
+    x-data="{ 
+        form: {
+            id: '{{ $cart->id }}',
+            complaint: '{{ $cart->complaint }}',
+        }
+    }" 
+    class="hs-overlay hidden size-full fixed top-0 start-0 p-6 mt-4 mr-4 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none" 
+    role="dialog" tabindex="-1" aria-labelledby="add-complaint-modal-label" id="hs-add-complaint-modal-{{ $cart->id }}">
+    
+    <div class="m-3 transition-all ease-out opacity-0 md:ml-auto hs-overlay-open:opacity-100 hs-overlay-open:duration-500 md:max-w-md md:w-full">
+        <div class="flex flex-col p-6 bg-white shadow-lg pointer-events-auto gap-y-4 rounded-xl">
+            <div class="flex flex-col items-center justify-center px-4">
+                <svg width="91" height="90" viewBox="0 0 91 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4.5" y="4" width="82" height="82" rx="41" fill="#FB6514"/>
+                    <rect x="4.5" y="4" width="82" height="82" rx="41" stroke="#FFF6ED" stroke-width="8"/>
+                    <path d="M52.0627 60.75C52.0627 61.0981 51.9244 61.432 51.6782 61.6781C51.4321 61.9243 51.0983 62.0625 50.7502 62.0625H40.2502C39.9021 62.0625 39.5682 61.9243 39.3221 61.6781C39.0759 61.432 38.9377 61.0981 38.9377 60.75C38.9377 60.4019 39.0759 60.0681 39.3221 59.822C39.5682 59.5758 39.9021 59.4375 40.2502 59.4375H50.7502C51.0983 59.4375 51.4321 59.5758 51.6782 59.822C51.9244 60.0681 52.0627 60.4019 52.0627 60.75ZM61.8063 33.8963C60.3312 31.0131 58.1162 28.5739 55.3882 26.8285C55.2424 26.7354 55.0797 26.672 54.9094 26.642C54.7391 26.612 54.5645 26.6159 54.3957 26.6536C54.2269 26.6913 54.0672 26.762 53.9258 26.8616C53.7844 26.9612 53.6641 27.0878 53.5717 27.234C53.4794 27.3803 53.4169 27.5433 53.3878 27.7138C53.3588 27.8843 53.3636 28.0589 53.4022 28.2275C53.4408 28.3961 53.5124 28.5554 53.6128 28.6962C53.7131 28.8371 53.8403 28.9567 53.9871 29.0482C56.3276 30.5371 58.2239 32.6289 59.4766 35.1038C59.6422 35.4029 59.9179 35.6257 60.2452 35.7246C60.5725 35.8235 60.9254 35.7909 61.229 35.6335C61.5325 35.4762 61.7627 35.2066 61.8705 34.8822C61.9784 34.5577 61.9553 34.204 61.8063 33.8963ZM30.3588 35.8125C30.5993 35.8124 30.8351 35.7463 31.0405 35.6213C31.2459 35.4963 31.4131 35.3173 31.5237 35.1038C32.7765 32.6289 34.6727 30.5371 37.0132 29.0482C37.16 28.9567 37.2872 28.8371 37.3875 28.6962C37.4879 28.5554 37.5595 28.3961 37.5981 28.2275C37.6367 28.0589 37.6416 27.8843 37.6125 27.7138C37.5834 27.5433 37.5209 27.3803 37.4286 27.234C37.3362 27.0878 37.2159 26.9612 37.0745 26.8616C36.9331 26.762 36.7734 26.6913 36.6046 26.6536C36.4358 26.6159 36.2613 26.612 36.0909 26.642C35.9206 26.672 35.7579 26.7354 35.6121 26.8285C32.8841 28.5739 30.6691 31.0131 29.194 33.8963C29.0904 34.0963 29.04 34.3196 29.0476 34.5448C29.0553 34.7699 29.1208 34.9893 29.2378 35.1818C29.3548 35.3743 29.5194 35.5334 29.7158 35.6439C29.9121 35.7544 30.1336 35.8124 30.3588 35.8125ZM60.8909 52.8652C61.1234 53.2639 61.2467 53.7169 61.2482 54.1785C61.2498 54.6401 61.1297 55.094 60.8999 55.4943C60.6701 55.8946 60.3388 56.2273 59.9394 56.4587C59.5401 56.6902 59.0867 56.8122 58.6252 56.8125H32.3752C31.9138 56.8116 31.4609 56.6892 31.062 56.4575C30.6631 56.2258 30.3323 55.8931 30.1029 55.4929C29.8735 55.0926 29.7536 54.639 29.7554 54.1777C29.7571 53.7164 29.8803 53.2637 30.1127 52.8652C31.5909 50.314 32.3752 46.6866 32.3752 42.375C32.3752 38.8941 33.758 35.5557 36.2194 33.0943C38.6808 30.6329 42.0192 29.25 45.5002 29.25C48.9811 29.25 52.3195 30.6329 54.7809 33.0943C57.2423 35.5557 58.6252 38.8941 58.6252 42.375C58.6252 46.685 59.4094 50.3124 60.8909 52.8652ZM58.6252 54.1875C56.8795 51.1901 56.0002 47.2165 56.0002 42.375C56.0002 39.5903 54.8939 36.9196 52.9248 34.9504C50.9556 32.9813 48.2849 31.875 45.5002 31.875C42.7154 31.875 40.0447 32.9813 38.0755 34.9504C36.1064 36.9196 35.0002 39.5903 35.0002 42.375C35.0002 47.2182 34.1175 51.1918 32.3752 54.1875H58.6252Z" fill="white"/>
+                </svg>
+            </div>
+            <p class="px-4 text-sm text-gray-600 ">Sertakan alasan memberikan harga kurang dari yang ditentukan.</p>
+            <form :action="`{{ route('cart.add-complaint', $cart->id) }}`" method="post">
+                @csrf
+                @method('PATCH')
+                <div class="px-4 overflow-y-auto">
+                    <div class="w-full mb-4">
+                        <textarea class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" rows="3" placeholder="Jelaskan secara singkat" id="complaint" name="complaint" x-model="form.complaint" required></textarea>
+                        
+                        @error('complaint')
+                        <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="flex items-center justify-center px-4 gap-x-2">
+                    <button type="submit"
+                        :disabled="!form.complaint"
+                        class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white"
+                        :class="{ 'opacity-50 cursor-not-allowed': !form.complaint }">
+                        <span>Kirim</span>
+                        <i class="ph ph-paper-plane-tilt ml-1.5"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

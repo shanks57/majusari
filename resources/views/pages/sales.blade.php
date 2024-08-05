@@ -1,7 +1,7 @@
 @section('title', 'Penjualan')
 @include('components.datatables-sales')
 <x-layout>
-    <x-header title="Penjualan">
+    <x-header title="Penjualan" subtitle="Data Penjualan">
         <x-slot name="secondary">
             <x-button-add url="{{ route('goods-types.index') }}" bgColor="bg-white" textColor="text-[#606060]"
                 icon="ph ph-barcode" borderButton="border" borderColor="border-[#DFDFDF]"
@@ -84,10 +84,10 @@
                         </td>
                         <td class="px-6 py-3 font-semibold leading-6 text-left">
                             <span
-                                class="px-2 py-1 border boreder-[#D0D5DD] border-s rounded-full">{{ $sale->transaction->code }}
+                                class="px-2 py-1 border boreder-[#D0D5DD] border-s rounded-full">{{ $sale->nota }}
                                 - {{ $sale->goods->name }}</span>
                         </td>
-                        <td class="px-6 py-3 text-left">{{ $sale->goods->size }} <span
+                        <td class="px-6 py-3 text-left">{{ $sale->goods->size }}gr <span
                                 class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $sale->goods->rate }}%</span>
                         </td>
                         <td class="px-6 py-3 text-left"><span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i>

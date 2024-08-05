@@ -2,17 +2,17 @@
 @include('components.datatables')
 
 <x-layout>
-    <x-header title="Pelanggan">
+    <x-header title="Pelanggan" subtitle="Pelanggan">
     </x-header>
         <div class="container py-4 mx-auto">
-        <div class="mb-4 relative w-full mx-auto">
+        <div class="relative w-full mx-auto mb-4">
             <input type="text" id="searchEtalase"
                 class="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#79799B]"
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-         <div class="overflow-hidden shadow-lg rounded-t-lg border border-gray-200">
-            <table id="etalaseTable" class="display min-w-full bg-white border border-gray-200">
+         <div class="overflow-hidden border border-gray-200 rounded-t-lg shadow-lg">
+            <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
