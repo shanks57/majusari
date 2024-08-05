@@ -16,7 +16,7 @@ class Transaction extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'code', 'date', 'user_id', 'customer_id', 'total'];
+    protected $fillable = ['id', 'code', 'date', 'user_id', 'customer_id', 'total', 'payment_method'];
     protected $dates = ['date'];
     
     public function customer()

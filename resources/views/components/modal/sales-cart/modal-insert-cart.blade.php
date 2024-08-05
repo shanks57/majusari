@@ -11,7 +11,7 @@
             </button>
         </div>
         <div class="border-b border-[#D0D5DD]"></div>
-        <form action="{{ route('sale.insert-to-cart') }}" method="post">
+        <form action="{{ route('cart.insert-to-cart') }}" method="post">
             @csrf
             <input type="hidden" name="goods_id" value="{{ session('good-id-form') }}">
             <input type="hidden" name="ask_price" value="{{ session('good-price-form') }}">

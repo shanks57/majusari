@@ -1,6 +1,6 @@
 @section('title', 'Detail Baki')
 <x-layout>
-    <x-header title="Detail Baki">
+    <x-header title="Detail Baki" subtitle="Baki">
     </x-header>
 
     <div x-data="goodsTraySearch()" class="container py-4 mx-auto">

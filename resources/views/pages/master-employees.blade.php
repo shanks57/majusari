@@ -1,7 +1,7 @@
 @section('title', 'Pegawai')
 @include('components.datatables')
 <x-layout>
-    <x-header title="Pegawai">
+    <x-header title="Pegawai" subtitle="Pegawai">
         <x-button-add url="{{ route('goods-types.index') }}">
             Tambah Pegawai Baru
         </x-button-add>

@@ -16,8 +16,11 @@ class TransactionDetail extends Model
     
     protected $fillable = [
         'id',
+        'nota',
         'transaction_id',
-        'goods_id'
+        'goods_id',
+        'tray_id',
+        'harga_jual'
     ];
 
     public function transaction()
@@ -28,5 +31,10 @@ class TransactionDetail extends Model
     public function goods()
     {
         return $this->belongsTo(Goods::class);
+    }
+
+    public function tray()
+    {
+        return $this->belongsTo(Tray::class, 'tray_id');
     }
 }

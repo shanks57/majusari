@@ -84,6 +84,16 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/sales', [SalesController::class, 'index'])->name("sale.index");
     Route::post('/sale/search-code', [SalesController::class, 'searchCode'])->name('sale.search-code');
     Route::post('/sale/insert-to-cart', [SalesController::class, 'insertToCart'])->name('sale.insert-to-cart');
+    Route::post('/cart/insert-to-cart', [SalesController::class, 'insertToCartInChart'])->name('cart.insert-to-cart');
+    Route::get('/cart', [SalesController::class, 'cart'])->name("pages.cart");
+    Route::delete('/cart/{id}', [SalesController::class, 'destroy'])->name('cart.destroy');
+    Route::patch('/cart/{id}/update', [SalesController::class, 'update'])->name('cart.update');
+    Route::patch('/cart/{id}/add-complaint', [SalesController::class, 'addComplaint'])->name('cart.add-complaint');
+
+    Route::get('/notification', [SalesController::class, 'getNotification'])->name('notification');
+    Route::patch('/cart/{notif}/reject-price', [SalesController::class, 'rejectPrice'])->name('cart.reject-price');
+    Route::patch('/cart/{notif}/agree-price', [SalesController::class, 'agreePrice'])->name('cart.agree-price');
+    Route::post('/checkout', [SalesController::class, 'checkout'])->name('sale.checkout');
     // end route penjualan
 
     // start profile
@@ -93,15 +103,10 @@ Route::middleware('auth', 'verified')->group(function () {
 
     Route::put('/profile/update/{id}', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::put('/profile/{id}/set-password', [UserController::class, 'updatePassword'])->name('profile.set-password');
-
-    Route::get('/cart', function () {
-        return view('pages.cart');
-    })->name('pages.cart');
+    // end profile
 
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 });
-
-
 
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
@@ -110,7 +115,3 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     $request->fulfill();
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
-
-Route::get('/notification', function () {
-    return view('pages.notification');
-});

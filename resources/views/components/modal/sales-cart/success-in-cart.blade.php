@@ -57,11 +57,12 @@
                     Tambahkan Lainnya
                     <i class="ph ph-plus ml-1.5"></i>
                 </button>
-                <a href="{{route('pages.cart')}}"
-                    class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg text-[#D0D5DD] border-[#D0D5DD] border bg-white">
+                <button type="button" @click="open = false"
+                    class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg text-[#D0D5DD] border-[#D0D5DD] border bg-white"
+                    >
                     Tutup
                     <i class="ph ph-x ml-1.5"></i>
-                </a>
+                </button>
             </div>
         </div>
     </div>
