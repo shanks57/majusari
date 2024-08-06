@@ -5,7 +5,7 @@
         <x-slot name="secondary">
             <x-button-add url="{{ route('goods-types.index') }}" bgColor="bg-white" textColor="text-[#606060]"
                 icon="ph ph-barcode" borderButton="border" borderColor="border-[#DFDFDF]"
-                dataHsOverlay='#hs-add-modal1'>
+                dataHsOverlay='#hs-check-nota-modal'>
                 Cek Nota
             </x-button-add>
         </x-slot>
@@ -98,10 +98,21 @@
                             {{ $sale->transaction->user->name }}
                         </td>
                         <td class="px-6 py-3 text-center">
-                            <button
-                                class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]">
-                                <i class="ph ph-dots-three-outline-vertical"></i> Opsi
-                            </button>
+                            <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
+                                <button id="hs-dropright" type="button"
+                                    class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]"
+                                    aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                                    <i class="ph ph-dots-three-outline-vertical"></i> Opsi
+                                </button>
+                                <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl px-3 py-1"
+                                    role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
+                                    <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
+                                        href="{{ route('sale.printNota', $sale->id) }}">
+                                        <i class="ph ph-printer"></i>
+                                        Cetak Nota
+                                    </a>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     @endforeach
@@ -124,5 +135,7 @@
 
 @include('components.modal.sales.new-sale')
 @include('components.modal.sales.modal-form')
+@include('components.modal.sales.check-nota')
+@include('components.modal.sales.nota-result')
 @include('components.modal.sales.success-cart')
 @include('components.modal.error-modal')

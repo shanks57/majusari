@@ -357,4 +357,51 @@ class SalesController extends Controller
         }
     }
 
+    public function searchNota(Request $request)
+    {
+        $request->validate([
+            'nota' => 'required|string'
+        ]);
+
+        $nota = $request->input('nota');
+        
+        $transaction = TransactionDetail::where('nota', $nota)->first();
+
+        if ($transaction) {
+            
+            session()->flash('nota-good-name', $transaction->goods->name);
+            session()->flash('nota-penjualan', $transaction->nota);
+            session()->flash('nota-goods-image', $transaction->goods->image);
+            session()->flash('nota-good-color', $transaction->goods->color);
+            session()->flash('nota-good-merk', $transaction->goods->merk->name);
+            session()->flash('nota-good-rate', $transaction->goods->rate);
+            session()->flash('nota-good-size', $transaction->goods->size);
+            session()->flash('nota-good-type', $transaction->goods->goodsType->name);
+            session()->flash('nota-good-showcase', $transaction->tray->showcase->name);
+            session()->flash('nota-good-tray', $transaction->tray->code);
+            session()->flash('nota-harga-jual', $transaction->harga_jual);
+
+            return redirect()->route('sale.index', $transaction->id)
+                             ->with('nota-result', 'Transaksi ditemukan.');
+        } else {
+            return redirect()->back()->with('error', 'Kode penjualan tidak ditemukan.');
+        }
+    }
+
+    public function printNota($id)
+    {
+        try {
+            $sale = TransactionDetail::findOrFail($id);
+
+            return view('print-page.print-invoice', [
+                'sale' => $sale,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Barang tidak ditemukan
+            return redirect()->route('sale.index')->with('error', 'Barang tidak ditemukan');
+        } catch (\Exception $e) {
+            return redirect()->route('sale.index')->with('error', 'Terjadi kesalahan saat menghasilkan barcode. Silakan coba lagi.');
+        }
+    }
+
 }

@@ -94,6 +94,8 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::patch('/cart/{notif}/reject-price', [SalesController::class, 'rejectPrice'])->name('cart.reject-price');
     Route::patch('/cart/{notif}/agree-price', [SalesController::class, 'agreePrice'])->name('cart.agree-price');
     Route::post('/checkout', [SalesController::class, 'checkout'])->name('sale.checkout');
+    Route::post('/sale/search-nota', [SalesController::class, 'searchNota'])->name('sale.search-nota');
+    Route::get('/sale/{id}/print-nota', [SalesController::class, 'printNota'])->name('sale.printNota');
     // end route penjualan
 
     // start profile
