@@ -52,15 +52,37 @@
             <div class="col-span-7 p-4 bg-white border rounded-lg">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-semibold">Ringkasan Penjualan</h2>
-                    <div class="relative">
-                        <button class="px-4 py-2 text-gray-700 bg-gray-200 rounded">Tahun Ini</button>
-                        <div class="absolute right-0 hidden w-48 mt-2 bg-white border rounded">
-                            <!-- Dropdown menu here -->
+                    <a href="/sales" class="flex items-center text-sm hover:underline">
+                        <span>Selengkapnya</span>
+                        <i class="ph ph-caret-right"></i>
+                    </a>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <div class="text-3xl font-semibold mb-3 flex items-start gap-2">Rp 60.000.000 <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-500">
+                                <i class="ph ph-trend-up"></i>
+                                +23.2%</span></div>
+                        <div class="text-xs"><span class="text-gray-500">Total Penjualan (RP)</span> Tahun Ini</div>
+                    </div>
+                    <div x-data="{ open: false, selectedOption: 'Tahun Ini' }" class="relative inline-block text-left">
+                        <div>
+                            <button @click="open = !open" type="button" class="inline-flex items-center gap-1 justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                                <i class="ph ph-calendar-blank"></i>
+                                <span x-text="selectedOption"></span>
+                                <i class="ph ph-caret-down"></i>
+                            </button>
+                        </div>
+
+                        <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                <span @click="selectedOption = 'Tahun Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Tahun Ini</span>
+                                <span @click="selectedOption = 'Bulan Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Bulan Ini</span>
+                                <span @click="selectedOption = 'Minggu Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Minggu Ini</span>
+                                <span @click="selectedOption = 'Hari Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Hari Ini</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="text-3xl font-bold">Rp 60.000.000 <span class="text-lg text-green-500">+23.2%</span></div>
-                <div>Total Penjualan (RP) Tahun Ini</div>
                 <canvas id="sales-chart" class="h-64 mt-4"></canvas>
             </div>
             <div class="col-span-5 px-6 pt-6 pb-4 bg-white border rounded-xl">
@@ -120,35 +142,85 @@
         <div class="col-span-7 p-4 bg-white border rounded-lg">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-semibold">Ringkasan Penjualan</h2>
-                <div class="relative">
-                    <button class="px-4 py-2 text-gray-700 bg-gray-200 rounded">Tahun Ini</button>
-                    <div class="absolute right-0 hidden w-48 mt-2 bg-white border rounded">
-                        <!-- Dropdown menu here -->
+                <a href="/sales" class="flex items-center text-sm hover:underline">
+                    <span>Selengkapnya</span>
+                    <i class="ph ph-caret-right"></i>
+                </a>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <div class="text-3xl font-semibold mb-3 flex items-start gap-2">Rp 60.000.000 <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-500">
+                            <i class="ph ph-trend-up"></i>+23.2%</span></div>
+                    <div class="text-xs"><span class="text-gray-500">Total Penjualan (RP)</span> Tahun Ini</div>
+                </div>
+                <div x-data="{ open: false, selectedOption: 'Tahun Ini' }" class="relative inline-block text-left">
+                    <div>
+                        <button @click="open = !open" type="button" class="inline-flex items-center gap-1 justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                            <i class="ph ph-calendar-blank"></i>
+                            <span x-text="selectedOption"></span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                    </div>
+
+                    <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                            <span @click="selectedOption = 'Tahun Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Tahun Ini</span>
+                            <span @click="selectedOption = 'Bulan Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Bulan Ini</span>
+                            <span @click="selectedOption = 'Minggu Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Minggu Ini</span>
+                            <span @click="selectedOption = 'Hari Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Hari Ini</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="text-3xl font-bold">Rp 60.000.000 <span class="text-lg text-green-500">+23.2%</span></div>
-            <div>Total Penjualan (RP) Tahun Ini</div>
             <canvas id="sales-chart-detail" class="h-64 mt-4"></canvas>
         </div>
-
     </div>
     <div id="tab-content-weight" class="hidden tab-content">
         <div class="col-span-7 p-4 bg-white border rounded-lg">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-semibold">Ringkasan Penjualan</h2>
-                <div class="relative">
-                    <button class="px-4 py-2 text-gray-700 bg-gray-200 rounded">Tahun Ini</button>
-                    <div class="absolute right-0 hidden w-48 mt-2 bg-white border rounded">
-                        <!-- Dropdown menu here -->
+                <h2 class="text-xl font-semibold">Total Berat Barang</h2>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex gap-8">
+                    <div>
+                        <div class="text-3xl font-semibold mb-3 flex items-center gap-2">16926.33 gr <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-500">
+                                <i class="ph ph-trend-up"></i>+23.2%</span></div>
+                        <div class="flex gap-3 items-center">
+                            <div class="bg-[#ADD8E699]  w-8 h-3 rounded-full"></div>
+                            <p class="text-xs text-gray-500">Total Barang Masuk</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-semibold mb-3 flex items-center gap-2">12145.11 gr <span class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-500">
+                                <i class="ph ph-trend-down"></i>+23.2%</span></div>
+                        <div class="flex gap-3 items-center">
+                            <div class="bg-[#4682B499] w-8 h-3 rounded-full"></div>
+                            <p class="text-xs text-gray-500">Total Barang Keluar</p>
+                        </div>
+                    </div>
+                </div>
+                <div x-data="{ open: false, selectedOption: 'Tahun Ini' }" class="relative inline-block text-left">
+                    <div>
+                        <button @click="open = !open" type="button" class="inline-flex items-center gap-1 justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                            <i class="ph ph-calendar-blank"></i>
+                            <span x-text="selectedOption"></span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                    </div>
+
+                    <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                            <span @click="selectedOption = 'Tahun Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Tahun Ini</span>
+                            <span @click="selectedOption = 'Bulan Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Bulan Ini</span>
+                            <span @click="selectedOption = 'Minggu Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Minggu Ini</span>
+                            <span @click="selectedOption = 'Hari Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Hari Ini</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="text-3xl font-bold">Rp 60.000.000 <span class="text-lg text-green-500">+23.2%</span></div>
-            <div>Total Penjualan (RP) Tahun Ini</div>
             <canvas id="weight-chart" class="h-64 mt-4"></canvas>
         </div>
-        <!-- Empty content for now -->
+
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -188,6 +260,11 @@
                     }]
                 },
                 options: {
+                    plugins: {
+                        legend: {
+                            display: false // Hide the legend
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -226,6 +303,11 @@
                     }]
                 },
                 options: {
+                    plugins: {
+                        legend: {
+                            display: false // Hide the legend
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -243,38 +325,52 @@
             });
 
             const weightChartElement = document.getElementById('weight-chart').getContext('2d');
-            const weightData = [60, 70, 100, 80, 70, 50, 75, 60, 30, 50, 60, 100];
-            const bgColorWeight = weightData.map((value, index) => {
-                return index === 6 ? '#E9D2F7' : '#E6E6E6'; // Purple for July, gray for others
-            });
-
-            const weightChart = new Chart(weightChartElement, {
+            const myChart = new Chart(weightChartElement, {
                 type: 'bar',
                 data: {
-                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT',
-                        'NOV', 'DEC'
-                    ],
+                    labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
                     datasets: [{
-                        label: 'Sales',
-                        data: salesData,
-                        backgroundColor: bgColorWeight,
-                        borderColor: bgColorWeight,
-                        borderWidth: 0,
-                        borderRadius: 4,
-                    }]
+                            label: 'Total Barang Masuk',
+                            data: [60, 80, 50, 70, 40, 60, 50, 90, 60, 50],
+                            backgroundColor: 'rgba(173, 216, 230, 0.6)', // lightblue
+                            borderRadius: 4,
+                        },
+                        {
+                            label: 'Total Barang Keluar',
+                            data: [40, 60, 60, 50, 30, 50, 60, 70, 50, 50],
+                            backgroundColor: 'rgba(70, 130, 180, 0.6)', // steelblue
+                            borderRadius: 4,
+                        }
+                    ]
                 },
                 options: {
+                    plugins: {
+                        legend: {
+                            display: false // Hide the legend
+                        }
+                    },
+
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                display: false // This removes the grid lines
-                            }
-                        },
                         x: {
                             grid: {
-                                display: false // This removes the grid lines
+                                display: false,
                             }
+                        },
+                        y: {
+                            grid: {
+                                display: false,
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return 'Rp ' + value + 'Jt';
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        bar: {
+                            borderRadius: 4,
                         }
                     }
                 }
