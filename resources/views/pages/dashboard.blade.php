@@ -3,9 +3,15 @@
     <x-header title="Dashboard" subtitle="Dashboard">
     </x-header>
     <div x-data="{ activeTab: 'summary' }" class="flex p-1 mt-4 mb-6 bg-gray-100 rounded-lg w-fit">
-        <button id="tab-summary" @click="activeTab = 'summary'" :class="{'bg-white': activeTab === 'summary'}" class="px-4 py-2 rounded tab-button" :class="{'active': activeTab === 'summary', 'bg-white': activeTab !== 'summary'}">Ringkasan</button>
-        <button id="tab-sales" @click="activeTab = 'sales'" :class="{'bg-white': activeTab === 'sales'}" class="px-4 py-2 mx-2 rounded tab-button" :class="{'active': activeTab === 'sales', 'bg-white': activeTab !== 'sales'}">Penjualan</button>
-        <button id="tab-weight" @click="activeTab = 'weight'" :class="{'bg-white': activeTab === 'weight'}" class="px-4 py-2 rounded tab-button" :class="{'active': activeTab === 'weight', 'bg-white': activeTab !== 'weight'}">Berat Barang</button>
+        <button id="tab-summary" @click="activeTab = 'summary'" :class="{'bg-white': activeTab === 'summary'}"
+            class="px-4 py-2 rounded tab-button"
+            :class="{'active': activeTab === 'summary', 'bg-white': activeTab !== 'summary'}">Ringkasan</button>
+        <button id="tab-sales" @click="activeTab = 'sales'" :class="{'bg-white': activeTab === 'sales'}"
+            class="px-4 py-2 mx-2 rounded tab-button"
+            :class="{'active': activeTab === 'sales', 'bg-white': activeTab !== 'sales'}">Penjualan</button>
+        <button id="tab-weight" @click="activeTab = 'weight'" :class="{'bg-white': activeTab === 'weight'}"
+            class="px-4 py-2 rounded tab-button"
+            :class="{'active': activeTab === 'weight', 'bg-white': activeTab !== 'weight'}">Berat Barang</button>
     </div>
     <div id="tab-content-summary" class="tab-content">
         <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
@@ -57,31 +63,47 @@
                         <i class="ph ph-caret-right"></i>
                     </a>
                 </div>
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center justify-between mb-4">
                     <div>
-                        <div class="text-3xl font-semibold mb-3 flex items-start gap-2">Rp 60.000.000 <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-500">
+                        <div class="flex items-start gap-2 mb-3 text-3xl font-semibold">Rp
+                            {{ number_format($totalSales, 0, ',', '.') }} <span
+                                class="px-2 py-1 text-xs text-green-500 bg-green-100 rounded-full">
                                 <i class="ph ph-trend-up"></i>
                                 +23.2%</span></div>
                         <div class="text-xs"><span class="text-gray-500">Total Penjualan (RP)</span> Tahun Ini</div>
                     </div>
                     <div x-data="{ open: false, selectedOption: 'Tahun Ini' }" class="relative inline-block text-left">
-                        <div>
-                            <button @click="open = !open" type="button" class="inline-flex items-center gap-1 justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                                <i class="ph ph-calendar-blank"></i>
-                                <span x-text="selectedOption"></span>
-                                <i class="ph ph-caret-down"></i>
-                            </button>
-                        </div>
-
-                        <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                <span @click="selectedOption = 'Tahun Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Tahun Ini</span>
-                                <span @click="selectedOption = 'Bulan Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Bulan Ini</span>
-                                <span @click="selectedOption = 'Minggu Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Minggu Ini</span>
-                                <span @click="selectedOption = 'Hari Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Hari Ini</span>
-                            </div>
-                        </div>
+                    <div>
+                        <button @click="open = !open" type="button"
+                            class="inline-flex items-center justify-center w-full gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                            <i class="ph ph-calendar-blank"></i>
+                            <span x-text="selectedOption"></span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
                     </div>
+
+                    <div x-show="open" @click.away="open = false"
+                        class="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                <span @click="selectedOption = 'Tahun Ini'; open = false"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    role="menuitem">Tahun Ini
+                                </span>
+                                <span @click="selectedOption = 'Bulan Ini'; open = false"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    role="menuitem">Bulan Ini
+                                </span>
+                                <span @click="selectedOption = 'Minggu Ini'; open = false"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    role="menuitem">Minggu Ini
+                                </span>
+                                <span @click="selectedOption = 'Hari Ini'; open = false"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    role="menuitem">Hari Ini
+                                </span>
+                            </div>
+                    </div>
+                </div>
                 </div>
                 <canvas id="sales-chart" class="h-64 mt-4"></canvas>
             </div>
@@ -93,7 +115,10 @@
                             {{ Carbon\Carbon::now()->format('d M Y') }}
                         </div>
                     </div>
-                    <button type="button" class="bg-[#6634BB] text-[#F8F8F8] py-3 px-4 rounded-lg h-fit font-medium text-sm" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal" data-hs-overlay="#hs-add-modal">Update
+                    <button type="button"
+                        class="bg-[#6634BB] text-[#F8F8F8] py-3 px-4 rounded-lg h-fit font-medium text-sm"
+                        aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal"
+                        data-hs-overlay="#hs-add-modal">Update
                         Kurs</button>
                 </div>
                 <div class="mt-4">
@@ -147,27 +172,38 @@
                     <i class="ph ph-caret-right"></i>
                 </a>
             </div>
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center justify-between mb-4">
                 <div>
-                    <div class="text-3xl font-semibold mb-3 flex items-start gap-2">Rp 60.000.000 <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-500">
+                    <div class="flex items-start gap-2 mb-3 text-3xl font-semibold">Rp {{ number_format($totalSales, 0, ',', '.') }} <span
+                            class="px-2 py-1 text-xs text-green-500 bg-green-100 rounded-full">
                             <i class="ph ph-trend-up"></i>+23.2%</span></div>
                     <div class="text-xs"><span class="text-gray-500">Total Penjualan (RP)</span> Tahun Ini</div>
                 </div>
                 <div x-data="{ open: false, selectedOption: 'Tahun Ini' }" class="relative inline-block text-left">
                     <div>
-                        <button @click="open = !open" type="button" class="inline-flex items-center gap-1 justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                        <button @click="open = !open" type="button"
+                            class="inline-flex items-center justify-center w-full gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                             <i class="ph ph-calendar-blank"></i>
                             <span x-text="selectedOption"></span>
                             <i class="ph ph-caret-down"></i>
                         </button>
                     </div>
 
-                    <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div x-show="open" @click.away="open = false"
+                        class="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
                         <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <span @click="selectedOption = 'Tahun Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Tahun Ini</span>
-                            <span @click="selectedOption = 'Bulan Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Bulan Ini</span>
-                            <span @click="selectedOption = 'Minggu Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Minggu Ini</span>
-                            <span @click="selectedOption = 'Hari Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Hari Ini</span>
+                            <span @click="selectedOption = 'Tahun Ini'; open = false"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                role="menuitem">Tahun Ini</span>
+                            <span @click="selectedOption = 'Bulan Ini'; open = false"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                role="menuitem">Bulan Ini</span>
+                            <span @click="selectedOption = 'Minggu Ini'; open = false"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                role="menuitem">Minggu Ini</span>
+                            <span @click="selectedOption = 'Hari Ini'; open = false"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                role="menuitem">Hari Ini</span>
                         </div>
                     </div>
                 </div>
@@ -180,20 +216,22 @@
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-semibold">Total Berat Barang</h2>
             </div>
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center justify-between mb-4">
                 <div class="flex gap-8">
                     <div>
-                        <div class="text-3xl font-semibold mb-3 flex items-center gap-2">16926.33 gr <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-500">
+                        <div class="flex items-center gap-2 mb-3 text-3xl font-semibold">16926.33 gr <span
+                                class="px-2 py-1 text-xs text-green-500 bg-green-100 rounded-full">
                                 <i class="ph ph-trend-up"></i>+23.2%</span></div>
-                        <div class="flex gap-3 items-center">
+                        <div class="flex items-center gap-3">
                             <div class="bg-[#ADD8E699]  w-8 h-3 rounded-full"></div>
                             <p class="text-xs text-gray-500">Total Barang Masuk</p>
                         </div>
                     </div>
                     <div>
-                        <div class="text-3xl font-semibold mb-3 flex items-center gap-2">12145.11 gr <span class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-500">
+                        <div class="flex items-center gap-2 mb-3 text-3xl font-semibold">12145.11 gr <span
+                                class="px-2 py-1 text-xs text-red-500 bg-red-100 rounded-full">
                                 <i class="ph ph-trend-down"></i>+23.2%</span></div>
-                        <div class="flex gap-3 items-center">
+                        <div class="flex items-center gap-3">
                             <div class="bg-[#4682B499] w-8 h-3 rounded-full"></div>
                             <p class="text-xs text-gray-500">Total Barang Keluar</p>
                         </div>
@@ -201,19 +239,29 @@
                 </div>
                 <div x-data="{ open: false, selectedOption: 'Tahun Ini' }" class="relative inline-block text-left">
                     <div>
-                        <button @click="open = !open" type="button" class="inline-flex items-center gap-1 justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                        <button @click="open = !open" type="button"
+                            class="inline-flex items-center justify-center w-full gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
                             <i class="ph ph-calendar-blank"></i>
                             <span x-text="selectedOption"></span>
                             <i class="ph ph-caret-down"></i>
                         </button>
                     </div>
 
-                    <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div x-show="open" @click.away="open = false"
+                        class="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
                         <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <span @click="selectedOption = 'Tahun Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Tahun Ini</span>
-                            <span @click="selectedOption = 'Bulan Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Bulan Ini</span>
-                            <span @click="selectedOption = 'Minggu Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Minggu Ini</span>
-                            <span @click="selectedOption = 'Hari Ini'; open = false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Hari Ini</span>
+                            <span @click="selectedOption = 'Tahun Ini'; open = false"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                role="menuitem">Tahun Ini</span>
+                            <span @click="selectedOption = 'Bulan Ini'; open = false"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                role="menuitem">Bulan Ini</span>
+                            <span @click="selectedOption = 'Minggu Ini'; open = false"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                role="menuitem">Minggu Ini</span>
+                            <span @click="selectedOption = 'Hari Ini'; open = false"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                role="menuitem">Hari Ini</span>
                         </div>
                     </div>
                 </div>
@@ -238,8 +286,10 @@
                 });
             });
 
+            const selectElement = document.getElementById('filter');
             const ctx = document.getElementById('sales-chart').getContext('2d');
-            const salesData = [60, 70, 100, 80, 70, 50, 75, 60, 30, 50, 60, 100];
+            
+            const salesData = @json($monthlyItemsSold);
             const backgroundColors = salesData.map((value, index) => {
                 return index === 6 ? '#E9D2F7' : '#E6E6E6'; // Purple for July, gray for others
             });
@@ -247,8 +297,7 @@
             const salesChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT',
-                        'NOV', 'DEC'
+                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT','NOV', 'DEC'
                     ],
                     datasets: [{
                         label: 'Sales',
@@ -325,21 +374,74 @@
             });
 
             const weightChartElement = document.getElementById('weight-chart').getContext('2d');
+            const goodsInData = @json($goodsInValues);
+            const goodsOutData = @json($goodsOutValues);
+            const totalGoodsIn = @json($totalGoodsIn);
+            const totalGoodsOut = @json($totalGoodsOut);
+            const filter = @json($filter); // Filter yang diterima dari server
+
+            // Menentukan label berdasarkan filter
+            let labels = [];
+            if (filter === 'tahun-ini') {
+                labels = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+            } else if (filter === 'bulan-ini') {
+                const startDate = new Date();
+                const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
+                let date = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+                while (date <= endDate) {
+                    labels.push(date.toISOString().split('T')[0]); // Menggunakan format YYYY-MM-DD
+                    date.setDate(date.getDate() + 1);
+                }
+            } else if (filter === 'minggu-ini') {
+                const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay()));
+                const endDate = new Date(startDate);
+                endDate.setDate(endDate.getDate() + 6);
+                let date = startDate;
+                while (date <= endDate) {
+                    labels.push(date.toISOString().split('T')[0]); // Menggunakan format YYYY-MM-DD
+                    date.setDate(date.getDate() + 1);
+                }
+            } else if (filter === 'hari-ini') {
+                labels = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
+            }
             const myChart = new Chart(weightChartElement, {
                 type: 'bar',
                 data: {
-                    labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                    labels: labels,
                     datasets: [{
                             label: 'Total Barang Masuk',
-                            data: [60, 80, 50, 70, 40, 60, 50, 90, 60, 50],
+                            data: goodsInData,
                             backgroundColor: 'rgba(173, 216, 230, 0.6)', // lightblue
                             borderRadius: 4,
+                            datalabels: {
+                                color: '#fff',
+                                align: 'top',
+                                anchor: 'end',
+                                formatter: (value, context) => {
+                                    console.log('Context:', context);
+                                    const monthIndex = context.dataIndex;
+                                    const totalGoodsInMonth = totalGoodsIn[monthIndex];
+                                    console.log('Total Goods In Month:', totalGoodsInMonth);
+                                    return `Total Barang Masuk : ${totalGoodsInMonth} barang`;
+                                }
+                            }
+
                         },
                         {
                             label: 'Total Barang Keluar',
-                            data: [40, 60, 60, 50, 30, 50, 60, 70, 50, 50],
+                            data: goodsOutData,
                             backgroundColor: 'rgba(70, 130, 180, 0.6)', // steelblue
                             borderRadius: 4,
+                            datalabels: {
+                                color: '#fff',
+                                align: 'top',
+                                formatter: (value, context) => {
+                                    const monthIndex = context.dataIndex;
+                                    const totalOut = goodsOutData[monthIndex];
+                                    const totalGoodsOutMonth = totalGoodsOut[monthIndex];
+                                    return `Keluar: Rp ${totalOut} Jt\nTotal: ${totalGoodsOutMonth} items`;
+                                }
+                            }
                         }
                     ]
                 },
@@ -347,8 +449,26 @@
                     plugins: {
                         legend: {
                             display: false // Hide the legend
-                        }
-                    },
+                        },
+                         tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const datasetLabel = context.dataset.label || '';
+                                    const dataIndex = context.dataIndex;
+                                    const value = context.raw;
+
+                                    let additionalInfo = '';
+                                    if (context.dataset.label === 'Total Barang Masuk') {
+                                        additionalInfo = `Jumlah Masuk: ${totalGoodsIn[dataIndex]} Barang`;
+                                    } else if (context.dataset.label === 'Total Barang Keluar') {
+                                        additionalInfo = `Jumlah Keluar: ${totalGoodsOut[dataIndex]} Barang`;
+                                    }
+
+                                    return `${datasetLabel}: Rp ${value} Jt\n${additionalInfo}`;
+                                }
+                            }
+                            }
+                        },
 
                     scales: {
                         x: {
@@ -361,11 +481,6 @@
                                 display: false,
                             },
                             beginAtZero: true,
-                            ticks: {
-                                callback: function(value, index, values) {
-                                    return 'Rp ' + value + 'Jt';
-                                }
-                            }
                         }
                     },
                     elements: {
