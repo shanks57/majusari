@@ -20,13 +20,13 @@
                     <div class="w-full mb-4">
                         <label for="company" class="block text-sm text-[#344054]">Nama Perusahaan</label>
                         <input type="text" id="company" name="company" x-model="form.company"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]"
                             placeholder="Masukkan Nama Perusahaan" required>
                     </div>
                     <div class="w-full">
                         <label for="name" class="block text-sm text-[#344054] leading-5">Merek Barang</label>
                         <input type="text" id="name" name="name" x-model="form.name"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 placeholder:text-[#667085] text-[#344054]"
                             placeholder="Masukkan Merek Barang" required>
                     </div>
                 </div>

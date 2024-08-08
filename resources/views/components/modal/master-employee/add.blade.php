@@ -20,7 +20,7 @@
                     <div class="w-full mb-4">
                         <label for="name" class="block text-sm text-[#344054]">Nama Pegawai</label>
                         <input type="text" id="name" name="name" x-model="form.name"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-black placeholder:text-[#667085]"
                             placeholder="Masukkan Nama Pegawai" required>
                         @error('name')
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -29,7 +29,7 @@
                      <div class="w-full mb-4">
                         <label for="email" class="block text-sm text-[#344054]">Nama Email</label>
                         <input type="email" id="email" name="email" x-model="form.email"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-black placeholder:text-[#667085]"
                             placeholder="Masukkan Email" required>
                         @error('email')
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -38,7 +38,7 @@
                     <div class="w-full mb-4">
                         <label for="username" class="block text-sm text-[#344054]">Nama Pengguna</label>
                         <input type="text" id="username" name="username" x-model="form.username"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-black placeholder:text-[#667085]"
                             placeholder="Masukkan Nama Pengguna" required>
                         @error('username')
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -47,8 +47,8 @@
                     <div class="w-full mb-4">
                         <label for="phone" class="block text-sm text-[#344054]">Nomor Handphone</label>
                         <input type="text" id="phone" name="phone" x-model="form.phone"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
-                            placeholder="Masukkan Nomor Handphone" required minlength="10" maxlength="15">
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-black placeholder:text-[#667085]"
+                            placeholder="Masukkan Nomor Handphone" required pattern="[0-9]{10,13}" title="Nomor HP harus terdiri dari 10 hingga 13 digit.">
                         @error('phone')
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                         @enderror
@@ -56,7 +56,7 @@
                     <div class="w-full mb-4">
                         <label for="wages" class="block text-sm text-[#344054]">Gaji Pegawai</label>
                         <input type="number" id="wages" name="wages" x-model="form.wages"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-black placeholder:text-[#667085]"
                             placeholder="Masukkan Gaji Pegawai"  min="0" required>
                         @error('wages')
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -65,7 +65,7 @@
                     <div class="w-full mb-4">
                         <label for="debt_receipt" class="block text-sm text-[#344054]">Bon Hutang</label>
                         <input type="number" id="debt_receipt" name="debt_receipt" x-model="form.debt_receipt"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-black placeholder:text-[#667085]"
                             placeholder="Masukkan Bon Hutang" min="0" required>
                         @error('debt_receipt')
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="w-full mb-4">
                         <label for="address" class="block text-sm text-[#344054]">Alamat</label>
-                        <textarea id="address" name="address" x-model="form.address" class="block w-full px-4 py-3 text-base mt-1.5 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" rows="3" placeholder="Masukkan Alamat..." required></textarea>
+                        <textarea id="address" name="address" x-model="form.address" class="block w-full px-4 py-3 text-base mt-1.5 border-gray-200 rounded-lg focus:border-[#79799B] disabled:opacity-50 text-black placeholder:text-[#667085] disabled:pointer-events-none" rows="3" placeholder="Masukkan Alamat" required></textarea>
                         @error('address')
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                         @enderror

@@ -18,8 +18,10 @@ class GoodsTypeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'jenisBarang' => 'required|string|max:255',
+            'jenisBarang' => 'required|string|max:255|unique:goods_types,name',
             'tambahanBiaya' => 'required|numeric|min:0',
+        ],[
+            'jenisBarang.unique' => 'Jenis barang sudah digunakan. Silakan pilih nama jenis barang lain.',
         ]);
 
         try {
@@ -41,9 +43,11 @@ class GoodsTypeController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'jenisBarang' => 'required|string|max:255',
+            'jenisBarang' => 'required|string|max:255|unique:goods_types,name,'. $id,
             'tambahanBiaya' => 'required|numeric|min:0',
             'status' => 'boolean',
+        ],[
+            'jenisBarang.unique' => 'Jenis barang sudah digunakan. Silakan pilih nama jenis barang lain.',
         ]);
 
         try {

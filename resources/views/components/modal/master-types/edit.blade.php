@@ -28,24 +28,14 @@
                     <div class="w-full mb-4">
                         <label for="jenisBarang" class="block text-sm text-[#344054]">Jenis Barang</label>
                         <input type="text" id="jenisBarang" name="jenisBarang" x-model="form.jenisBarang"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]"
                             placeholder="Masukkan Jenis Barang" required>
-                        
-                        <!-- Error message for jenisBarang -->
-                        @error('jenisBarang')
-                        <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
                     <div class="w-full mb-4">
                         <label for="tambahanBiaya" class="block text-sm text-[#344054] leading-5">Tambahan Biaya</label>
                         <input type="number" id="tambahanBiaya" name="tambahanBiaya" x-model="form.tambahanBiaya"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 text-[#667085]"
-                            placeholder="Masukkan Tambahan Biaya" required min="0">
-                        
-                        <!-- Error message for tambahanBiaya -->
-                        @error('tambahanBiaya')
-                        <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
-                        @enderror
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 placeholder:text-[#667085] text-[#344054]"
+                            placeholder="Masukkan Tambahan Biaya" required min="0" max="999999999">
                     </div>
                     <div class="flex items-center justify-between w-full mb-4">
                         <label for="status" class="block text-sm text-[#344054] leading-5">Status</label>
@@ -59,11 +49,6 @@
                                 before:inline-block before:size-6 before:bg-white checked:before:bg-blue-200 before:translate-x-0 checked:before:translate-x-full before:rounded-full before:shadow before:transform before:ring-0 before:transition before:ease-in-out before:duration-200 dark:before:bg-neutral-400 dark:checked:before:bg-blue-200">
                             <label for="status-toggle-{{ $type->id }}"
                                 class="text-sm text-gray-500 ms-3 dark:text-neutral-400">Aktif</label>
-                            
-                            <!-- Error message for status -->
-                            @error('status')
-                            <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
-                            @enderror
                         </div>
                     </div>
                 </div>

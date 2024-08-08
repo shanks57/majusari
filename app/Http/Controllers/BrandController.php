@@ -19,8 +19,11 @@ class BrandController extends Controller
     {
         $request->validate([
             'company' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-        ]);
+            'name' => 'required|string|max:255|unique:merks,name',
+            ],[
+                'name.unique' => 'Merk sudah tersimpan di database. Silakan pilih merk lain.',
+            ]
+        );
 
         try {
             $merk = new Merk();
@@ -33,10 +36,10 @@ class BrandController extends Controller
             $merk->save();
             
             session()->flash('success', 'Berhasil Menambah Data Merek Barang');
-            return redirect()->route('master.brands');
+            return redirect()->route('master-brands');
            
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
+            return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
         }
     }
 
@@ -44,9 +47,12 @@ class BrandController extends Controller
     {
         $request->validate([
             'company' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:merks,name,' . $id,
             'status' => 'boolean',
-        ]);
+            ],[
+                'name.unique' => 'Merk sudah tersimpan di database. Silakan pilih merk lain.',
+            ]
+        );
 
         try {
             $merk = Merk::findOrFail($id);
@@ -58,9 +64,9 @@ class BrandController extends Controller
 
             $merk->save();
             session()->flash('success', 'Berhasil Memperbarui Data Merek Barang.');
-            return redirect()->route('master.brands');
+            return redirect()->route('master-brands');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return redirect()->route('master.brands')->withErrors(['error' => 'Data Merek Barang tidak ditemukan.']);
+            return redirect()->route('master-brands')->withErrors(['error' => 'Data Merek Barang tidak ditemukan.']);
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui data. Silakan coba lagi.']);
         }
@@ -73,7 +79,7 @@ class BrandController extends Controller
 
             $type->delete();
             session()->flash('success', 'Data berhasil dihapus.');
-            return redirect()->route('master.brands');
+            return redirect()->route('master-brands');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan saat menghapus data. Silakan coba lagi.']);
         }

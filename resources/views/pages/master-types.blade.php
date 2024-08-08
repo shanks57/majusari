@@ -15,7 +15,7 @@
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-        <div class="overflow-hidden border border-gray-200 rounded-t-lg shadow-lg">
+        <div class="overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
@@ -36,8 +36,8 @@
                             <input type="checkbox" class="select-row">
                         </td>
                         <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-3 text-left">{{ $type->name }}</td>
-                        <td class="px-6 py-3 text-left">
+                        <td class="max-w-xs px-6 py-3 text-left truncate">{{ $type->name }}</td>
+                        <td class="max-w-xs px-6 py-3 text-left truncate">
                             {{ 'Rp.' . number_format($type->additional_cost, 0, ',', '.') }}
                         </td>
                         <td class="px-6 py-3 text-left">
@@ -47,7 +47,7 @@
                             <span class="text-[#F04438]">Tidak Aktif</span>
                             @endif
                         </td>
-                        <td class="px-6 py-3 text-center">
+                        <td class="flex gap-1 px-6 py-3 text-center">
                             <button class="px-3 py-1 text-white bg-purple-500 rounded-lg" aria-haspopup="dialog"
                                 aria-expanded="false" aria-controls="hs-edit-modal-{{ $type->id }}"
                                 data-hs-overlay="#hs-edit-modal-{{ $type->id }}">
@@ -81,4 +81,5 @@
 
 @include('components.modal.master-types.add')
 @include('components.modal.error-modal')
+@include('components.modal.error-form-modal')
 @include('components.modal.success-modal')

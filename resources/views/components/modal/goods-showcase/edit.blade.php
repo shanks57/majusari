@@ -65,27 +65,18 @@
                             </template>
                         </div>
                     </div>
-                    @error('image')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                    @enderror
                 </div>
 
                 <div class="px-4">
                     <label for="name" class="block text-sm text-gray-600">Nama Barang</label>
                     <input type="text" id="name" name="name" x-model="form.name"
                         class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nama barang" required>
-                    @error('name')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                    @enderror
                 </div>
 
                 <div class="px-4">
                     <label for="code" class="block text-sm text-gray-600">Kode Barang</label>
                     <input type="text" id="code" name="code" x-model="form.code"
                         class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan Kode Barang" required>
-                    @error('code')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                    @enderror
                 </div>
 
                 <div class="flex gap-4 px-4">
@@ -93,9 +84,6 @@
                         <label for="category" class="block text-sm text-gray-600">Kategori</label>
                         <input type="text" id="category" name="category" x-model="form.category"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan kategori" required>
-                        @error('category')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
 
                     <div class="w-full ">
@@ -108,9 +96,6 @@
                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                             @endforeach
                         </select>
-                        @error('type_id')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
 
                     <div class="w-full ">
@@ -122,9 +107,6 @@
                             <option value="Gold">Gold</option>
                             <option value="Silver">Silver</option>
                         </select>
-                        @error('color')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
                 </div>
 
@@ -134,18 +116,12 @@
                         <input type="number" id="rate" name="rate" x-model="form.rate"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" step="0.001" min=0 max=100
                             placeholder="Masukkan kadar %" required>
-                        @error('rate')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
 
                     <div class="w-full ">
                         <label for="dimensions" class="block text-sm text-gray-600">Size</label>
                         <input type="number" id="dimensions" name="dimensions" x-model="form.dimensions"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan size" min=0 max=100 required>
-                        @error('dimensions')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
                 </div>
 
@@ -155,9 +131,6 @@
                         <input type="number" id="size" name="size" x-model="form.size"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" step="0.001" min=0
                             placeholder="Masukkan berat" required>
-                        @error('size')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
 
                     <div class="w-full ">
@@ -165,9 +138,6 @@
                         <input type="number" id="ask_rate" name="ask_rate" x-model="form.ask_rate"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar atas" min=0 max=100
                             required>
-                        @error('ask_rate')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
 
                     <div class="w-full ">
@@ -175,9 +145,6 @@
                         <input type="number" id="bid_rate" name="bid_rate" x-model="form.bid_rate"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar bawah" min=0 max=100
                             required>
-                        @error('bid_rate')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
                 </div>
 
@@ -185,9 +152,6 @@
                     <label for="date_entry" class="block text-sm text-gray-600">Tanggal Masuk</label>
                     <input type="date" id="date_entry" name="date_entry" x-model="form.date_entry"
                         class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
-                    @error('date_entry')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                    @enderror
                 </div>
 
                 <div class="px-4 ">
@@ -200,9 +164,6 @@
                             <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                             @endforeach
                         </select>
-                        @error('merk_id')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
                 </div>
 
@@ -211,18 +172,12 @@
                         <label for="ask_price" class="block text-sm text-gray-600">Harga Jual</label>
                         <input type="number" id="ask_price" name="ask_price" x-model="form.ask_price"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Harga jual" required>
-                        @error('ask_price')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
 
                     <div class="w-full ">
                         <label for="bid_price" class="block text-sm text-gray-600">Harga Bawah</label>
                         <input type="number" id="bid_price" name="bid_price" x-model="form.bid_price"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Harga bawah" required>
-                        @error('bid_price')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
                 </div>
 

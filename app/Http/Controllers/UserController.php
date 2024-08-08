@@ -25,12 +25,17 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'username' => 'required|string|max:255',
-            'phone' => 'required|string',
+            'username' => 'required|string|max:255|unique:users',
+            'phone' => 'required|string|regex:/^[0-9]{10,13}$/',
             'debt_receipt' => 'required|numeric|min:0',
             'wages' => 'required|numeric|min:0',
             'address' => 'required|string|max:255',
             'status' => 'required',
+        ],
+        [
+            'email.unique' => 'Email sudah digunakan. Silakan pilih email lain.',
+            'username.unique' => 'Username sudah digunakan. Silakan pilih username lain.',
+            'phone.regex' => 'Nomor HP harus terdiri dari 10 hingga 13 digit tanpa karakter non-numerik.',
         ]);
 
         try {
@@ -61,12 +66,17 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'username' => 'required|string|max:255',
-            'phone' => 'required|numeric',
+            'username' => 'required|string|max:255|unique:users,username,'. $id,
+            'phone' => 'required|string|regex:/^[0-9]{10,13}$/',
             'wages' => 'required|numeric|min:0',
             'debt_receipt' => 'required|numeric|min:0',
             'address' => 'required|string',
             'status' => 'required|boolean',
+        ],
+        [
+            'email.unique' => 'Email sudah digunakan. Silakan pilih email lain.',
+            'username.unique' => 'Username sudah digunakan. Silakan pilih username lain.',
+            'phone.regex' => 'Nomor HP harus terdiri dari 10 hingga 13 digit tanpa karakter non-numerik.',
         ]);
 
         try {

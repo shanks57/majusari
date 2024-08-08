@@ -41,7 +41,7 @@ class GoodSafeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|string|max:255',
+            'code' => 'required|string|max:255|unique:goods,code',
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
@@ -56,6 +56,8 @@ class GoodSafeController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type_id' => 'required|exists:goods_types,id',
             'date_entry' => 'required|date',
+        ],[
+            'code.unique' => 'Code barang barang sudah digunakan. Silakan pilih code barang barang lain.',
         ]);
 
         try {
@@ -107,7 +109,7 @@ class GoodSafeController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255',
+            'code' => 'required|string|max:255|unique:goods,code',
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
             'rate' => 'required|numeric',
@@ -121,6 +123,8 @@ class GoodSafeController extends Controller
             'type_id' => 'required|exists:goods_types,id',
             'date_entry' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ],[
+            'code.unique' => 'Code barang barang sudah digunakan. Silakan pilih code barang barang lain.',
         ]);
 
         try {
