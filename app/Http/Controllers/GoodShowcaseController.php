@@ -41,7 +41,7 @@ class GoodShowcaseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|string|max:255',
+            'code' => 'required|string|max:255|unique:goods,code',
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
@@ -58,6 +58,8 @@ class GoodShowcaseController extends Controller
             'tray_id' => 'required|exists:trays,id',
             'position' => 'required|string|max:255',
             'date_entry' => 'required|date',
+        ],[
+            'code.unique' => 'Code barang barang sudah digunakan. Silakan pilih code barang barang lain.',
         ]);
 
         try {
@@ -112,7 +114,7 @@ class GoodShowcaseController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255',
+            'code' => 'required|string|max:255|unique:goods,code,'.$id,
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
             'rate' => 'required|numeric',
@@ -126,6 +128,8 @@ class GoodShowcaseController extends Controller
             'type_id' => 'required|exists:goods_types,id',
             'date_entry' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ],[
+            'code.unique' => 'Code barang barang sudah digunakan. Silakan pilih code barang barang lain.',
         ]);
 
         try {

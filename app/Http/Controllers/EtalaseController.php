@@ -29,11 +29,14 @@ class EtalaseController extends Controller
         try {
             $request->validate([
                 'code' => 'required|unique:showcases,code|max:255',
-                'name' => 'required|string|max:255',
+                'name' => 'required|string|max:255|unique:showcases,name',
                 'type_id' => 'required|exists:goods_types,id',
                 'trays' => 'required|array|min:1',
                 'trays.*.codeTray' => 'required|string|max:255',
                 'trays.*.capacity' => 'required|integer|min:1',
+            ],[
+                'code.unique' => 'Kode Etalase sudah digunakan. Silakan pilih kode lain.',
+                'name.unique' => 'Nama Etalase sudah digunakan. Silakan pilih nama lain.',
             ]);
 
             $showcase = Showcase::create([
@@ -71,6 +74,8 @@ class EtalaseController extends Controller
         $request->validate([
             'code' => 'required|string|max:255|unique:trays,code',
             'capacity' => 'required|integer|min:1',
+        ],[
+            'code.unique' => 'Kode baki sudah digunakan. Silakan pilih kode lain.',
         ]);
 
         try {

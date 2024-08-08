@@ -494,6 +494,7 @@
         });
     </script>
     @include('components.modal.dashboard.update-kurs')
+    @include('components.modal.error-form-modal')
     @include('components.modal.error-modal')
     @include('components.modal.dashboard.success-modal')
 </x-layout>

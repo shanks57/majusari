@@ -224,7 +224,17 @@ class DashboardController extends Controller
     public function updateKurs(Request $request)
     {
         $request->validate([
-            'new_price' => 'required|numeric',
+            'new_price' => [
+                'required',
+                'numeric',
+                'min:0',
+                'max:9999999999999',
+                'regex:/^\d{1,13}$/'
+            ]
+        ], [
+            'new_price.regex' => 'Harga baru harus berupa angka dengan panjang maksimum 13 digit.',
+            'new_price.min' => 'Harga baru tidak boleh kurang dari 0.',
+            'new_price.max' => 'Harga baru tidak boleh lebih dari 13 digit.',
         ]);
 
         try {

@@ -20,14 +20,14 @@
                     <div class="w-full mb-4">
                         <label for="code" class="block text-sm text-[#344054]">Kode Etalase</label>
                         <input type="text" id="code" name="code" x-model="form.code"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]"
                             placeholder="Masukkan Kode Etalase" required>
                     </div>
 
                     <div class="w-full mb-4">
                         <label for="name" class="block text-sm text-[#344054]">Nama Etalase</label>
                         <input type="text" id="name" name="name" x-model="form.name"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]"
                             placeholder="Masukkan Nama Etalase" required>
                     </div>
 
@@ -45,7 +45,7 @@
                         <label for="jumlah_baki" class="block text-sm text-[#344054]">Jumlah Baki</label>
                         <div class="flex items-center justify-between gap-4">
                             <input type="number" id="jumlah_baki" name="jumlah_baki" x-model="form.jumlah_baki"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]"
                             placeholder="Masukkan Jumlah Baki" required min="1">
                             <button type="button" @click="addTrays" class="px-3.5 py-2.5 mt-1.5 rounded-lg bg-[#7F56D9] text-[#F6F6F6]"><i class="ph ph-plus"></i></button>
                         </div>
@@ -55,10 +55,10 @@
                         <table class="min-w-full divide-y divide-[#EDEDED]">
                             <thead class="bg-[#79799B] text-white font-normal">
                                 <tr>
-                                    <th scope="col" class="px-5 py-3 text-left text-sm uppercase tracking-wider rounded-l">
+                                    <th scope="col" class="px-5 py-3 text-sm tracking-wider text-left uppercase rounded-l">
                                         Kode Baki
                                     </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-sm uppercase tracking-wider rounded-r">
+                                    <th scope="col" class="px-6 py-3 text-sm tracking-wider text-left uppercase rounded-r">
                                         Kapasitas
                                     </th>
                                 </tr>
@@ -68,11 +68,11 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <input type="text" :name="'trays['+index+'][codeTray]'" x-model="tray.codeTray"
-                                                class="w-full px-3.5 py-2.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]" readonly>
+                                                class="w-full px-3.5 py-2.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]" readonly>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <input type="number" :name="'trays['+index+'][capacity]'" x-model="tray.capacity"
-                                                class="w-full px-3.5 py-2.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]" min="1">
+                                                class="w-full px-3.5 py-2.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]" min="1" max="100">
                                         </td>
                                     </tr>
                                 </template>

@@ -20,14 +20,14 @@
                     <div class="w-full mb-4">
                         <label for="jenisBarang" class="block text-sm text-[#344054]">Jenis Barang</label>
                         <input type="text" id="jenisBarang" name="jenisBarang" x-model="form.jenisBarang"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]"
                             placeholder="Masukkan Jenis Barang" required>
                     </div>
                     <div class="w-full">
                         <label for="tambahanBiaya" class="block text-sm text-[#344054] leading-5">Tambahan Biaya</label>
                         <input type="number" id="tambahanBiaya" name="tambahanBiaya" x-model="form.tambahanBiaya"
-                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 text-[#667085]"
-                            placeholder="Masukkan Tambahan Biaya" required min="0">
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 placeholder:text-[#667085] text-[#344054]"
+                            placeholder="Masukkan Tambahan Biaya" required min="0" max="999999999">
                     </div>
                 </div>
                 <div class="flex items-center justify-end px-4 gap-x-2">

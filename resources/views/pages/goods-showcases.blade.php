@@ -138,7 +138,7 @@
         </div>
     </div>
 </x-layout>
-
+@include('components.modal.error-form-modal')
 @include('components.modal.goods-showcase.add')
 @include('components.modal.goods-showcase.success-modal')
 @include('components.modal.master-trays.success-modal')

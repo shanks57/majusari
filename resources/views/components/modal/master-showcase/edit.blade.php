@@ -2,7 +2,7 @@
     x-data="{ 
         form: {
             showcase_id: '{{ $etalase->id }}',
-            code: '',
+            code: '{{ $etalase->name }}-',
             capacity: '',
         }
     }" 
@@ -24,32 +24,24 @@
                 @csrf
                 <div class="space-y-4">
                     <div class="w-full p-3 rounded bg-[#F9FAFB] text-[#344054]">
-                        <label class="block text-sm mb-1">Etalase</label>
-                        <span class="font-medium text-lg">{{ $etalase->name }}</span>
+                        <label class="block mb-1 text-sm">Etalase</label>
+                        <span class="text-lg font-medium">{{ $etalase->name }}</span>
                     </div>
                     <div class="w-full">
                         <label for="code" class="block text-sm text-[#344054]">Kode Baki</label>
                         <input type="text" id="code" name="code" x-model="form.code"
                             class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
                             placeholder="Masukkan kode baki" required>
-                        
-                        @error('code')
-                        <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
-                        @enderror
                     </div>
                     <div class="w-full">
                         <label for="capacity" class="block text-sm text-[#344054] leading-5">Jumlah Item</label>
                         <input type="number" id="capacity" name="capacity" x-model="form.capacity"
                             class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 text-[#667085]"
-                            placeholder="Masukkan jumlah item" required min="1">
-                        
-                        @error('capacity')
-                        <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
-                        @enderror
+                            placeholder="Masukkan jumlah item" required min="1" max="100">
                     </div>
                 </div>
                 <input type="hidden" name="showcase_id" value="{{ $etalase->id }}">
-                <div class="flex items-center justify-end gap-x-2 mt-4">
+                <div class="flex items-center justify-end mt-4 gap-x-2">
                     <button type="submit"
                         :disabled="!form.code || form.capacity === ''"
                         class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white"
