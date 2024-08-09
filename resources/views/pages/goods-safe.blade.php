@@ -71,7 +71,7 @@
                                 <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl p-3"
                                     role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
                                     <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
-                                        href="{{ route('goods-showcase.printBarcode', ['id' => $goodsafe->id]) }}">
+                                        href="{{ route('safe-showcase.printBarcode', ['id' => $goodsafe->id]) }}">
                                         <i class="ph ph-barcode"></i>
                                         Cetak Barcode
                                     </a>

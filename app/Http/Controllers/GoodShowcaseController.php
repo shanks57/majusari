@@ -219,7 +219,7 @@ class GoodShowcaseController extends Controller
             $barcodeGenerator = new \Milon\Barcode\DNS1D();
             $barcodeImage = $barcodeGenerator->getBarcodePNG($goodShowcase->code, 'C128');
 
-            return view('print-page.print-barcode', [
+            return view('print-page.showcase-print-barcode', [
                 'goodShowcase' => $goodShowcase,
                 'barcode' => $barcodeImage,
             ]);
