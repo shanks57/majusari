@@ -118,6 +118,7 @@ class SalesController extends Controller
         $goodsId = $request->input('goods_id');
         $sellingPrice = $request->input('new_selling_price');
         $askPrice = $request->input('ask_price');
+        $trayId = $request->input('tray_id');
 
         $status_price = $sellingPrice < $askPrice ? 0 : 1;
 
@@ -125,6 +126,7 @@ class SalesController extends Controller
             'id' => $id,
             'user_id' => Auth::user()->id,
             'goods_id' => $goodsId,
+            'tray_id' => $trayId,
             'status_price' => $status_price,
             'new_selling_price' => $sellingPrice,
         ]);

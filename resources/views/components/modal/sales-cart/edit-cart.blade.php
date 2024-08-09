@@ -25,9 +25,9 @@
                 <div class="p-4 overflow-y-auto">
                     <div class="w-full mb-4">
                         <label for="new_selling_price" class="block text-sm text-[#344054]">Harga Jual</label>
-                        <input type="text" id="new_selling_price" name="new_selling_price" x-model="form.new_selling_price"
+                        <input type="number" id="new_selling_price" name="new_selling_price" x-model="form.new_selling_price"
                             class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
-                            placeholder="Masukkan Nama Perusahaan" required>
+                            placeholder="Masukkan Harga Jula Baru" min="0" required>
                         
                         @error('new_selling_price')
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>

@@ -1,4 +1,4 @@
-<div x-data="{ form: { name: '', phone: '', address: '', payment_method: ''} }"
+<div x-data="{ form: { name: '', phone: '', address: '', payment_method: '', cash_received: ''} }"
     class="hs-overlay hidden size-full fixed top-0 start-0 p-6 mt-4 mr-4 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none"
     role="dialog" tabindex="-1" aria-labelledby="create-transaction-modal" id="hs-create-transaction-modal">
     <div
@@ -24,7 +24,8 @@
                                 class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]">
                                 <option value="" disabled selected>Pilih nama pelanggan</option>
                                 @foreach ($customers as $customer)
-                                <option value="{{ $customer->id }}">{{ $customer->name }}-{{ $customer->phone }}-{{ $customer->address }}</option>
+                                <option value="{{ $customer->id }}">
+                                    {{ $customer->name }}-{{ $customer->phone }}-{{ $customer->address }}</option>
                                 @endforeach
                             </select>
                             <span class="mt-1 text-xs text-red-500">*Kosongkan jika pembeli baru</span>
@@ -83,31 +84,61 @@
                         <!-- Total Pembayaran -->
                         <div class="w-full mb-4 rounded-xl bg-gray-50 border border-gray-200 p-4">
                             <label for="total" class="block text-sm text-[#344054]">Total Bayar</label>
-                            <p class="text-lg text-gray-700 mt-1">Rp. {{ number_format($totalSales, 0, ',', '.') }},00</p>
+                            <p class="text-lg text-gray-700 mt-1">Rp. {{ number_format($totalSales, 0, ',', '.') }},00
+                            </p>
                         </div>
 
                         <div class="flex items-center justify-between gap-4">
                             <!-- Input Uang Masuk (Muncul Saat Pilih "Tunai") -->
+                            <template x-if="form.payment_method === 'tunai'">
+                                <div class="w-full mb-4">
+                                    <label for="cash_received" class="block text-sm text-[#344054]">Uang Masuk</label>
+                                    <input type="number" id="cash_received" name="cash_received"
+                                        x-model.number="form.cash_received"
+                                        class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
+                                        placeholder="Masukkan uang tunai" min="0">
+                                </div>
+                            </template>
+
+                            <!-- Uang Kembalian -->
+                            <template x-if="form.payment_method === 'tunai' && form.cash_received >= totalSales">
+                                <div class="w-full mb-4 rounded-xl bg-gray-50 border border-gray-200 p-4">
+                                    <label for="change" class="block text-sm text-[#344054]">Uang Kembalian</label>
+                                    <p class="text-lg text-gray-700 mt-1" x-text="calculateChange()"></p>
+                                </div>
+                            </template>
+                        </div>
+                        <!-- Template untuk metode pembayaran tunai -->
                         <template x-if="form.payment_method === 'tunai'">
-                            <div class="w-full mb-4">
-                                <label for="cash_received" class="block text-sm text-[#344054]">Uang Masuk</label>
-                                <input type="number" id="cash_received" name="cash_received"
-                                    x-model.number="form.cash_received"
-                                    class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
-                                    placeholder="Masukkan uang tunai" min="0">
+                            <div class="flex items-center justify-end px-4 gap-x-2">
+                                <button type="submit" :disabled="form.cash_received < totalSales"
+                                    class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white"
+                                    :class="{ 'opacity-50 cursor-not-allowed': form.cash_received < totalSales }">
+                                    <span>Simpan</span>
+                                    <i class="ph ph-floppy-disk ml-1.5"></i>
+                                </button>
                             </div>
                         </template>
 
-                        <!-- Uang Kembalian -->
-                        <template x-if="form.payment_method === 'tunai' && form.cash_received >= totalSales">
-                            <div class="w-full mb-4 rounded-xl bg-gray-50 border border-gray-200 p-4">
-                                <label for="change" class="block text-sm text-[#344054]">Uang Kembalian</label>
-                                <p class="text-lg text-gray-700 mt-1" x-text="calculateChange()"></p>
-                            </div>
-                        </template>
+                        <!-- Div untuk metode pembayaran selain tunai -->
+                        <div x-show="form.payment_method === 'transfer'"
+                            class="flex items-center justify-end px-4 gap-x-2">
+                            <button type="submit"
+                                class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white">
+                                <span>Simpan</span>
+                                <i class="ph ph-floppy-disk ml-1.5"></i>
+                            </button>
+                        </div>
+
+                        <!-- Div jika belum memilih metode pembayaran -->
+                        <div x-show="form.payment_method === ''" 
+                        class="flex items-center justify-end px-4 gap-x-2">
+                            <button type="button" disabled
+                                class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-gray-400 text-white opacity-50 cursor-not-allowed">
+                                <span>Pilih Metode Pembayaran</span>
+                            </button>
                         </div>
                     </div>
-
                 </div>
 
                 <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
@@ -122,13 +153,6 @@
                     value="{{ $cart->new_selling_price }}">
                 @endforeach
 
-                <div class="flex items-center justify-end px-4 gap-x-2">
-                    <button type="submit"
-                        class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white">
-                        <span>Simpan</span>
-                        <i class="ph ph-floppy-disk ml-1.5"></i>
-                    </button>
-                </div>
             </form>
         </div>
     </div>
@@ -156,6 +180,7 @@
             }
         }
     }
+
 </script>
 
 <script>
@@ -165,11 +190,15 @@
                 payment_method: '',
                 cash_received: 0
             },
-            totalSales: {{ $totalSales }}, // Ambil total sales dari server
+            totalSales: {{ $totalSales }},
             calculateChange() {
                 // Hitung uang kembalian
-                return (this.form.cash_received - this.totalSales).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+                return (this.form.cash_received - this.totalSales).toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR'
+                });
             }
         };
     }
+
 </script>
