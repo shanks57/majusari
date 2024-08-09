@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ config("app.name") }} - Lupa Password</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite('resources/css/app.css') @vite('resources/js/app.js')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
@@ -36,14 +36,14 @@
                 @if (session('status') == 'verification-link-sent')
                 <div class="flex items-center justify-between w-full">
                     <button type="submit"
-                        class="w-full px-4 py-2 font-bold text-white bg-[#6634BB] rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50">
+                        class="w-full px-4 py-2 font-bold text-white bg-[#7F56D9] rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50">
                         Resend Verification Email
                     </button>
                 </div>
                 @else
                 <div class="flex items-center justify-between w-full">
                     <button type="submit"
-                        class="w-full px-4 py-2 font-bold text-white bg-[#6634BB] rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50">
+                        class="w-full px-4 py-2 font-bold text-white bg-[#7F56D9] rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50">
                         Send Verification Email
                     </button>
                 </div>
@@ -51,12 +51,14 @@
 
             </form>
 
-            <form method="POST" action="{{ route('logout') }}" class="mt-4 mb-4">
+            <a href="{{ route('logout') }}" class="mt-4 text-sm text-gray-600 underline hover:text-gray-900"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Keluar
+            </a>
+            <form method="POST" action="{{ route('logout') }}" style="display: none" id="logout-form">
                 @csrf
-                <button type="submit" class="text-sm text-gray-600 underline hover:text-gray-900">
-                    Keluar
-                </button>
             </form>
+
 
             @if (session('status') == 'verification-link-sent')
             <div class="flex items-center gap-4 px-4 py-3 bg-gray-200 rounded-xl">

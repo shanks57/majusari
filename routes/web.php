@@ -107,8 +107,6 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::put('/profile/update/{id}', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::put('/profile/{id}/set-password', [UserController::class, 'updatePassword'])->name('profile.set-password');
     // end profile
-
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');

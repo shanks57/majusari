@@ -44,12 +44,17 @@
                     @enderror
                 </div>
 
-                <div class="mb-6">
+                <div class="flex flex-col gap-2 mb-6">
                     <button
-                        class="w-full px-4 py-2 font-bold text-white bg-purple-500 rounded disabled:bg-gray-300 focus:outline-none focus:shadow-outline hover:bg-purple-600"
+                        class="w-full px-4 py-2 font-bold text-white bg-[#7F56D9] rounded-lg disabled:bg-gray-300 focus:outline-none focus:shadow-outline hover:bg-purple-700"
                         type="submit">
                         Kirim
                     </button>
+                    <a href="{{ route('login') }}"
+                        class="w-full px-4 py-2 font-bold text-center text-white bg-gray-400 border rounded-lg disabled:bg-gray-300 focus:outline-none focus:shadow-outline hover:bg-gray-500"
+                        type="submit">
+                        Kembali
+                    </a>
                 </div>
             </form>
             @if (session('status'))
