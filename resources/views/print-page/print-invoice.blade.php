@@ -14,11 +14,10 @@
     @stack('styles')
     <script type="text/javascript">
         window.print();
-        window.onafterprint = back;
+        window.addEventListener('afterprint', function () {
+            window.location.href = '/sales';
+        });
 
-        function back() {
-            window.history.back();
-        }
     </script>
 </head>
 

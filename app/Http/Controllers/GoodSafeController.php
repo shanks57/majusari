@@ -199,4 +199,23 @@ class GoodSafeController extends Controller
         return redirect()->route('goods.safe')->with('success', 'Berhasil Menghapus Data Barang di Brangkas');
     }
 
+    public function printBarcode($id)
+    {
+        try {
+            $goodShowcase = Goods::findOrFail($id);
+
+            $barcodeGenerator = new \Milon\Barcode\DNS1D();
+            $barcodeImage = $barcodeGenerator->getBarcodePNG($goodShowcase->code, 'C128');
+
+            return view('print-page.safe-print-barcode', [
+                'goodShowcase' => $goodShowcase,
+                'barcode' => $barcodeImage,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Barang tidak ditemukan
+            return redirect()->route('goods.showcase')->with('error', 'Barang tidak ditemukan');
+        } catch (\Exception $e) {
+            return redirect()->route('goods.showcase')->with('error', 'Terjadi kesalahan saat menghasilkan barcode1. Silakan coba lagi.');
+        }
+    }
 }

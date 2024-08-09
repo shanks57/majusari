@@ -21,37 +21,48 @@
                     </div>
                     <div class="flex items-center gap-3">
                         @if ($cart->status_price == 0 || $cart->status_price == 2)
-                            @if ($cart->status_price == 2)
-                                <button
-                                    class="flex items-center gap-1 px-2 py-1 text-sm text-white bg-yellow-500 rounded hover:bg-yellow-600" disabled>
-                                    <i class="ph ph-check-square-offset"></i>
-                                    Menunggu Proses Persetujuan
-                                </button>
-                            @else
-                                <button class="flex items-center gap-1 px-2 py-1 text-sm text-white rounded bg-[#2E90FA] hover:bg-blue-500" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-add-complaint-modal-{{ $cart->id }}" data-hs-overlay="#hs-add-complaint-modal-{{ $cart->id }}">
-                                    <i class="ph ph-check-square"></i>
-                                    Kirim Verifikasi
-                                </button>
-                            @endif
-                            <button class="flex items-center gap-1 px-2 py-1 text-sm text-white bg-gray-700 rounded hover:bg-gray-800" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-edit-modal-{{ $cart->id }}" data-hs-overlay="#hs-edit-modal-{{ $cart->id }}">
-                                <i class="ph ph-pencil-simple-line"></i>
-                                Edit Harga
-                            </button>
+                        @if ($cart->status_price == 2)
+                        <button
+                            class="flex items-center gap-1 px-2 py-1 text-sm text-white bg-yellow-500 rounded hover:bg-yellow-600"
+                            disabled>
+                            <i class="ph ph-check-square-offset"></i>
+                            Menunggu Proses Persetujuan
+                        </button>
+                        @else
+                        <button
+                            class="flex items-center gap-1 px-2 py-1 text-sm text-white rounded bg-[#2E90FA] hover:bg-blue-500"
+                            aria-haspopup="dialog" aria-expanded="false"
+                            aria-controls="hs-add-complaint-modal-{{ $cart->id }}"
+                            data-hs-overlay="#hs-add-complaint-modal-{{ $cart->id }}">
+                            <i class="ph ph-check-square"></i>
+                            Kirim Verifikasi
+                        </button>
                         @endif
                         <button
-                            class="flex items-center gap-1 px-2 py-1 text-sm text-red-500 rounded bgd hover:bg-gray-100" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-delete-modal-{{ $cart->id }}" data-hs-overlay="#hs-delete-modal-{{ $cart->id }}">
+                            class="flex items-center gap-1 px-2 py-1 text-sm text-white bg-gray-700 rounded hover:bg-gray-800"
+                            aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-edit-modal-{{ $cart->id }}"
+                            data-hs-overlay="#hs-edit-modal-{{ $cart->id }}">
+                            <i class="ph ph-pencil-simple-line"></i>
+                            Edit Harga
+                        </button>
+                        @endif
+                        <button
+                            class="flex items-center gap-1 px-2 py-1 text-sm text-red-500 rounded bgd hover:bg-gray-100"
+                            aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-delete-modal-{{ $cart->id }}"
+                            data-hs-overlay="#hs-delete-modal-{{ $cart->id }}">
                             <i class="ph ph-trash"></i>
                             Hapus
                         </button>
                     </div>
                 </div>
                 @if ($cart->status_price == 0 || $cart->status_price == 2)
-                    <div class="bg-red-50 px-3.5 py-2 flex items-center text-red-500 text-xs gap-2.5">
-                        <i class="ph ph-info"></i>
-                        <p>
-                            Barang tidak dapat diproses karena harga jual kurang dari harga yang sudah ditentukan, silahkan edit ulang atau kirim persetujuan ke <span class="font-bold">Owner</span>. 
-                        </p>
-                    </div>
+                <div class="bg-red-50 px-3.5 py-2 flex items-center text-red-500 text-xs gap-2.5">
+                    <i class="ph ph-info"></i>
+                    <p>
+                        Barang tidak dapat diproses karena harga jual kurang dari harga yang sudah ditentukan, silahkan
+                        edit ulang atau kirim persetujuan ke <span class="font-bold">Owner</span>.
+                    </p>
+                </div>
                 @endif
                 <div class="flex gap-12 p-3 bg-gray-100">
                     <div class="grid gap-3">
@@ -63,14 +74,17 @@
                     </div>
                     <div class="grid gap-3">
                         <span class="text-sm">Tempat</span>
-                        <span class="text-base font-medium">{{ $cart->goods->tray->showcase->name }} BAKI {{ $cart->goods->tray->code }}</span>
+                        <span class="text-base font-medium">{{ $cart->goods->tray->showcase->name }} BAKI
+                            {{ $cart->goods->tray->code }}</span>
                     </div>
                     <div class="grid gap-3">
                         <span class="text-sm">Harga</span>
                         @if ($cart->status_price == 0 || $cart->status_price == 2)
-                        <span class="text-base font-medium text-red-500">{{ 'Rp.' . number_format($cart->new_selling_price, 0, ',', '.') }}</span>
+                        <span
+                            class="text-base font-medium text-red-500">{{ 'Rp.' . number_format($cart->new_selling_price, 0, ',', '.') }}</span>
                         @else
-                        <span class="text-base font-medium">{{ 'Rp.' . number_format($cart->new_selling_price, 0, ',', '.') }}</span>
+                        <span
+                            class="text-base font-medium">{{ 'Rp.' . number_format($cart->new_selling_price, 0, ',', '.') }}</span>
                         @endif
                     </div>
                     <div class="grid gap-3">
@@ -150,14 +164,14 @@
                     <p class="text-lg">{{ Carbon\Carbon::now()->format('d M Y') }}</p>
                 </div>
                 @php
-                    // Hitung total berat dan total penjualan
-                    $totalWeight = $carts->reduce(function ($carry, $cart) {
-                        return $carry + ($cart->goods ? $cart->goods->size : 0);
-                    }, 0);
+                // Hitung total berat dan total penjualan
+                $totalWeight = $carts->reduce(function ($carry, $cart) {
+                return $carry + ($cart->goods ? $cart->goods->size : 0);
+                }, 0);
 
-                    $totalSales = $carts->reduce(function ($carry, $cart) {
-                        return $carry + ($cart->new_selling_price ? $cart->new_selling_price : 0);
-                    }, 0);
+                $totalSales = $carts->reduce(function ($carry, $cart) {
+                return $carry + ($cart->new_selling_price ? $cart->new_selling_price : 0);
+                }, 0);
                 @endphp
 
                 <div class="grid gap-1">
@@ -169,10 +183,19 @@
                     <p class="text-lg">Rp. {{ number_format($totalSales, 0, ',', '.') }}</p>
                 </div>
 
-                <button type="button" class="w-full py-3 text-sm text-white bg-[#7F56D9] rounded-lg" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal" data-hs-overlay="#hs-create-transaction-modal">
-                    Selanjutnya
-                </button>
-
+                <div x-data="{
+                        carts: {{ json_encode($carts) }},
+                        isDisabled() {
+                            return this.carts.some(cart => cart.status_price === 0 || cart.status_price === 2);
+                        }
+                    }">
+                    <button type="button" class="w-full py-3 text-sm text-white bg-[#7F56D9] rounded-lg"
+                        aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal"
+                        data-hs-overlay="#hs-create-transaction-modal" :disabled="isDisabled()"
+                        :class="{ 'opacity-50 cursor-not-allowed': isDisabled() }">
+                        Selanjutnya
+                    </button>
+                </div>
             </div>
         </div>
     </div>

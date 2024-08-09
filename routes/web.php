@@ -70,6 +70,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::patch('/goods-safe/{id}/update', [GoodSafeController::class, 'update'])->name('goods.safeUpdate');
     Route::patch('/goods/{id}/move-to-showcase', [GoodSafeController::class, 'moveToShowcase'])->name('goods.moveToShowcase');
     Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
+    Route::get('/goods/{id}/safe-print-barcode', [GoodSafeController::class, 'printBarcode'])->name('safe-showcase.printBarcode');
     // end route /goods/safe
 
     // start route detail baki
@@ -106,8 +107,6 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::put('/profile/update/{id}', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::put('/profile/{id}/set-password', [UserController::class, 'updatePassword'])->name('profile.set-password');
     // end profile
-
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');

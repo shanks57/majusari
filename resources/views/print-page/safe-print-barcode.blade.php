@@ -29,11 +29,10 @@
     </style>
     <script type="text/javascript">
         window.print();
-        window.onafterprint = back;
+        window.addEventListener('afterprint', function () {
+            window.location.href = '/goods/safe';
+        });
 
-        function back() {
-            window.history.back();
-        }
     </script>
 </head>
 
