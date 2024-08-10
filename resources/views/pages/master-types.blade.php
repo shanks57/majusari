@@ -36,7 +36,7 @@
                             <input type="checkbox" class="select-row">
                         </td>
                         <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
-                        <td class="max-w-xs px-6 py-3 text-left truncate">{{ $type->name }}</td>
+                        <td class="px-6 py-3 text-left truncate max-w-20">{{ $type->name }}</td>
                         <td class="max-w-xs px-6 py-3 text-left truncate">
                             {{ 'Rp.' . number_format($type->additional_cost, 0, ',', '.') }}
                         </td>

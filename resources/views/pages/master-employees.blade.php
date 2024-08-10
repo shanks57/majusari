@@ -43,7 +43,7 @@
                         <td class="px-6 py-3 text-left">
                             {{ $employee->debt_receipt == 0 ? 'Tidak Ada' : 'Rp.' . number_format($employee->debt_receipt, 0, ',', '.') }}
                         </td>
-                        <td class="px-6 py-3 text-left">{{ $employee->address }}</td>
+                        <td class="max-w-xs px-6 py-3 text-left truncate">{{ $employee->address }}</td>
                         <td class="px-6 py-3 text-left">
                             @if ($employee->status == 1)
                             <span class="text-[#12B76A]">Aktif</span>

@@ -34,8 +34,8 @@
                             <input type="checkbox" class="select-row">
                         </td>
                         <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
-                        <td class="max-w-xs px-6 py-3 text-left truncate">{{ $brand->company }}</td>
-                        <td class="max-w-xs px-6 py-3 text-left truncate">{{ $brand->name }}</td>
+                        <td class="px-6 py-3 text-left truncate max-w-20">{{ $brand->company }}</td>
+                        <td class="px-6 py-3 text-left truncate max-w-20">{{ $brand->name }}</td>
 
                         <td class="px-6 py-3 text-left">
                             @if ($brand->status == 1)

@@ -13,7 +13,7 @@
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-        <div class="overflow-hidden border border-gray-200 rounded-t-lg shadow-lg">
+        <div class="overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
@@ -39,14 +39,14 @@
                         <td class="px-6 py-3 text-left">
                             {{ \Carbon\Carbon::parse($goodsafe->date_entry)->translatedFormat('d F Y') }}
                         </td>
-                        <td class="px-6 py-3 text-left">
+                        <td class="px-6 py-3 text-left truncate max-w-20">
                             {{ $goodsafe->name }} - {{ $goodsafe->merk->name }}
                         </td>
                         <td class="px-6 py-3 text-left">
                             {{ $goodsafe->size }} <span
                                 class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodsafe->rate }}%</span>
                         </td>
-                        <td class="px-6 py-3 text-left">{{ $goodsafe->goodsType->name }}</td>
+                        <td class="px-6 py-3 text-left truncate max-w-20">{{ $goodsafe->goodsType->name }}</td>
                         <td class="flex flex-col px-6 py-3 text-left">
                             <span><i class="ph ph-arrow-line-up-right text-[#027A48]"></i> Jual
                                 {{ 'Rp.' . number_format($goodsafe->ask_price, 0, ',', '.') }}
