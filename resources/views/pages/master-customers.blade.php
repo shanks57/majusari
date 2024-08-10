@@ -11,7 +11,7 @@
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-         <div class="overflow-hidden border border-gray-200 rounded-t-lg shadow-lg">
+         <div class="overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
@@ -35,7 +35,7 @@
                         <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
                         <td class="px-6 py-3 text-left">{{ $customer->name }}</td>
                         <td class="px-6 py-3 text-left">{{ $customer->phone }}</td>
-                        <td class="px-6 py-3 text-left">{{ $customer->address }}</td>
+                        <td class="max-w-xs px-6 py-3 text-left truncate">{{ $customer->address }}</td>
 
                         <td class="px-6 py-3 text-center">
                            

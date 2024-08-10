@@ -38,7 +38,7 @@
                         <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
                         <td class="px-6 py-3 text-left">{{ $etalase->code }}</td>
                         <td class="px-6 py-3 text-left">{{ $etalase->name }}</td>
-                        <td class="px-6 py-3 text-left">{{ $etalase->goodsType->name }}</td>
+                        <td class="px-6 py-3 text-left truncate max-w-20">{{ $etalase->goodsType->name }}</td>
                         <td class="px-6 py-3 text-left">{{ $etalase->trays_count }}</td>
                         <td class="px-6 py-3 text-center">
                             <button class="px-3 py-1 text-white bg-orange-500 rounded-lg"

@@ -13,7 +13,7 @@
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-        <div class="overflow-hidden border border-gray-200 rounded-t-lg shadow-lg">
+        <div class="overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
@@ -50,14 +50,14 @@
                             {{-- modal image sale --}}
                             @include('components.modal.image-goods')
                         </td>
-                        <td class="px-6 py-3 text-left">
+                        <td class="px-6 py-3 text-left truncate max-w-20">
                             {{ $goodShowcase->name }} - {{ $goodShowcase->merk->name }}
                         </td>
                         <td class="px-6 py-3 text-left">
                             {{ $goodShowcase->size }} gr <span
                                 class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->rate }}%</span>
                         </td>
-                        <td class="px-6 py-3 text-left">{{ $goodShowcase->goodsType->name }}</td>
+                        <td class="px-6 py-3 text-left truncate max-w-20">{{ $goodShowcase->goodsType->name }}</td>
                         <td class="flex flex-col px-6 py-3 text-left">
                             <span><i class="ph ph-arrow-line-up-right text-[#027A48]"></i> Jual
                                 {{ 'Rp.' . number_format($goodShowcase->ask_price, 0, ',', '.') }}

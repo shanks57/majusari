@@ -25,8 +25,8 @@
                 "lengthMenu": [10, 25, 50, 75, 100],
                 "language": {
                     "paginate": {
-                        "previous": '<i class="ph-bold ph-caret-left w-4 h-4"></i>',
-                        "next": '<i class="ph-bold ph-caret-right w-4 h-4"></i>'
+                        "previous": '<i class="w-4 h-4 ph-bold ph-caret-left"></i>',
+                        "next": '<i class="w-4 h-4 ph-bold ph-caret-right"></i>'
                     },
                     "lengthMenu": "Baris per halaman _MENU_",
                     "zeroRecords": "Tidak ada data yang ditemukan",
@@ -34,6 +34,7 @@
                     "info": "",
                     "infoFiltered": "",
                 },
+                
                 "infoCallback": function( settings, start, end, max, total, pre ) {
                     // Menampilkan halaman _PAGE_ dari _PAGES_
                     var pageInfo = 'Menampilkan ' + end + ' Data ' + '{{ $title }}';
@@ -61,6 +62,10 @@
             });
 
             $('#dataTablePagination').prepend($('.dataTables_info').addClass('mr-4'));
+
+            table.on('draw.dt', function () {
+                window.HSStaticMethods.autoInit();
+            });
 
             $('#searchEtalase').on('keyup', function () {
                 table.search(this.value).draw();
