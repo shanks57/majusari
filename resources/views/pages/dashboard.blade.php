@@ -144,7 +144,7 @@
         <!-- Empty content for now -->
         <div class="col-span-7 p-4 bg-white border rounded-lg">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-semibold">Penjualan</h2>
+                <h2 class="text-xl font-semibold">Ringkasan Penjualan</h2>
                 <a href="/sales" class="flex items-center text-sm hover:underline">
                     <span>Selengkapnya</span>
                     <i class="ph ph-caret-right"></i>
@@ -174,62 +174,104 @@
     </div>
     <div id="tab-content-weight" class="hidden tab-content">
         <div class="col-span-7 p-4 bg-white border rounded-lg">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-semibold">Total Berat Barang</h2>
-            </div>
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex gap-8">
-                    <div>
-                        <div class="flex items-center gap-2 mb-3 text-3xl font-semibold">16926.33 gr <span
-                                class="px-2 py-1 text-xs text-green-500 bg-green-100 rounded-full">
-                                <i class="ph ph-trend-up"></i>+23.2%</span></div>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-[#ADD8E699]  w-8 h-3 rounded-full"></div>
-                            <p class="text-xs text-gray-500">Total Barang Masuk</p>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 mb-3 text-3xl font-semibold">12145.11 gr <span
-                                class="px-2 py-1 text-xs text-red-500 bg-red-100 rounded-full">
-                                <i class="ph ph-trend-down"></i>+23.2%</span></div>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-[#4682B499] w-8 h-3 rounded-full"></div>
-                            <p class="text-xs text-gray-500">Total Barang Keluar</p>
-                        </div>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">Total Berat Barang</h2>
+    </div>
+    <div x-data="chartWeightComponent" class="flex items-center justify-between mb-4">
+        <div>
+            <div class="flex gap-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-3 text-3xl font-semibold" x-text="parseFloat(totalGoodsIn).toFixed(3) + ' gr'"></div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-[#ADD8E699]  w-8 h-3 rounded-full"></div>
+                        <p class="text-xs text-gray-500">Total Barang Masuk</p>
                     </div>
                 </div>
-                <div x-data="{ open: false, selectedOption: 'Tahun Ini' }" class="relative inline-block text-left">
-                    <div>
-                        <button @click="open = !open" type="button"
-                            class="inline-flex items-center justify-center w-full gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                            <i class="ph ph-calendar-blank"></i>
-                            <span x-text="selectedOption"></span>
-                            <i class="ph ph-caret-down"></i>
-                        </button>
-                    </div>
-
-                    <div x-show="open" @click.away="open = false"
-                        class="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <span @click="selectedOption = 'Tahun Ini'; open = false"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Tahun Ini</span>
-                            <span @click="selectedOption = 'Bulan Ini'; open = false"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Bulan Ini</span>
-                            <span @click="selectedOption = 'Minggu Ini'; open = false"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Minggu Ini</span>
-                            <span @click="selectedOption = 'Hari Ini'; open = false"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Hari Ini</span>
-                        </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-3 text-3xl font-semibold" x-text="totalGoodsOut"></div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-[#4682B499] w-8 h-3 rounded-full"></div>
+                        <p class="text-xs text-gray-500">Total Barang Keluar</p>
                     </div>
                 </div>
             </div>
-            <canvas id="weight-chart" class="h-64 mt-4"></canvas>
         </div>
+        <div>
+            <select x-model="filter" @change="fetchChartData()"
+                class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg pe-9 focus:border-[#6634BB] focus:ring-[#6634BB] disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                <option value="year">Tahun Ini</option>
+                <option value="month">Bulan Ini</option>
+                <option value="week">Minggu Ini</option>
+            </select>
+        </div>
+    </div>
+    <canvas id="weight-chart" class="h-64 mt-4"></canvas>
+</div>
 
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('chartWeightComponent', () => ({
+            filter: 'year',
+            chart: '',
+            totalGoodsIn: '',
+            totalGoodsOut: '',
+            goodsInData: [],
+            goodsOutData: [],
+            labels: [],
+            
+            init() {
+                this.fetchChartData();
+            },
+            
+            async fetchChartData() {
+                const response = await fetch(`/get-weight-chart-data?filter=${this.filter}`);
+                const data = await response.json();
+                this.goodsInData = data.goodsInData;
+                this.goodsOutData = data.goodsOutData;
+                this.labels = data.labels;
+                this.totalGoodsIn = data.totalGoodsIn;
+                this.totalGoodsOut = data.totalGoodsOut;
+                this.updateChart();
+            },
+            updateChart() {
+                const ctx = document.getElementById('weight-chart').getContext('2d');
+
+                if (this.chart) {
+                    this.chart.destroy();
+                }
+
+                this.chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: this.labels,
+                        datasets: [{
+                            label: 'Total Barang Masuk',
+                            data: this.goodsInData,
+                            backgroundColor: 'rgba(173, 216, 230, 0.6)', // lightblue
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Total Barang Keluar',
+                            data: this.goodsOutData,
+                            backgroundColor: 'rgba(70, 130, 180, 0.6)', // steelblue
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: { display: false },
+                        },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: { grid: { display: false }, beginAtZero: true }
+                        },
+                        elements: { bar: { borderRadius: 4 } }
+                    }
+                });
+            }
+        }));
+    });
+</script>
     </div>
         <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -246,126 +288,6 @@
                     document.getElementById(contentId).classList.remove('hidden');
                 });
             });
-
-
-            const weightChartElement = document.getElementById('weight-chart').getContext('2d');
-            const goodsInData = @json($goodsInValues);
-            const goodsOutData = @json($goodsOutValues);
-            const totalGoodsIn = @json($totalGoodsIn);
-            const totalGoodsOut = @json($totalGoodsOut);
-            const filter = @json($filter); // Filter yang diterima dari server
-
-            // Menentukan label berdasarkan filter
-            let labels = [];
-            if (filter === 'tahun-ini') {
-                labels = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-            } else if (filter === 'bulan-ini') {
-                const startDate = new Date();
-                const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
-                let date = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
-                while (date <= endDate) {
-                    labels.push(date.toISOString().split('T')[0]); // Menggunakan format YYYY-MM-DD
-                    date.setDate(date.getDate() + 1);
-                }
-            } else if (filter === 'minggu-ini') {
-                const startDate = new Date(new Date().setDate(new Date().getDate() - new Date().getDay()));
-                const endDate = new Date(startDate);
-                endDate.setDate(endDate.getDate() + 6);
-                let date = startDate;
-                while (date <= endDate) {
-                    labels.push(date.toISOString().split('T')[0]); // Menggunakan format YYYY-MM-DD
-                    date.setDate(date.getDate() + 1);
-                }
-            } else if (filter === 'hari-ini') {
-                labels = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
-            }
-            const myChart = new Chart(weightChartElement, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                            label: 'Total Barang Masuk',
-                            data: goodsInData,
-                            backgroundColor: 'rgba(173, 216, 230, 0.6)', // lightblue
-                            borderRadius: 4,
-                            datalabels: {
-                                color: '#fff',
-                                align: 'top',
-                                anchor: 'end',
-                                formatter: (value, context) => {
-                                    console.log('Context:', context);
-                                    const monthIndex = context.dataIndex;
-                                    const totalGoodsInMonth = totalGoodsIn[monthIndex];
-                                    console.log('Total Goods In Month:', totalGoodsInMonth);
-                                    return `Total Barang Masuk : ${totalGoodsInMonth} barang`;
-                                }
-                            }
-
-                        },
-                        {
-                            label: 'Total Barang Keluar',
-                            data: goodsOutData,
-                            backgroundColor: 'rgba(70, 130, 180, 0.6)', // steelblue
-                            borderRadius: 4,
-                            datalabels: {
-                                color: '#fff',
-                                align: 'top',
-                                formatter: (value, context) => {
-                                    const monthIndex = context.dataIndex;
-                                    const totalOut = goodsOutData[monthIndex];
-                                    const totalGoodsOutMonth = totalGoodsOut[monthIndex];
-                                    return `Keluar: Rp ${totalOut} Jt\nTotal: ${totalGoodsOutMonth} items`;
-                                }
-                            }
-                        }
-                    ]
-                },
-                options: {
-                    plugins: {
-                        legend: {
-                            display: false // Hide the legend
-                        },
-                         tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const datasetLabel = context.dataset.label || '';
-                                    const dataIndex = context.dataIndex;
-                                    const value = context.raw;
-
-                                    let additionalInfo = '';
-                                    if (context.dataset.label === 'Total Barang Masuk') {
-                                        additionalInfo = `Jumlah Masuk: ${totalGoodsIn[dataIndex]} Barang`;
-                                    } else if (context.dataset.label === 'Total Barang Keluar') {
-                                        additionalInfo = `Jumlah Keluar: ${totalGoodsOut[dataIndex]} Barang`;
-                                    }
-
-                                    return `${datasetLabel}: Rp ${value} Jt\n${additionalInfo}`;
-                                }
-                            }
-                            }
-                        },
-
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false,
-                            }
-                        },
-                        y: {
-                            grid: {
-                                display: false,
-                            },
-                            beginAtZero: true,
-                        }
-                    },
-                    elements: {
-                        bar: {
-                            borderRadius: 4,
-                        }
-                    }
-                }
-            });
-
         });
     </script>
     <script>

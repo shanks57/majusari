@@ -48,18 +48,9 @@ class DashboardController extends Controller
             }
 
             $goldRates = GoldRate::orderBy('created_at', 'desc')->paginate(5);
-            $goodsData = $this->goodsSummary($request);
 
             return view('pages.dashboard', [
-            
-                'goodsInValues' => $goodsData['goodsInValues'],
-                'goodsOutValues' => $goodsData['goodsOutValues'],
-                'totalIn' => $goodsData['totalIn'],
-                'totalOut' => $goodsData['totalOut'],
-                'totalGoodsIn' => $goodsData['totalGoodsIn'],
-                'totalGoodsOut' => $goodsData['totalGoodsOut'],
-                'filter' => '',
-
+    
                 'goldRates' => $goldRates,
 
                 'customer_stats' => [
@@ -85,6 +76,124 @@ class DashboardController extends Controller
         }
     }
 
+    public function getWeightChartData(Request $request)
+    {
+        $filter = $request->input('filter', 'year');
+        try {
+            $goodsSummary = $this->processWeightChartSummary($filter);
+            return response()->json($goodsSummary);
+        } catch (\Exception $e) {
+            // Tangani pengecualian dan kirimkan pesan kesalahan
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    private function processWeightChartSummary($filter)
+    {
+        $dataIn = [];
+        $dataOut = [];
+        $labels = [];
+        $totalGoodsIn = 0;
+        $totalGoodsOut = 0;
+
+        if ($filter == 'year') {
+            // Ambil data per bulan dalam setahun
+            $year = Carbon::now()->year;
+            $goodsIn = Goods::selectRaw('MONTH(created_at) as month, SUM(size) as total')
+                ->whereYear('created_at', $year)
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
+
+            $goodsOut = TransactionDetail::selectRaw('MONTH(transactions.date) as month, SUM(goods.size) as total')
+                ->join('goods', 'transaction_details.goods_id', '=', 'goods.id')
+                ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+                ->whereYear('transactions.date', $year)
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
+
+            for ($month = 1; $month <= 12; $month++) {
+                $monthName = Carbon::create()->month($month)->format('M'); // Nama bulan
+                $labels[] = $monthName;
+                $monthlyGoodsIn = $goodsIn->firstWhere('month', $month)->total ?? 0;
+                $monthlyGoodsOut = $goodsOut->firstWhere('month', $month)->total ?? 0;
+                $dataIn[] = $monthlyGoodsIn;
+                $dataOut[] = $monthlyGoodsOut;
+                $totalGoodsIn += $monthlyGoodsIn;
+                $totalGoodsOut += $monthlyGoodsOut;
+            }
+        } elseif ($filter == 'month') {
+            // Ambil data per hari dalam bulan ini
+            $month = Carbon::now()->month;
+            $year = Carbon::now()->year;
+            $daysInMonth = Carbon::now()->daysInMonth;
+
+            $goodsIn = Goods::selectRaw('DAY(created_at) as day, SUM(size) as total')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
+                ->groupBy('day')
+                ->orderBy('day')
+                ->get();
+
+            $goodsOut = TransactionDetail::selectRaw('DAY(transactions.date) as day, SUM(goods.size) as total')
+                ->join('goods', 'transaction_details.goods_id', '=', 'goods.id')
+                ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+                ->whereYear('transactions.date', $year)
+                ->whereMonth('transactions.date', $month)
+                ->groupBy('day')
+                ->orderBy('day')
+                ->get();
+
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $labels[] = "$day";
+                $dailyGoodsIn = $goodsIn->firstWhere('day', $day)->total ?? 0;
+                $dailyGoodsOut = $goodsOut->firstWhere('day', $day)->total ?? 0;
+                $dataIn[] = $dailyGoodsIn;
+                $dataOut[] = $dailyGoodsOut;
+                $totalGoodsIn += $dailyGoodsIn;
+                $totalGoodsOut += $dailyGoodsOut;
+            }
+        } else {
+            // Ambil data per hari dalam seminggu
+            $startOfWeek = Carbon::now()->startOfWeek();
+            $endOfWeek = Carbon::now()->endOfWeek();
+
+            $goodsIn = Goods::selectRaw('DAYOFWEEK(created_at) as day, SUM(size) as total')
+                ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+                ->groupBy('day')
+                ->orderBy('day')
+                ->get();
+
+            $goodsOut = TransactionDetail::selectRaw('DAYOFWEEK(transactions.date) as day, SUM(goods.size) as total')
+                ->join('goods', 'transaction_details.goods_id', '=', 'goods.id')
+                ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+                ->whereBetween('transactions.date', [$startOfWeek, $endOfWeek])
+                ->groupBy('day')
+                ->orderBy('day')
+                ->get();
+
+            $daysOfWeek = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+            foreach ($daysOfWeek as $index => $day) {
+                $labels[] = $day;
+                $weeklyGoodsIn = $goodsIn->firstWhere('day', $index + 1)->total ?? 0;
+                $weeklyGoodsOut = $goodsOut->firstWhere('day', $index + 1)->total ?? 0;
+                $dataIn[] = $weeklyGoodsIn;
+                $dataOut[] = $weeklyGoodsOut;
+                $totalGoodsIn += $weeklyGoodsIn;
+                $totalGoodsOut += $weeklyGoodsOut;
+            }
+        }
+
+        return [
+            'labels' => $labels,
+            'goodsInData' => $dataIn,
+            'goodsOutData' => $dataOut,
+            'totalGoodsIn' => $totalGoodsIn . ' gr',
+            'totalGoodsOut' => $totalGoodsOut . ' gr',
+        ];
+    }
+
     // start sale summary detail
     public function getChartSalesSummaryDetail(Request $request)
     {
@@ -104,86 +213,90 @@ class DashboardController extends Controller
     {
         try{
             $data = [];
-        $labels = [];
-        $totalSales = 0;
+            $labels = [];
+            $totalSales = 0;
 
-        if ($startDate->isSameYear($endDate)) {
-            if ($startDate->isSameWeek($endDate)) {
-                // Rentang dalam satu minggu
-                $daysOfWeek = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-                $transactions = TransactionDetail::selectRaw('DAYOFWEEK(created_at) as day, SUM(harga_jual) as total')
-                    ->whereDate('created_at', '>=', $startDate)
-                    ->whereDate('created_at', '<=', $endDate)
-                    ->groupBy('day')
-                    ->orderBy('day')
-                    ->get();
+            if ($startDate->isSameYear($endDate)) {
+                if ($startDate->isSameWeek($endDate)) {
+                    // Rentang dalam satu minggu
+                    $daysOfWeek = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                    $transactions = TransactionDetail::selectRaw('DAYOFWEEK(transactions.date) as day, SUM(harga_jual) as total')
+                        ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id') // Join with transactions table
+                        ->whereDate('transactions.date', '>=', $startDate)
+                        ->whereDate('transactions.date', '<=', $endDate)
+                        ->groupBy('day')
+                        ->orderBy('day')
+                        ->get();
 
-                foreach ($daysOfWeek as $index => $day) {
-                    $labels[] = $day;
-                    $weeklyTotal = $transactions->firstWhere('day', $index + 1)->total ?? 0;
-                    $data[] = $weeklyTotal;
-                    $totalSales += $weeklyTotal;
-                }
-            } elseif ($startDate->isSameMonth($endDate)) {
-                // Rentang dalam satu bulan
-                $daysInMonth = $startDate->daysInMonth;
-                $transactions = TransactionDetail::selectRaw('DAY(created_at) as day, SUM(harga_jual) as total')
-                    ->whereDate('created_at', '>=', $startDate)
-                    ->whereDate('created_at', '<=', $endDate)
-                    ->groupBy('day')
-                    ->orderBy('day')
-                    ->get();
+                    foreach ($daysOfWeek as $index => $day) {
+                        $labels[] = $day;
+                        $weeklyTotal = $transactions->firstWhere('day', $index + 1)->total ?? 0;
+                        $data[] = $weeklyTotal;
+                        $totalSales += $weeklyTotal;
+                    }
+                } elseif ($startDate->isSameMonth($endDate)) {
+                    // Rentang dalam satu bulan
+                    $daysInMonth = $startDate->daysInMonth;
+                    $transactions = TransactionDetail::selectRaw('DAY(transactions.date) as day, SUM(harga_jual) as total')
+                        ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id') // Join with transactions table
+                        ->whereDate('transactions.date', '>=', $startDate)
+                        ->whereDate('transactions.date', '<=', $endDate)
+                        ->groupBy('day')
+                        ->orderBy('day')
+                        ->get();
 
-                for ($day = 1; $day <= $daysInMonth; $day++) {
-                    $labels[] = "$day";
-                    $dailyTotal = $transactions->firstWhere('day', $day)->total ?? 0;
-                    $data[] = $dailyTotal;
-                    $totalSales += $dailyTotal;
+                    for ($day = 1; $day <= $daysInMonth; $day++) {
+                        $labels[] = "$day";
+                        $dailyTotal = $transactions->firstWhere('day', $day)->total ?? 0;
+                        $data[] = $dailyTotal;
+                        $totalSales += $dailyTotal;
+                    }
+                } else {
+                    // Rentang dalam satu tahun
+                    $transactions = TransactionDetail::selectRaw('MONTH(transactions.date) as month, SUM(harga_jual) as total')
+                        ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id') // Join with transactions table
+                        ->whereDate('transactions.date', '>=', $startDate)
+                        ->whereDate('transactions.date', '<=', $endDate)
+                        ->groupBy('month')
+                        ->orderBy('month')
+                        ->get();
+
+                    for ($month = 1; $month <= 12; $month++) {
+                        $monthName = Carbon::create()->month($month)->format('M'); // Nama bulan
+                        $labels[] = $monthName;
+                        $monthlyTotal = $transactions->firstWhere('month', $month)->total ?? 0;
+                        $data[] = $monthlyTotal;
+                        $totalSales += $monthlyTotal;
+                    }
                 }
             } else {
-                // Rentang dalam satu tahun
-                $transactions = TransactionDetail::selectRaw('MONTH(created_at) as month, SUM(harga_jual) as total')
-                    ->whereDate('created_at', '>=', $startDate)
-                    ->whereDate('created_at', '<=', $endDate)
-                    ->groupBy('month')
-                    ->orderBy('month')
+                // Rentang melintasi beberapa tahun
+                $years = range($startDate->year, $endDate->year);
+                $transactions = TransactionDetail::selectRaw('YEAR(transactions.date) as year, SUM(harga_jual) as total')
+                    ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id') // Join with transactions table
+                    ->whereDate('transactions.date', '>=', $startDate)
+                    ->whereDate('transactions.date', '<=', $endDate)
+                    ->groupBy('year')
+                    ->orderBy('year')
                     ->get();
 
-                for ($month = 1; $month <= 12; $month++) {
-                    $monthName = Carbon::create()->month($month)->format('M'); // Nama bulan
-                    $labels[] = $monthName;
-                    $monthlyTotal = $transactions->firstWhere('month', $month)->total ?? 0;
-                    $data[] = $monthlyTotal;
-                    $totalSales += $monthlyTotal;
+                foreach ($years as $year) {
+                    $labels[] = $year;
+                    $yearlyTotal = $transactions->firstWhere('year', $year)->total ?? 0;
+                    $data[] = $yearlyTotal;
+                    $totalSales += $yearlyTotal;
                 }
             }
-        } else {
-            // Rentang melintasi beberapa tahun
-            $years = range($startDate->year, $endDate->year);
-            $transactions = TransactionDetail::selectRaw('YEAR(created_at) as year, SUM(harga_jual) as total')
-                ->whereDate('created_at', '>=', $startDate)
-                ->whereDate('created_at', '<=', $endDate)
-                ->groupBy('year')
-                ->orderBy('year')
-                ->get();
 
-            foreach ($years as $year) {
-                $labels[] = $year;
-                $yearlyTotal = $transactions->firstWhere('year', $year)->total ?? 0;
-                $data[] = $yearlyTotal;
-                $totalSales += $yearlyTotal;
-            }
+            return [
+                'labels' => $labels,
+                'data' => $data,
+                'totalSales' => $totalSales, // Sertakan total penjualan dalam response
+            ];
+        } catch(\Exception $e) {
+            \Log::error('Error processing chart sales summary: ' . $e->getMessage());
+            return response()->json(['error' => 'Server Error'], 500);
         }
-
-        return [
-            'labels' => $labels,
-            'data' => $data,
-            'totalSales' => $totalSales, // Sertakan total penjualan dalam response
-        ];
-        }catch(\Exception $e) {
-        \Log::error('Error processing chart sales summary: ' . $e->getMessage());
-        return response()->json(['error' => 'Server Error'], 500);
-    }
     }
     // end sale summary detail
 
@@ -205,8 +318,9 @@ class DashboardController extends Controller
         if ($filter == 'year') {
             // Ambil data per bulan dalam setahun
             $year = Carbon::now()->year;
-            $transactions = TransactionDetail::selectRaw('MONTH(created_at) as month, SUM(harga_jual) as total')
-                ->whereYear('created_at', $year)
+            $transactions = TransactionDetail::selectRaw('MONTH(transactions.date) as month, SUM(harga_jual) as total')
+                ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id') // Join with transactions table
+                ->whereYear('transactions.date', $year)
                 ->groupBy('month')
                 ->orderBy('month')
                 ->get();
@@ -224,9 +338,10 @@ class DashboardController extends Controller
             $year = Carbon::now()->year;
             $daysInMonth = Carbon::now()->daysInMonth;
 
-            $transactions = TransactionDetail::selectRaw('DAY(created_at) as day, SUM(harga_jual) as total')
-                ->whereYear('created_at', $year)
-                ->whereMonth('created_at', $month)
+            $transactions = TransactionDetail::selectRaw('DAY(transactions.date) as day, SUM(harga_jual) as total')
+                ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id') // Join with transactions table
+                ->whereYear('transactions.date', $year)
+                ->whereMonth('transactions.date', $month)
                 ->groupBy('day')
                 ->orderBy('day')
                 ->get();
@@ -241,8 +356,9 @@ class DashboardController extends Controller
             // Ambil data per hari dalam seminggu
             $startOfWeek = Carbon::now()->startOfWeek();
             $endOfWeek = Carbon::now()->endOfWeek();
-            $transactions = TransactionDetail::selectRaw('DAYOFWEEK(created_at) as day, SUM(harga_jual) as total')
-                ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            $transactions = TransactionDetail::selectRaw('DAYOFWEEK(transactions.date) as day, SUM(harga_jual) as total')
+                ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id') // Join with transactions table
+                ->whereBetween('transactions.date', [$startOfWeek, $endOfWeek])
                 ->groupBy('day')
                 ->orderBy('day')
                 ->get();
@@ -259,82 +375,10 @@ class DashboardController extends Controller
         return [
             'labels' => $labels,
             'data' => $data,
-            'totalSaleSalesSummary' => $totalSaleSalesSummary,  // Sertakan total penjualan dalam response
+            'totalSaleSalesSummary' => $totalSaleSalesSummary,
         ];
     }
     // End Sales Summary Chart
-
-    public function goodsSummary(Request $request)
-    {
-        // Mendapatkan filter waktu
-        $filter = $request->input('filter', 'tahun-ini');
-
-        // Mendapatkan tanggal saat ini
-        $now = Carbon::now();
-
-        // Menginisialisasi variabel untuk query
-        $startDate = $now->startOfYear();
-        $endDate = $now->endOfYear();
-
-        // Mengatur rentang tanggal berdasarkan filter yang dipilih
-        switch ($filter) {
-            case 'bulan-ini':
-                $startDate = $now->startOfMonth();
-                $endDate = $now->endOfMonth();
-                break;
-            case 'minggu-ini':
-                $startDate = $now->startOfWeek();
-                $endDate = $now->endOfWeek();
-                break;
-            case 'hari-ini':
-                $startDate = $now->startOfDay();
-                $endDate = $now->endOfDay();
-                break;
-            default: // 'year'
-                $startDate = Carbon::now()->startOfYear();
-                $endDate = Carbon::now()->endOfYear();
-                break;
-        }
-
-        // Query untuk total barang masuk
-        $goodsInData = DB::table('goods')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('SUM(ask_price) as total_in'), DB::raw('COUNT(id) as total_goods_in'))
-            ->where('availability', 1)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
-
-        // Query untuk total barang keluar
-        $goodsOutData = DB::table('transaction_details')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('SUM(harga_jual) as total_out'), DB::raw('COUNT(id) as total_goods_out'))
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
-
-        $goodsInValues = array_fill(0, 12, 0);
-        $goodsOutValues = array_fill(0, 12, 0);
-        $totalGoodsIn = array_fill(0, 12, 0);
-        $totalGoodsOut = array_fill(0, 12, 0);
-
-        foreach ($goodsInData as $data) {
-            $goodsInValues[$data->month - 1] = $data->total_in;
-            $totalGoodsIn[$data->month - 1] = $data->total_goods_in;
-        }
-
-        foreach ($goodsOutData as $data) {
-            $goodsOutValues[$data->month - 1] = $data->total_out;
-            $totalGoodsOut[$data->month - 1] = $data->total_goods_out;
-        }
-
-        // Menghitung total barang masuk dan keluar
-        $totalIn = array_sum($goodsInValues);
-        $totalOut = array_sum($goodsOutValues);
-
-        // Mengembalikan data sebagai array
-        return compact('goodsInValues', 'goodsOutValues', 'totalIn', 'totalOut', 'totalGoodsIn', 'totalGoodsOut');
-    }
 
     public function updateKurs(Request $request)
     {
