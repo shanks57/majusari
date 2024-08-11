@@ -21,7 +21,7 @@
                     <div class="w-full px-3.5 py-2.5 border-b border-[#E5E5E5]">
                         <p class="mb-1">Barang & Merek</p>
                         <p>{{ session('good-name-form') }} - {{ session('good-color-form') }}</p>
-                        <p class="font-bold">{{ session('good-merk-form') }}</p>
+                        <p class="max-w-xs font-bold truncate">{{ session('good-merk-form') }}</p>
                     </div>
                     <div class="w-full px-3.5 py-2.5 border-b border-[#E5E5E5]">
                          <p class="mb-1">Berat & Kadar</p>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="w-full px-3.5 py-2.5 border-b border-[#E5E5E5]">
                          <p class="mb-1">Kategori</p>
-                         <p>{{ session('good-type-form') }}</p>
+                         <p class="max-w-xs font-bold truncate">{{ session('good-type-form') }}</p>
                     </div>
                     <div class="w-full px-3.5 py-2.5 border-b border-[#E5E5E5]">
                          <p class="mb-1">Tempat</p>

@@ -9,7 +9,7 @@
                 <div class="flex items-center gap-3 justify-between text-[#232323] w-full">
                     <img src="{{ asset('storage/' . $good->image) }}" class="object-cover rounded-lg size-32"
                         alt="{{ $good->name }}">
-                    <div class="grid grid-cols-1 mr-4 w-full">
+                    <div class="grid w-full grid-cols-1 mr-4">
                         <div class="flex items-center justify-between text-base font-semibold text-[#232323]">
                             <span class="text-sm font-normal">Nama Barang</span>
                             <span>{{ $good->name }}</span>
@@ -24,11 +24,11 @@
                         </div>
                         <div class="flex items-center justify-between text-base font-semibold text-[#232323]">
                             <span class="text-sm font-normal">Kategori</span>
-                            <span>{{ $good->category }}</span>
+                            <span class="truncate max-w-28">{{ $good->category }}</span>
                         </div>
                         <div class="flex items-center justify-between text-base font-semibold text-[#232323]">
                             <span class="text-sm font-normal">Merek</span>
-                            <span>{{ $good->merk->name }}</span>
+                            <span class="truncate max-w-28">{{ $good->merk->name }}</span>
                         </div>
                     </div>
 
@@ -40,7 +40,7 @@
                     @method('PATCH')
                     <button type="submit"
                         class="flex items-center px-4 py-3 gap-1.5 text-sm font-medium rounded-lg bg-[#6634BB] text-[#F8F8F8]">
-                        <span>Pindahkan ke Brankas <i class="ph ph-vault ml-1"></i></span>
+                        <span>Pindahkan ke Brankas <i class="ml-1 ph ph-vault"></i></span>
                     </button>
                 </form>
             </div>

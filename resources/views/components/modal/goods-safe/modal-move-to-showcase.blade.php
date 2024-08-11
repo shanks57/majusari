@@ -25,8 +25,8 @@
                         <img src="{{ asset('storage/' . $goodsafe->image) }}" class="object-cover rounded-lg w-14 h-14"
                             alt="{{ $goodsafe->name }}">
                         <div class="flex flex-col items-center justify-center w-full gap-1 text-center">
-                            <span class="text-sm"> - {{ $goodsafe->goodsType->name }} ({{ $goodsafe->rate }}%) </span>
-                            <span class="text-sm">Merek {{ $goodsafe->merk->name }} </span>
+                            <span class="text-sm truncate max-w-28"> - {{ $goodsafe->goodsType->name }} ({{ $goodsafe->rate }}%) </span>
+                            <span class="text-sm truncate max-w-28">Merek {{ $goodsafe->merk->name }} </span>
                             <span class="text-xs">{{ $goodsafe->size }}gr </span>
                             <span
                                 class="text-sm text-[#9A9A9A] font-inter">

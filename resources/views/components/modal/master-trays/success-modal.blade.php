@@ -17,8 +17,8 @@
                         <img src="{{ asset('storage/' . session('imageShowcase')) }}"
                             class="object-cover rounded-lg size-14" alt="{{ session('nameShowcase') }}">
                         <div class="flex flex-col items-start gap-1 mr-4">
-                            <span class="text-sm">{{ session('showcase')}} - {{ session('goodType') }} ({{ session('rateShowcase') }}%) </span>
-                            <span class="text-sm">Merek {{ session('merk') }} </span>
+                            <span class="text-sm truncate max-w-28">{{ session('showcase')}} - {{ session('goodType') }} ({{ session('rateShowcase') }}%) </span>
+                            <span class="text-sm truncate max-w-28">Merek {{ session('merk') }} </span>
                             <span class="text-xs">{{ session('sizeShowcase') }}gr </span>
                         </div>
                     </div>

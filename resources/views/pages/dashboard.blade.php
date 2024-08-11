@@ -174,106 +174,43 @@
     </div>
     <div id="tab-content-weight" class="hidden tab-content">
         <div class="col-span-7 p-4 bg-white border rounded-lg">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold">Total Berat Barang</h2>
-    </div>
-    <div x-data="chartWeightComponent" class="flex items-center justify-between mb-4">
-        <div>
-            <div class="flex gap-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold">Total Berat Barang</h2>
+            </div>
+            <div x-data="chartWeightComponent" class="flex items-center justify-between mb-4">
                 <div>
-                    <div class="flex items-center gap-2 mb-3 text-3xl font-semibold" x-text="parseFloat(totalGoodsIn).toFixed(3) + ' gr'"></div>
-                    <div class="flex items-center gap-3">
-                        <div class="bg-[#ADD8E699]  w-8 h-3 rounded-full"></div>
-                        <p class="text-xs text-gray-500">Total Barang Masuk</p>
+                    <div class="flex gap-8">
+                        <div>
+                            <div class="flex items-center gap-2 mb-3 text-3xl font-semibold"
+                                x-text="parseFloat(totalGoodsIn).toFixed(3) + ' gr'"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="bg-[#ADD8E699]  w-8 h-3 rounded-full"></div>
+                                <p class="text-xs text-gray-500">Total Barang Masuk</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-3 text-3xl font-semibold" x-text="parseFloat(totalGoodsOut).toFixed(3) + ' gr'">
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="bg-[#4682B499] w-8 h-3 rounded-full"></div>
+                                <p class="text-xs text-gray-500">Total Barang Keluar</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div>
-                    <div class="flex items-center gap-2 mb-3 text-3xl font-semibold" x-text="totalGoodsOut"></div>
-                    <div class="flex items-center gap-3">
-                        <div class="bg-[#4682B499] w-8 h-3 rounded-full"></div>
-                        <p class="text-xs text-gray-500">Total Barang Keluar</p>
-                    </div>
+                    <select x-model="filter" @change="fetchChartData()"
+                        class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg pe-9 focus:border-[#6634BB] focus:ring-[#6634BB] disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                        <option value="year">Tahun Ini</option>
+                        <option value="month">Bulan Ini</option>
+                        <option value="week">Minggu Ini</option>
+                    </select>
                 </div>
             </div>
-        </div>
-        <div>
-            <select x-model="filter" @change="fetchChartData()"
-                class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg pe-9 focus:border-[#6634BB] focus:ring-[#6634BB] disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
-                <option value="year">Tahun Ini</option>
-                <option value="month">Bulan Ini</option>
-                <option value="week">Minggu Ini</option>
-            </select>
+            <canvas id="weight-chart" class="h-64 mt-4"></canvas>
         </div>
     </div>
-    <canvas id="weight-chart" class="h-64 mt-4"></canvas>
-</div>
-
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('chartWeightComponent', () => ({
-            filter: 'year',
-            chart: '',
-            totalGoodsIn: '',
-            totalGoodsOut: '',
-            goodsInData: [],
-            goodsOutData: [],
-            labels: [],
-            
-            init() {
-                this.fetchChartData();
-            },
-            
-            async fetchChartData() {
-                const response = await fetch(`/get-weight-chart-data?filter=${this.filter}`);
-                const data = await response.json();
-                this.goodsInData = data.goodsInData;
-                this.goodsOutData = data.goodsOutData;
-                this.labels = data.labels;
-                this.totalGoodsIn = data.totalGoodsIn;
-                this.totalGoodsOut = data.totalGoodsOut;
-                this.updateChart();
-            },
-            updateChart() {
-                const ctx = document.getElementById('weight-chart').getContext('2d');
-
-                if (this.chart) {
-                    this.chart.destroy();
-                }
-
-                this.chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: this.labels,
-                        datasets: [{
-                            label: 'Total Barang Masuk',
-                            data: this.goodsInData,
-                            backgroundColor: 'rgba(173, 216, 230, 0.6)', // lightblue
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Total Barang Keluar',
-                            data: this.goodsOutData,
-                            backgroundColor: 'rgba(70, 130, 180, 0.6)', // steelblue
-                            borderRadius: 4
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            legend: { display: false },
-                        },
-                        scales: {
-                            x: { grid: { display: false } },
-                            y: { grid: { display: false }, beginAtZero: true }
-                        },
-                        elements: { bar: { borderRadius: 4 } }
-                    }
-                });
-            }
-        }));
-    });
-</script>
-    </div>
-        <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tabs = document.querySelectorAll('.tab-button');
             const contents = document.querySelectorAll('.tab-content');
@@ -482,6 +419,70 @@
                     }
                 }));
             })
+    </script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('chartWeightComponent', () => ({
+                filter: 'year',
+                chart: '',
+                totalGoodsIn: '',
+                totalGoodsOut: '',
+                goodsInData: [],
+                goodsOutData: [],
+                labels: [],
+                
+                init() {
+                    this.fetchChartData();
+                },
+                
+                async fetchChartData() {
+                    const response = await fetch(`/get-weight-chart-data?filter=${this.filter}`);
+                    const data = await response.json();
+                    this.goodsInData = data.goodsInData;
+                    this.goodsOutData = data.goodsOutData;
+                    this.labels = data.labels;
+                    this.totalGoodsIn = data.totalGoodsIn;
+                    this.totalGoodsOut = data.totalGoodsOut;
+                    this.updateChart();
+                },
+                updateChart() {
+                    const ctx = document.getElementById('weight-chart').getContext('2d');
+
+                    if (this.chart) {
+                        this.chart.destroy();
+                    }
+
+                    this.chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: this.labels,
+                            datasets: [{
+                                label: 'Total Barang Masuk',
+                                data: this.goodsInData,
+                                backgroundColor: 'rgba(173, 216, 230, 0.6)', // lightblue
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Total Barang Keluar',
+                                data: this.goodsOutData,
+                                backgroundColor: 'rgba(70, 130, 180, 0.6)', // steelblue
+                                borderRadius: 4
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: { display: false },
+                            },
+                            scales: {
+                                x: { grid: { display: false } },
+                                y: { grid: { display: false }, beginAtZero: true }
+                            },
+                            elements: { bar: { borderRadius: 4 } }
+                        }
+                    });
+                }
+            }));
+        });
     </script>
     @include('components.modal.dashboard.update-kurs')
     @include('components.modal.error-form-modal')

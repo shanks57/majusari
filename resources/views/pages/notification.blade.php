@@ -13,7 +13,7 @@
                     <p class="mt-2 text-xs text-gray-500">Barang & Merek</p>
                     <h3 class="block mt-1 text-lg leading-tight text-black">{{ $notif->goods->name }} -
                         {{ $notif->goods->color }}</h3>
-                    <p class="text-sm text-gray-500 ">{{ $notif->goods->merk->name }}</p>
+                    <p class="max-w-xs text-sm text-gray-500 truncate">{{ $notif->goods->merk->name }}</p>
                 </div>
                 
                 @if ($notif->status_price === 2)

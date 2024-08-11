@@ -19,8 +19,8 @@
                         <img src="{{ asset('storage/' . $goodShowcase->image) }}"
                             class="object-cover rounded-lg size-14" alt="{{ $goodShowcase->name }}">
                         <div class="flex flex-col items-start gap-1 mr-4">
-                            <span class="text-sm">{{ $goodShowcase->tray->showcase->name}} - {{ $goodShowcase->goodsType->name }} ({{ $goodShowcase->rate }}%) </span>
-                            <span class="text-sm">Merek {{ $goodShowcase->merk->name }} </span>
+                            <span class="text-sm truncate max-w-28">{{ $goodShowcase->tray->showcase->name}} - {{ $goodShowcase->goodsType->name }} ({{ $goodShowcase->rate }}%) </span>
+                            <span class="text-sm truncate max-w-28">Merek {{ $goodShowcase->merk->name }} </span>
                             <span class="text-xs">{{ $goodShowcase->size }}gr </span>
                         </div>
                     </div>
