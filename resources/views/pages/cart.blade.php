@@ -16,7 +16,7 @@
                         <div class="grid gap-1">
                             <span class="text-sm">Barang & Merek</span>
                             <p class="text-lg">{{ $cart->goods->name }} - {{ $cart->goods->color }}</p>
-                            <span class="font-medium text-balance">{{ $cart->goods->merk->name }}</span>
+                            <span class="max-w-xs font-medium truncate text-balance">{{ $cart->goods->merk->name }}</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
@@ -89,7 +89,7 @@
                     </div>
                     <div class="grid gap-3">
                         <span class="text-sm">Kategori</span>
-                        <span class="text-base font-medium">{{ $cart->goods->goodsType->name }}</span>
+                        <span class="max-w-xs text-base font-medium truncate">{{ $cart->goods->goodsType->name }}</span>
                     </div>
                 </div>
             </div>

@@ -109,7 +109,7 @@ class GoodSafeController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:goods,code',
+            'code' => 'required|string|max:255|unique:goods,code,'.$id,
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
             'rate' => 'required|numeric',

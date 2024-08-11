@@ -16,7 +16,7 @@
             </div>
             <div class="flex justify-center text-sm text-[#151617] gap-3">
                 <p class="">{{ $goodsafe->name }} - {{$goodsafe->color}}</p>
-                <p>{{ $goodsafe->merk->company }}</p>
+                <p class="text-sm truncate max-w-28">{{ $goodsafe->merk->name }}</p>
             </div>
             <div class="flex items-center justify-center ">
                 <button type="button"

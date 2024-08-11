@@ -51,7 +51,7 @@
                             <p class="mt-2 text-xs text-gray-500">Barang & Merek</p>
                             <h3 class="block mt-1 text-lg leading-tight text-black">{{ $notif->goods->name }} -
                                 {{ $notif->goods->color }}</h3>
-                            <p class="text-sm text-gray-500 ">{{ $notif->goods->merk->name }}</p>
+                            <p class="max-w-xs text-sm text-gray-500 truncate">{{ $notif->goods->merk->name }}</p>
                         </div>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
                 @else
                 <button type="button" aria-label="Close"
                     data-hs-overlay="#hs-confirmation-complaint-modal-{{ $notif->id }}"
-                    class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 text-gray-500 rounded-lg border bg-gray-50">
+                    class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 text-gray-500 border rounded-lg bg-gray-50">
                     <span>Tutup</span>
                     <i class="ph ph-x ml-1.5"></i>
                 </button>
