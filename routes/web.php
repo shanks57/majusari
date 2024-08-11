@@ -19,6 +19,8 @@ Route::middleware('auth', 'verified')->group(function () {
     // start dashboard
     Route::get('/', [DashboardController::class, 'index'])->name("dashboard-page");
     Route::post('/kurs-emas/store', [DashboardController::class, 'updateKurs'])->name('dashboard.kurs.update');
+    Route::get('/chart-data', [DashboardController::class, 'getChartData']);
+    Route::get('/detail-sale-summary', [DashboardController::class, 'getChartSalesSummaryDetail']);
     // end dashboard
 
     // master/showcases

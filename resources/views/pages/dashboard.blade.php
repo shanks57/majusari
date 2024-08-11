@@ -63,47 +63,25 @@
                         <i class="ph ph-caret-right"></i>
                     </a>
                 </div>
-                <div class="flex items-center justify-between mb-4">
+                <div x-data="chartComponent" class="flex items-center justify-between mb-4">
                     <div>
-                        <div class="flex items-start gap-2 mb-3 text-3xl font-semibold">Rp
-                            {{ number_format($totalSales, 0, ',', '.') }} <span
-                                class="px-2 py-1 text-xs text-green-500 bg-green-100 rounded-full">
-                                <i class="ph ph-trend-up"></i>
-                                +23.2%</span></div>
-                        <div class="text-xs"><span class="text-gray-500">Total Penjualan (RP)</span> Tahun Ini</div>
+                        <div class="flex items-start gap-2 mb-3 text-3xl font-semibold">
+                            <span x-text="formatRupiah(totalSaleSalesSummary)"></span>
+                        </div>
+                        <div class="text-xs"><span class="text-gray-500">Total Penjualan (RP)</span> <span
+                                x-text="filterLabel()"></span></div>
                     </div>
-                    <div x-data="{ open: false, selectedOption: 'Tahun Ini' }" class="relative inline-block text-left">
                     <div>
-                        <button @click="open = !open" type="button"
-                            class="inline-flex items-center justify-center w-full gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                            <i class="ph ph-calendar-blank"></i>
-                            <span x-text="selectedOption"></span>
-                            <i class="ph ph-caret-down"></i>
-                        </button>
-                    </div>
+                        <div class="flex items-center space-x-2">
+                            <select x-model="filter" @change="fetchChartData()"
+                                class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg pe-9 focus:border-[#6634BB] focus:ring-[#6634BB] disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+                                <option value="year">Tahun Ini</option>
+                                <option value="month">Bulan Ini</option>
+                                <option value="week">Minggu Ini</option>
+                            </select>
+                        </div>
 
-                    <div x-show="open" @click.away="open = false"
-                        class="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                <span @click="selectedOption = 'Tahun Ini'; open = false"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                    role="menuitem">Tahun Ini
-                                </span>
-                                <span @click="selectedOption = 'Bulan Ini'; open = false"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                    role="menuitem">Bulan Ini
-                                </span>
-                                <span @click="selectedOption = 'Minggu Ini'; open = false"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                    role="menuitem">Minggu Ini
-                                </span>
-                                <span @click="selectedOption = 'Hari Ini'; open = false"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                    role="menuitem">Hari Ini
-                                </span>
-                            </div>
                     </div>
-                </div>
                 </div>
                 <canvas id="sales-chart" class="h-64 mt-4"></canvas>
             </div>
@@ -166,46 +144,29 @@
         <!-- Empty content for now -->
         <div class="col-span-7 p-4 bg-white border rounded-lg">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-semibold">Ringkasan Penjualan</h2>
+                <h2 class="text-xl font-semibold">Penjualan</h2>
                 <a href="/sales" class="flex items-center text-sm hover:underline">
                     <span>Selengkapnya</span>
                     <i class="ph ph-caret-right"></i>
                 </a>
             </div>
-            <div class="flex items-center justify-between mb-4">
+            <div x-data="chartDetailComponent" class="flex items-center justify-between mb-4">
                 <div>
-                    <div class="flex items-start gap-2 mb-3 text-3xl font-semibold">Rp {{ number_format($totalSales, 0, ',', '.') }} <span
-                            class="px-2 py-1 text-xs text-green-500 bg-green-100 rounded-full">
-                            <i class="ph ph-trend-up"></i>+23.2%</span></div>
-                    <div class="text-xs"><span class="text-gray-500">Total Penjualan (RP)</span> Tahun Ini</div>
+                    <div class="flex items-start gap-2 mb-3 text-3xl font-semibold">
+                        <span x-text="formatRupiah(totalSales)"></span>
+                    </div>
+                    <div class="text-xs">
+                        <span class="text-gray-500">Total Penjualan (RP)</span> <span x-text="filterLabel()"></span>
+                    </div>
                 </div>
-                <div x-data="{ open: false, selectedOption: 'Tahun Ini' }" class="relative inline-block text-left">
-                    <div>
-                        <button @click="open = !open" type="button"
-                            class="inline-flex items-center justify-center w-full gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                            <i class="ph ph-calendar-blank"></i>
-                            <span x-text="selectedOption"></span>
-                            <i class="ph ph-caret-down"></i>
-                        </button>
-                    </div>
+                <div class="max-w-sm space-y-3">
+                    <input type="date" x-model="startDate" @change="fetchChartData()"
+                        class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                        placeholder="Start Date">
 
-                    <div x-show="open" @click.away="open = false"
-                        class="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <span @click="selectedOption = 'Tahun Ini'; open = false"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Tahun Ini</span>
-                            <span @click="selectedOption = 'Bulan Ini'; open = false"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Bulan Ini</span>
-                            <span @click="selectedOption = 'Minggu Ini'; open = false"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Minggu Ini</span>
-                            <span @click="selectedOption = 'Hari Ini'; open = false"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">Hari Ini</span>
-                        </div>
-                    </div>
+                    <input type="date" x-model="endDate" @change="fetchChartData()"
+                        class="block w-full px-4 py-3 text-sm border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                        placeholder="End Date">
                 </div>
             </div>
             <canvas id="sales-chart-detail" class="h-64 mt-4"></canvas>
@@ -270,7 +231,7 @@
         </div>
 
     </div>
-    <script>
+        <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tabs = document.querySelectorAll('.tab-button');
             const contents = document.querySelectorAll('.tab-content');
@@ -286,92 +247,6 @@
                 });
             });
 
-            const selectElement = document.getElementById('filter');
-            const ctx = document.getElementById('sales-chart').getContext('2d');
-            
-            const salesData = @json($monthlyItemsSold);
-            const backgroundColors = salesData.map((value, index) => {
-                return index === 6 ? '#E9D2F7' : '#E6E6E6'; // Purple for July, gray for others
-            });
-
-            const salesChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT','NOV', 'DEC'
-                    ],
-                    datasets: [{
-                        label: 'Sales',
-                        data: salesData,
-                        backgroundColor: backgroundColors,
-                        borderColor: backgroundColors,
-                        borderWidth: 0,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    plugins: {
-                        legend: {
-                            display: false // Hide the legend
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                display: false // This removes the grid lines
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false // This removes the grid lines
-                            }
-                        }
-                    }
-                }
-            });
-
-            const ctxDetail = document.getElementById('sales-chart-detail').getContext('2d');
-            const salesDataDetail = [60, 70, 100, 80, 70, 50, 75, 60, 30, 50, 60, 100];
-            const backgroundColorsDetail = salesDataDetail.map((value, index) => {
-                return index === 6 ? '#E9D2F7' : '#E6E6E6'; // Purple for July, gray for others
-            });
-
-            const salesChartDetail = new Chart(ctxDetail, {
-                type: 'bar',
-                data: {
-                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT',
-                        'NOV', 'DEC'
-                    ],
-                    datasets: [{
-                        label: 'Sales',
-                        data: salesData,
-                        backgroundColor: backgroundColorsDetail,
-                        borderColor: backgroundColorsDetail,
-                        borderWidth: 0,
-                        borderRadius: 4,
-                    }]
-                },
-                options: {
-                    plugins: {
-                        legend: {
-                            display: false // Hide the legend
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                display: false // This removes the grid lines
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false // This removes the grid lines
-                            }
-                        }
-                    }
-                }
-            });
 
             const weightChartElement = document.getElementById('weight-chart').getContext('2d');
             const goodsInData = @json($goodsInValues);
@@ -492,6 +367,199 @@
             });
 
         });
+    </script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('chartComponent', () => ({
+                filter: 'year',
+                chart: null,
+                totalSaleSalesSummary: 0,
+
+               filterLabel() {
+                    switch(this.filter) {
+                        case 'year':
+                            return 'Tahun Ini';
+                        case 'month':
+                            return 'Bulan Ini';
+                        case 'week':
+                            return 'Minggu Ini';
+                        default:
+                            return '';
+                    }
+                },
+
+                formatRupiah(value) {
+                    return new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    }).format(value);
+                },
+
+                init() {
+                    this.fetchChartData();
+                },
+
+                async fetchChartData() {
+                    try {
+                        const response = await fetch(`/chart-data?filter=${this.filter}`);
+                        const result = await response.json();
+                        this.totalSaleSalesSummary = result.totalSaleSalesSummary || 0;
+                        
+                        this.updateChart(result.labels, result.data);
+                    } catch (error) {
+                        console.error('Error fetching chart data:', error);
+                    }
+                },
+
+                updateChart(labels, data) {
+                    if (!Array.isArray(data)) {
+                        console.error('Data is not an array:', data);
+                        data = [];
+                    }
+                    
+                    const ctx = document.getElementById('sales-chart').getContext('2d');
+                    
+                    if (this.chart) {
+                        this.chart.destroy();
+                    }
+                    
+                    this.chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Penjualan (Rp)',
+                                data: data,
+                                backgroundColor: '#E9D2F7',
+                                borderColor: '#E9D2F7',
+                                borderWidth: 0,
+                                borderRadius: 4
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        display: false
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }));
+        })
+    </script>
+    <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('chartDetailComponent', () => ({
+                    startDate: `${new Date().getFullYear()}-01-01`,
+                    endDate: `${new Date().getFullYear()}-12-31`,
+                    chart: null,
+                    totalSales: 0,
+
+                    formatDate(date) {
+                        // Format tanggal menggunakan Carbon di backend, lalu parsing hasil ke sini jika memungkinkan.
+                        // Untuk menggunakan Carbon di JavaScript, kita akan menggantinya dengan JavaScript native formatting
+                        return new Date(date).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                        });
+                    },
+
+                    filterLabel() {
+                        return 'Rentang Tanggal ' + this.formatDate(this.startDate) + ' - ' + this.formatDate(this.endDate);
+                    },
+
+                    formatRupiah(value) {
+                        return new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            minimumFractionDigits: 0
+                        }).format(value);
+                    },
+
+                    init() {
+                        this.fetchChartData();
+                    },
+
+                    async fetchChartData() {
+                        try {
+                            const response = await fetch(`/detail-sale-summary?start=${this.startDate}&end=${this.endDate}`);
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            const result = await response.json();
+                            this.totalSales = result.totalSales || 0;
+                            
+                            this.updateChart(result.labels, result.data);
+                        } catch (error) {
+                            console.error('Error fetching chart data:', error);
+                        }
+                    },
+
+                    updateChart(labels, data) {
+                        if (!Array.isArray(data)) {
+                            console.error('Data is not an array:', data);
+                            data = [];
+                        }
+                        
+                        const ctx = document.getElementById('sales-chart-detail').getContext('2d');
+                        
+                        if (this.chart) {
+                            this.chart.destroy();
+                        }
+                        
+                        this.chart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Penjualan (Rp)',
+                                    data: data,
+                                    backgroundColor: '#E9D2F7',
+                                    borderColor: '#E9D2F7',
+                                    borderWidth: 0,
+                                    borderRadius: 4
+                                }]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        grid: {
+                                            display: false
+                                        }
+                                    },
+                                    x: {
+                                        grid: {
+                                            display: false
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }));
+            })
     </script>
     @include('components.modal.dashboard.update-kurs')
     @include('components.modal.error-form-modal')
