@@ -9,6 +9,7 @@ use App\Http\Controllers\API\GoldRateController;
 use App\Http\Controllers\API\GoodsController;
 use App\Http\Controllers\API\GoodsTypeController;
 use App\Http\Controllers\API\MerkController;
+use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\SafeStorageController;
 use App\Http\Controllers\API\ShowcaseController;
 use App\Http\Controllers\API\TransactionController;
@@ -80,11 +81,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('transaction/search-goods-by-barcode', [TransactionController::class, 'getGoodsByBarcode']);
     Route::get('transaction/grouped-by-date', [TransactionController::class, 'indexWithGoodsGroupedByDate']);
     Route::post('transaction/add-transaction', [TransactionController::class, 'createTransaction']);
+    Route::post('/transactions/search-nota', [TransactionController::class, 'searchNota']);
 
     // cart
     Route::post('cart/add', [CartController::class, 'add']);
     Route::delete('cart/{cartId}', [CartController::class, 'remove']);
     Route::get('cart/{userId}', [CartController::class, 'getCart']);
+    Route::get('/search-code/{code}', [CartController::class, 'searchCode']);
+    Route::put('/cart/{id}/update-selling-price', [CartController::class, 'updateSellingPrice']);
+    Route::put('/cart/{id}/add-complaint', [CartController::class, 'addComplaint']);
+    // end chart
+
+    // start notif
+    Route::get('/notifications', [NotificationController::class, 'getNotification']);
+    Route::post('/notifications/{notifId}/verify-price-status', [NotificationController::class, 'verifyPriceStatus']);
+
+    // end notif
 
     // dashboard
     Route::apiResource('dashboard/gold-rates', GoldRateController::class);

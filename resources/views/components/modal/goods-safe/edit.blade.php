@@ -68,20 +68,20 @@
                 <div class="px-4">
                     <label for="name" class="block text-sm text-gray-600">Nama Barang</label>
                     <input type="text" id="name" name="name" x-model="form.name"
-                        class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nama barang" required>
+                        class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nama barang" required maxlength="20">
                 </div>
 
                 <div class="px-4">
                     <label for="code" class="block text-sm text-gray-600">Kode Barang</label>
                     <input type="text" id="code" name="code" x-model="form.code"
-                        class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan Kode Barang" required>
+                        class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan Kode Barang" required maxlength="10">
                 </div>
 
                 <div class="flex gap-4 px-4">
                     <div class="w-full ">
                         <label for="category" class="block text-sm text-gray-600">Kategori</label>
                         <input type="text" id="category" name="category" x-model="form.category"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan kategori" required>
+                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan kategori" required maxlength="20">
                     </div>
 
                     <div class="w-full ">

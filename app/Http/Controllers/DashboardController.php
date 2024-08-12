@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -294,7 +295,7 @@ class DashboardController extends Controller
                 'totalSales' => $totalSales, // Sertakan total penjualan dalam response
             ];
         } catch(\Exception $e) {
-            \Log::error('Error processing chart sales summary: ' . $e->getMessage());
+            Log::error('Error processing chart sales summary: ' . $e->getMessage());
             return response()->json(['error' => 'Server Error'], 500);
         }
     }

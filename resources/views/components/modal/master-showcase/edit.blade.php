@@ -31,7 +31,7 @@
                         <label for="code" class="block text-sm text-[#344054]">Kode Baki</label>
                         <input type="text" id="code" name="code" x-model="form.code"
                             class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-[#667085]"
-                            placeholder="Masukkan kode baki" required>
+                            placeholder="Masukkan kode baki" required maxlength="10">
                     </div>
                     <div class="w-full">
                         <label for="capacity" class="block text-sm text-[#344054] leading-5">Jumlah Item</label>
