@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Customer;
 use App\Models\Goods;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,6 +16,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -36,12 +39,6 @@ class TransactionController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-
-
 
     /**
      * Display the specified resource.
@@ -70,22 +67,6 @@ class TransactionController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 
     public function getByCode(Request $request)
@@ -278,66 +259,140 @@ class TransactionController extends Controller
     public function createTransaction(Request $request)
     {
         $request->validate([
-            'customer_id' => 'required|uuid|exists:customers,id',
+            'customer_id' => 'nullable|uuid|exists:users,id',
+            'name' => 'required_if:customer_id,null|string|max:255',
+            'phone' => 'required_if:customer_id,null|string|max:15',
+            'address' => 'required_if:customer_id,null|string|max:255',
             'user_id' => 'required|uuid|exists:users,id',
-            'cart_ids' => 'required|array',
-            'cart_ids.*' => 'uuid|exists:carts,id'
+            'cart_items' => 'required|array',
+            'cart_items.*.cart_id' => 'required|uuid|exists:carts,id',
+            'cart_items.*.goods_id' => 'required|uuid|exists:goods,id',
+            'cart_items.*.harga_jual' => 'required|numeric|min:0',
+            'cart_items.*.tray_id' => 'nullable|uuid|exists:trays,id',
+            'payment_method' => 'required|string|max:50',
+            'date' => 'required|date'
         ]);
 
+        DB::beginTransaction();
+
         try {
-            // Buat transaksi baru
+            // Cek jika customer baru atau lama
+            $customerId = $request->input('customer_id');
+
+            if (!$customerId) {
+                // Tambah pelanggan baru jika diperlukan
+                $customer = Customer::create([
+                    'id' => Str::uuid(),
+                    'name' => $request->input('name'),
+                    'phone' => $request->input('phone'),
+                    'address' => $request->input('address'),
+                ]);
+                $customerId = $customer->id;
+            }
+
+            // Buat entri transaksi baru
             $transaction = Transaction::create([
                 'id' => Str::uuid(),
                 'code' => str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),
-                'date' => Carbon::now(),
-                'user_id' => $request->user_id,
-                'customer_id' => $request->customer_id,
-                'total' => 0 // Placeholder untuk total
+                'user_id' => $request->input('user_id'),
+                'customer_id' => $customerId,
+                'total' => 0, // Placeholder untuk total
+                'payment_method' => $request->input('payment_method'),
+                'date' => $request->input('date'),
             ]);
 
-            // Ambil barang dari cart berdasarkan cart_ids
-            $cartItems = Cart::whereIn('id', $request->cart_ids)->get();
-
-            if ($cartItems->isEmpty()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'No items found in the selected carts'
-                ], 400);
-            }
-
             $totalAmount = 0;
+            $cartIds = [];
 
-            // Tambahkan detail transaksi dan hitung total penjualan
-            foreach ($cartItems as $item) {
-                $goods = Goods::find($item->goods_id);
-                if ($goods) {
-                    $totalAmount += $goods->ask_price;
+            foreach ($request->input('cart_items') as $cartItem) {
+                // Dapatkan item cart
+                $cart = Cart::findOrFail($cartItem['cart_id']);
+                $cartIds[] = $cart->id;
 
-                    TransactionDetail::create([
-                        'id' => Str::uuid(),
-                        'transaction_id' => $transaction->id,
-                        'goods_id' => $item->goods_id,
-                    ]);
-                }
+                // Buat detail transaksi baru
+                TransactionDetail::create([
+                    'id' => Str::uuid(),
+                    'nota' => str_pad(mt_rand(1, 99999), 8, '0', STR_PAD_LEFT),
+                    'transaction_id' => $transaction->id,
+                    'goods_id' => $cartItem['goods_id'],
+                    'harga_jual' => $cartItem['harga_jual'],
+                    'tray_id' => $cartItem['tray_id'],
+                ]);
+
+                // Update barang di tabel goods
+                Goods::where('id', $cartItem['goods_id'])->update([
+                    'position' => null,
+                    'tray_id' => null,
+                ]);
+
+                $totalAmount += $cartItem['harga_jual'];
             }
 
             // Update total transaksi
             $transaction->update(['total' => $totalAmount]);
 
-            // Hapus barang dari cart yang dipilih
-            Cart::whereIn('id', $request->cart_ids)->delete();
+            // Hapus semua barang dari cart (soft delete)
+            Cart::whereIn('id', $cartIds)->delete();
+
+            // Komit transaksi
+            DB::commit();
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Transaction created successfully',
                 'data' => $transaction->load('details.goods')
-            ]);
+            ], 200);
+
         } catch (\Exception $e) {
+            // Rollback jika terjadi error
+            DB::rollBack();
+
+            // Catat exception ke file log
+            Log::error('Checkout error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request' => $request->all(),
+            ]);
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to create transaction',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function searchNota(Request $request)
+    {
+        $request->validate([
+            'nota' => 'required|string'
+        ]);
+
+        $nota = $request->input('nota');
+        
+        $transaction = TransactionDetail::where('nota', $nota)->with(['goods', 'tray', 'goods.merk', 'goods.goodsType', 'tray.showcase'])->first();
+
+        if ($transaction) {
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'goods_name' => $transaction->goods->name,
+                    'nota' => $transaction->nota,
+                    'goods_image' => $transaction->goods->image,
+                    'goods_color' => $transaction->goods->color,
+                    'goods_merk' => $transaction->goods->merk->name,
+                    'goods_rate' => $transaction->goods->rate,
+                    'goods_size' => $transaction->goods->size,
+                    'goods_type' => $transaction->goods->goodsType->name,
+                    'showcase_name' => $transaction->tray->showcase->name,
+                    'tray_code' => $transaction->tray->code,
+                    'harga_jual' => $transaction->harga_jual
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Kode penjualan tidak ditemukan.'
+            ], 404);
         }
     }
 }

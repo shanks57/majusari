@@ -27,7 +27,7 @@
                 <div class="p-4 overflow-y-auto">
                     <div class="w-full mb-4">
                         <label for="jenisBarang" class="block text-sm text-[#344054]">Jenis Barang</label>
-                        <input type="text" id="jenisBarang" name="jenisBarang" x-model="form.jenisBarang"
+                        <input type="text" id="jenisBarang" name="jenisBarang" x-model="form.jenisBarang" maxlength="50"
                             class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]"
                             placeholder="Masukkan Jenis Barang" required>
                     </div>
