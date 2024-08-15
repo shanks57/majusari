@@ -184,9 +184,9 @@
                 </div>
 
                 <div x-data="{
-                        carts: {{ json_encode($carts) }},
-                        isDisabled() {
-                            return this.carts.some(cart => cart.status_price === 0 || cart.status_price === 2);
+                    carts: {{ json_encode($carts) }},
+                    isDisabled() {
+                            return this.carts.length === 0 || this.carts.some(cart => cart.status_price === 0 || cart.status_price === 2);
                         }
                     }">
                     <button type="button" class="w-full py-3 text-sm text-white bg-[#7F56D9] rounded-lg"
