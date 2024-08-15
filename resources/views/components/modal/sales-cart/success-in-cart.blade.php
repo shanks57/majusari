@@ -58,7 +58,7 @@
                     <i class="ph ph-plus ml-1.5"></i>
                 </button>
                 <button type="button" @click="open = false"
-                    class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg text-[#D0D5DD] border-[#D0D5DD] border bg-white"
+                    class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg text-[#8d8e91] border-[#D0D5DD] border bg-white"
                     >
                     Tutup
                     <i class="ph ph-x ml-1.5"></i>
