@@ -5,6 +5,8 @@
             class="px-6 py-3 rounded-md  {{ request()->is('/') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
             Dashboard
         </a>
+        
+        @role('superadmin')
         <x-dropdown
             class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('master/*') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
             title="Master">
@@ -33,6 +35,8 @@
                     id="menu-item-2">Brankas</a>
             </div>
         </x-dropdown>
+        @endauth
+
         <a href="/sales"
             class="px-6 py-3 rounded-md  {{ request()->is('sales') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
             Penjualan

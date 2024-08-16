@@ -90,7 +90,7 @@ class UserController extends Controller
             $employee->wages = $request->input('wages');
             $employee->address = $request->input('address');
             $employee->status = $request->input('status') ? 1 : 0;
-
+            // $employee->assignRole('admin');
             $employee->save();
             
             session()->flash('success-edit', 'Berhasil Memperbarui Data Pegawai.');
