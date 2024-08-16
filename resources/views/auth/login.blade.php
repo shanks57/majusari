@@ -85,9 +85,10 @@
                         <input type="checkbox" name="remember" class="form-checkbox" />
                         <span class="ml-2">Remember Me</span>
                     </label>
-                    <a href="/forgot-password" class="text-sm text-gray-500 hover:text-gray-700 hover:underline">Lupa
+                    {{-- <a href="/forgot-password" class="text-sm text-gray-500 hover:text-gray-700 hover:underline">Lupa
                         password?
-                        <span class="font-bold">Reset Sekarang</span></a>
+                        <span class="font-bold">Reset Sekarang</span>
+                    </a> --}}
                 </div>
                 <div class="mb-6">
                     <button type="submit"

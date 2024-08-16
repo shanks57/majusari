@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -47,6 +48,7 @@ class UserController extends Controller
                 'address' => $request->address,
                 'status' => $request->status ?? true,
                 'password' => Hash::make($request->password),
+                'email_verified_at' => Carbon::now()
             ]);
 
             $user->assignRole($request->role);
