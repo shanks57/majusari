@@ -108,7 +108,7 @@
                             </div>
                             <div>
                                 <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Kategori</h5>
-                                <p class="text-gray-800 ">{{ $sale->goods->goodsType->name }}</p>
+                                <p class="text-gray-800 max-w-20 truncate">{{ $sale->goods->goodsType->name }}</p>
                             </div>
                             <div>
                                 <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Berat & Kadar</h5>

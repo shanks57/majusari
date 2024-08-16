@@ -119,9 +119,10 @@ class DashboardController extends Controller
                     // Konversi nilai hari dalam minggu ke nama hari
                     $dateName = Carbon::getDays()[$dateValue - 1];
                 } elseif ($period == 'month') {
-                    $dateName = $dateValue;
+                    $dateName = $dateValue; // Tanggal dalam bulan
                 } else {
-                    $dateName = Carbon::create()->month($dateValue)->shortMonthName;
+                    // Menggunakan Carbon untuk mendapatkan nama bulan singkat
+                    $dateName = Carbon::createFromDate(null, $dateValue, 1)->shortMonthName;
                 }
 
                 return [
@@ -183,7 +184,6 @@ class DashboardController extends Controller
                     DB::raw('SUM(size) as total_goods_in'),
                     DB::raw("$dateFormatGoodsIn as $dateAlias")
                 )
-                ->where('availability', 1)
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->groupBy($dateAlias)
                 ->get();
@@ -208,9 +208,10 @@ class DashboardController extends Controller
                     // Konversi nilai hari dalam minggu ke nama hari
                     $dateName = Carbon::getDays()[$dateValue - 1];
                 } elseif ($period == 'month') {
-                    $dateName = $dateValue;
+                    $dateName = $dateValue; // Tanggal dalam bulan
                 } else {
-                    $dateName = Carbon::create()->month($dateValue)->shortMonthName;
+                    // Menggunakan Carbon untuk mendapatkan nama bulan singkat
+                    $dateName = Carbon::createFromDate(null, $dateValue, 1)->shortMonthName;
                 }
 
                 return [
@@ -226,9 +227,10 @@ class DashboardController extends Controller
                     // Konversi nilai hari dalam minggu ke nama hari
                     $dateName = Carbon::getDays()[$dateValue - 1];
                 } elseif ($period == 'month') {
-                    $dateName = $dateValue;
+                    $dateName = $dateValue; // Tanggal dalam bulan
                 } else {
-                    $dateName = Carbon::create()->month($dateValue)->shortMonthName;
+                    // Menggunakan Carbon untuk mendapatkan nama bulan singkat
+                    $dateName = Carbon::createFromDate(null, $dateValue, 1)->shortMonthName;
                 }
 
                 return [
