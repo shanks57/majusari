@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -49,7 +50,7 @@ class UserController extends Controller
             $employee->wages = $request->input('wages');
             $employee->address = $request->input('address');
             $employee->status = $request->input('status');
-            
+            $employee->email_verified_at = Carbon::now();
             $employee->assignRole('admin');
             
             $employee->save();
@@ -90,7 +91,8 @@ class UserController extends Controller
             $employee->wages = $request->input('wages');
             $employee->address = $request->input('address');
             $employee->status = $request->input('status') ? 1 : 0;
-            // $employee->assignRole('admin');
+            $employee->email_verified_at = Carbon::now();
+            $employee->assignRole('admin');
             $employee->save();
             
             session()->flash('success-edit', 'Berhasil Memperbarui Data Pegawai.');
