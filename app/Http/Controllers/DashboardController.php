@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\GoldRate;
 use App\Models\Goods;
+use App\Models\GoodsType;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
@@ -77,6 +78,16 @@ class DashboardController extends Controller
         }
     }
 
+    public function getTotalWeightByType()
+    {
+        $totalWeightByType = Goods::selectRaw('goods_types.name as type_name, SUM(goods.size) as total_weight')
+            ->join('goods_types', 'goods.type_id', '=', 'goods_types.id')
+            ->groupBy('goods.type_id', 'goods_types.name')
+            ->get();
+
+        return response()->json($totalWeightByType);
+    }
+
     public function getWeightChartData(Request $request)
     {
         $filter = $request->input('filter', 'year');
@@ -87,6 +98,26 @@ class DashboardController extends Controller
             // Tangani pengecualian dan kirimkan pesan kesalahan
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function getTotalWeightByBrand()
+    {
+        $totalWeightByBrand = Goods::selectRaw('merks.name as brand_name, SUM(goods.size) as total_weight')
+            ->join('merks', 'goods.merk_id', '=', 'merks.id')
+            ->groupBy('goods.merk_id', 'merks.name')
+            ->get();
+
+        return response()->json($totalWeightByBrand);
+    }
+
+    public function getTotalWeightByGoldRate()
+    {
+        $totalWeightByRate = Goods::selectRaw('goods.rate as gold_rate, goods_types.name as type_name, SUM(goods.size) as total_weight')
+            ->join('goods_types', 'goods.type_id', '=', 'goods_types.id')
+            ->groupBy('goods.rate', 'goods.type_id', 'goods_types.name')
+            ->get();
+
+        return response()->json($totalWeightByRate);
     }
 
     private function processWeightChartSummary($filter)

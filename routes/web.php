@@ -22,6 +22,12 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/chart-data', [DashboardController::class, 'getChartData']);
     Route::get('/detail-sale-summary', [DashboardController::class, 'getChartSalesSummaryDetail']);
     Route::get('/get-weight-chart-data', [DashboardController::class, 'getWeightChartData']);
+
+    Route::get('/get-total-weight-by-type', [DashboardController::class, 'getTotalWeightByType']);
+    // Untuk API
+    Route::get('/get-weight-by-brand', [DashboardController::class, 'getTotalWeightByBrand']);
+    Route::get('/get-weight-by-gold-rate', [DashboardController::class, 'getTotalWeightByGoldRate']);
+
     // end dashboard
 
     Route::group(['middleware' => ['role:superadmin']], function () {
