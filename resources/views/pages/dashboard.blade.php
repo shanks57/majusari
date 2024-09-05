@@ -12,6 +12,9 @@
         <button id="tab-weight" @click="activeTab = 'weight'" :class="{'bg-white': activeTab === 'weight'}"
             class="px-4 py-2 rounded tab-button"
             :class="{'active': activeTab === 'weight', 'bg-white': activeTab !== 'weight'}">Berat Barang</button>
+        <button id="tab-karatage" @click="activeTab = 'karatage'" :class="{'bg-white': activeTab === 'karatage'}"
+            class="px-4 py-2 rounded tab-button"
+            :class="{'active': activeTab === 'karatage', 'bg-white': activeTab !== 'karatage'}">Total Karat</button>
     </div>
     <div id="tab-content-summary" class="tab-content">
         <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
@@ -210,6 +213,30 @@
             <canvas id="weight-chart" class="h-64 mt-4"></canvas>
         </div>
     </div>
+    <div id="tab-content-karatage" class="hidden tab-content">
+        <div class="grid grid-cols-3 gap-4 ">
+            <div class="p-4 bg-white border rounded-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">Total Berat Barang</h2>
+                </div>
+                <canvas id="karatageTotalWeightChart"></canvas>
+                <div id="legend-container"></div>
+            </div>
+            <div class="p-4 bg-white border rounded-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">Merk Barang</h2>
+                </div>
+                <!-- <canvas id="karatageTotalWeightChart"></canvas> -->
+            </div>
+            <div class="p-4 bg-white border rounded-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">Kadar Barang</h2>
+                </div>
+                <!-- <canvas id="karatageTotalWeightChart"></canvas> -->
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tabs = document.querySelectorAll('.tab-button');
@@ -234,8 +261,8 @@
                 chart: null,
                 totalSaleSalesSummary: 0,
 
-               filterLabel() {
-                    switch(this.filter) {
+                filterLabel() {
+                    switch (this.filter) {
                         case 'year':
                             return 'Tahun Ini';
                         case 'month':
@@ -264,7 +291,7 @@
                         const response = await fetch(`/chart-data?filter=${this.filter}`);
                         const result = await response.json();
                         this.totalSaleSalesSummary = result.totalSaleSalesSummary || 0;
-                        
+
                         this.updateChart(result.labels, result.data);
                     } catch (error) {
                         console.error('Error fetching chart data:', error);
@@ -276,13 +303,13 @@
                         console.error('Data is not an array:', data);
                         data = [];
                     }
-                    
+
                     const ctx = document.getElementById('sales-chart').getContext('2d');
-                    
+
                     if (this.chart) {
                         this.chart.destroy();
                     }
-                    
+
                     this.chart = new Chart(ctx, {
                         type: 'bar',
                         data: {
@@ -322,103 +349,235 @@
         })
     </script>
     <script>
-            document.addEventListener('alpine:init', () => {
-                Alpine.data('chartDetailComponent', () => ({
-                    startDate: `${new Date().getFullYear()}-01-01`,
-                    endDate: `${new Date().getFullYear()}-12-31`,
-                    chart: null,
-                    totalSales: 0,
+        const getOrCreateLegendList = (chart, id) => {
+            const legendContainer = document.getElementById(id);
+            let listContainer = legendContainer.querySelector('ul');
 
-                    formatDate(date) {
-                        // Format tanggal menggunakan Carbon di backend, lalu parsing hasil ke sini jika memungkinkan.
-                        // Untuk menggunakan Carbon di JavaScript, kita akan menggantinya dengan JavaScript native formatting
-                        return new Date(date).toLocaleDateString('id-ID', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric'
-                        });
-                    },
+            if (!listContainer) {
+                listContainer = document.createElement('ul');
+                listContainer.className = "flex flex-col gap-1"
+                // listContainer.style.display = 'flex';
+                // listContainer.style.flexDirection = 'column';
+                // listContainer.style.margin = 0;
+                // listContainer.style.padding = 0;
 
-                    filterLabel() {
-                        return 'Rentang Tanggal ' + this.formatDate(this.startDate) + ' - ' + this.formatDate(this.endDate);
-                    },
+                legendContainer.appendChild(listContainer);
+            }
 
-                    formatRupiah(value) {
-                        return new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                            minimumFractionDigits: 0
-                        }).format(value);
-                    },
+            return listContainer;
+        };
 
-                    init() {
-                        this.fetchChartData();
-                    },
+        const htmlLegendPlugin = {
+            id: 'htmlLegend',
+            afterUpdate(chart, args, options) {
+                const ul = getOrCreateLegendList(chart, options.containerID);
 
-                    async fetchChartData() {
-                        try {
-                            const response = await fetch(`/detail-sale-summary?start=${this.startDate}&end=${this.endDate}`);
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! Status: ${response.status}`);
-                            }
-                            const result = await response.json();
-                            this.totalSales = result.totalSales || 0;
-                            
-                            this.updateChart(result.labels, result.data);
-                        } catch (error) {
-                            console.error('Error fetching chart data:', error);
+                // Remove old legend items
+                while (ul.firstChild) {
+                    ul.firstChild.remove();
+                }
+                console.log("charts", chart, args, options)
+
+                // Reuse the built-in legendItems generator
+                const items = chart.options.plugins.legend.labels.generateLabels(chart);
+
+                items.forEach((item, i) => {
+                    const li = document.createElement('li');
+                    li.style.alignItems = 'center';
+                    li.style.cursor = 'pointer';
+                    li.style.display = 'flex';
+                    li.style.flexDirection = 'row';
+                    li.style.marginLeft = '10px';
+                    li.style.justifyContent = "justify-between"
+
+                    li.onclick = () => {
+                        const {
+                            type
+                        } = chart.config;
+                        if (type === 'pie' || type === 'doughnut') {
+                            // Pie and doughnut charts only have a single dataset and visibility is per item
+                            chart.toggleDataVisibility(item.index);
+                        } else {
+                            chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
                         }
-                    },
+                        chart.update();
+                    };
 
-                    updateChart(labels, data) {
-                        if (!Array.isArray(data)) {
-                            console.error('Data is not an array:', data);
-                            data = [];
+                    // Color box
+                    const boxSpan = document.createElement('span');
+                    boxSpan.style.background = item.fillStyle;
+                    boxSpan.style.borderColor = item.strokeStyle;
+                    boxSpan.style.borderWidth = item.lineWidth + 'px';
+                    boxSpan.style.display = 'inline-block';
+                    boxSpan.style.flexShrink = 0;
+                    boxSpan.style.height = '20px';
+                    boxSpan.style.marginRight = '10px';
+                    boxSpan.style.width = '20px';
+                    boxSpan.className = "rounded-full"
+
+                    // Text
+                    const textContainer = document.createElement('div');
+                    textContainer.style.color = item.fontColor;
+                    textContainer.style.margin = 0;
+                    textContainer.style.padding = 0;
+                    textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
+                    textContainer.className = "flex justify-between items-center w-full"
+
+                    const text = document.createTextNode(item.text);
+
+                    console.log("ITEM", item)
+
+                    const gramValue = document.createTextNode(`${chart.data.datasets[0].data[i]}gr`)
+                    const spanText = document.createElement('span');
+                    const spanValue = document.createElement('span');
+
+                    spanText.appendChild(text)
+                    spanValue.appendChild(gramValue)
+
+                    textContainer.appendChild(spanText);
+                    textContainer.appendChild(spanValue);
+
+
+                    li.appendChild(boxSpan);
+                    li.appendChild(textContainer);
+
+                    ul.appendChild(li);
+                });
+            }
+        };
+        const ctx = document.getElementById('karatageTotalWeightChart').getContext('2d');
+        const totalWeightChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Anting', 'Cincin', 'Gelang', 'Giwang', 'Kalung', 'Liontin', 'Perhiasan Campuran'],
+                datasets: [{
+                    label: 'Total Berat Barang',
+                    data: [1838, 1838, 1838, 1838, 1832, 1838, 1838],
+                    backgroundColor: [
+                        '#10B981', // Anting - green
+                        '#3B82F6', // Cincin - blue
+                        '#6366F1', // Gelang - indigo
+                        '#8B5CF6', // Giwang - purple
+                        '#3730A3', // Kalung - dark blue
+                        '#F59E0B', // Liontin - yellow
+                        '#14B8A6' // Perhiasan Campuran - teal
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    htmlLegend: {
+                        // ID of the container to put the legend in
+                        containerID: 'legend-container',
+                    },
+                    legend: {
+                        display: false,
+                    }
+                }
+            },
+            plugins: [htmlLegendPlugin],
+        });
+    </script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('chartDetailComponent', () => ({
+                startDate: `${new Date().getFullYear()}-01-01`,
+                endDate: `${new Date().getFullYear()}-12-31`,
+                chart: null,
+                totalSales: 0,
+
+                formatDate(date) {
+                    // Format tanggal menggunakan Carbon di backend, lalu parsing hasil ke sini jika memungkinkan.
+                    // Untuk menggunakan Carbon di JavaScript, kita akan menggantinya dengan JavaScript native formatting
+                    return new Date(date).toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                },
+
+                filterLabel() {
+                    return 'Rentang Tanggal ' + this.formatDate(this.startDate) + ' - ' + this.formatDate(this.endDate);
+                },
+
+                formatRupiah(value) {
+                    return new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    }).format(value);
+                },
+
+                init() {
+                    this.fetchChartData();
+                },
+
+                async fetchChartData() {
+                    try {
+                        const response = await fetch(`/detail-sale-summary?start=${this.startDate}&end=${this.endDate}`);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
                         }
-                        
-                        const ctx = document.getElementById('sales-chart-detail').getContext('2d');
-                        
-                        if (this.chart) {
-                            this.chart.destroy();
-                        }
-                        
-                        this.chart = new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: labels,
-                                datasets: [{
-                                    label: 'Penjualan (Rp)',
-                                    data: data,
-                                    backgroundColor: '#E9D2F7',
-                                    borderColor: '#E9D2F7',
-                                    borderWidth: 0,
-                                    borderRadius: 4
-                                }]
+                        const result = await response.json();
+                        this.totalSales = result.totalSales || 0;
+
+                        this.updateChart(result.labels, result.data);
+                    } catch (error) {
+                        console.error('Error fetching chart data:', error);
+                    }
+                },
+
+                updateChart(labels, data) {
+                    if (!Array.isArray(data)) {
+                        console.error('Data is not an array:', data);
+                        data = [];
+                    }
+
+                    const ctx = document.getElementById('sales-chart-detail').getContext('2d');
+
+                    if (this.chart) {
+                        this.chart.destroy();
+                    }
+
+                    this.chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Penjualan (Rp)',
+                                data: data,
+                                backgroundColor: '#E9D2F7',
+                                borderColor: '#E9D2F7',
+                                borderWidth: 0,
+                                borderRadius: 4
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
                             },
-                            options: {
-                                plugins: {
-                                    legend: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
                                         display: false
                                     }
                                 },
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        grid: {
-                                            display: false
-                                        }
-                                    },
-                                    x: {
-                                        grid: {
-                                            display: false
-                                        }
+                                x: {
+                                    grid: {
+                                        display: false
                                     }
                                 }
                             }
-                        });
-                    }
-                }));
-            })
+                        }
+                    });
+                }
+            }));
+        })
     </script>
     <script>
         document.addEventListener('alpine:init', () => {
@@ -430,11 +589,11 @@
                 goodsInData: [],
                 goodsOutData: [],
                 labels: [],
-                
+
                 init() {
                     this.fetchChartData();
                 },
-                
+
                 async fetchChartData() {
                     const response = await fetch(`/get-weight-chart-data?filter=${this.filter}`);
                     const data = await response.json();
@@ -457,27 +616,43 @@
                         data: {
                             labels: this.labels,
                             datasets: [{
-                                label: 'Total Barang Masuk',
-                                data: this.goodsInData,
-                                backgroundColor: 'rgba(173, 216, 230, 0.6)', // lightblue
-                                borderRadius: 4
-                            },
-                            {
-                                label: 'Total Barang Keluar',
-                                data: this.goodsOutData,
-                                backgroundColor: 'rgba(70, 130, 180, 0.6)', // steelblue
-                                borderRadius: 4
-                            }]
+                                    label: 'Total Barang Masuk',
+                                    data: this.goodsInData,
+                                    backgroundColor: 'rgba(173, 216, 230, 0.6)', // lightblue
+                                    borderRadius: 4
+                                },
+                                {
+                                    label: 'Total Barang Keluar',
+                                    data: this.goodsOutData,
+                                    backgroundColor: 'rgba(70, 130, 180, 0.6)', // steelblue
+                                    borderRadius: 4
+                                }
+                            ]
                         },
                         options: {
                             plugins: {
-                                legend: { display: false },
+                                legend: {
+                                    display: false
+                                },
                             },
                             scales: {
-                                x: { grid: { display: false } },
-                                y: { grid: { display: false }, beginAtZero: true }
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    beginAtZero: true
+                                }
                             },
-                            elements: { bar: { borderRadius: 4 } }
+                            elements: {
+                                bar: {
+                                    borderRadius: 4
+                                }
+                            }
                         }
                     });
                 }
