@@ -123,7 +123,8 @@
                     </div>
                 </div>
 
-                <div class="flex gap-4 px-4">
+                <div x-data="priceCalculatorEdit()" x-init="init()" @input="updatePricesEdit()">
+                <div class="flex gap-4 px-4 mb-4">
                     <div class="w-full ">
                         <label for="size" class="block text-sm text-gray-600">Berat</label>
                         <input type="number" id="size" name="size" x-model="form.size"
@@ -146,13 +147,13 @@
                     </div>
                 </div>
 
-                <div class="px-4 ">
+                <div class="px-4 mb-4">
                     <label for="date_entry" class="block text-sm text-gray-600">Tanggal Masuk</label>
                     <input type="date" id="date_entry" name="date_entry" x-model="form.date_entry"
                         class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
                 </div>
 
-                <div class="px-4 ">
+                <div class="px-4 mb-4">
                     <div class="w-full ">
                         <label for="merk_id" class="block text-sm text-gray-600">Merk</label>
                         <select id="merk_id" name="merk_id" x-model="form.merk_id"
@@ -166,24 +167,31 @@
                 </div>
 
                 <div class="flex gap-4 px-4">
-                    <div class="w-full ">
-                        <label for="ask_price" class="block text-sm text-gray-600">Harga Jual</label>
-                        <input type="number" id="ask_price" name="ask_price" x-model="form.ask_price"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Harga jual" required>
-                    </div>
+                        <div class="w-full p-3 mb-4 bg-gray-100 border rounded">
+                            <label for="ask_price" class="block text-sm font-normal text-gray-700">Harga Jual</label>
+                            <div class="flex items-center gap-1 mt-1 text-lg text-gray-700">
+                                <span>Rp</span>
+                                <input type="number" id="ask_price" name="ask_price" x-model="form.ask_price"
+                                    class="w-full text-lg bg-gray-100 border-transparent border-none focus:outline-none focus:border-transparent focus:ring-0"
+                                    placeholder="Harga jual" required readonly>
+                            </div>
+                        </div>
 
-                    <div class="w-full ">
-                        <label for="bid_price" class="block text-sm text-gray-600">Harga Bawah</label>
-                        <input type="number" id="bid_price" name="bid_price" x-model="form.bid_price"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Harga bawah" required>
-                    </div>
+                        <div class="w-full p-3 mb-4 bg-gray-100 border rounded">
+                            <label for="bid_price" class="block text-sm font-normal text-gray-700">Harga Bawah</label>
+                            <div class="flex items-center gap-1 mt-1 text-lg text-gray-700">
+                                <span>Rp</span>
+                                <input type="number" id="bid_price" name="bid_price" x-model="form.bid_price"
+                                    class="w-full text-lg bg-gray-100 border-transparent border-none focus:outline-none focus:border-transparent focus:ring-0"
+                                    placeholder="Harga bawah" required readonly>
+                            </div>
+                        </div>
                 </div>
+            </div>
 
                 <div class="flex items-center justify-end px-4 gap-x-2">
                     <button type="submit"
-                        :disabled="!form.code || !form.name || !form.category || !form.color || !form.rate || !form.size || !form.dimensions || !form.merk_id || !form.ask_rate || !form.bid_rate || !form.ask_price || !form.bid_price || !form.type_id || !form.date_entry"
-                        class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white"
-                        :class="{ 'opacity-50 cursor-not-allowed': !form.code || !form.name || !form.category || !form.color || !form.rate || !form.size || !form.dimensions || !form.merk_id || !form.ask_rate || !form.bid_rate || !form.ask_price || !form.bid_price || !form.type_id || !form.date_entry }">
+                        class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white">
                         Simpan
                         <i class="ph ph-floppy-disk ml-1.5"></i>
                     </button>
@@ -192,3 +200,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    function priceCalculatorEdit() {
+        return {
+            lastKurs: @json($lastKursPrice), // Nilai tukar terbaru dari backend
+
+            updatePricesEdit() {
+                this.form.ask_price = ((this.form.ask_rate / 100) * this.form.size * this.lastKurs).toFixed(0);
+                this.form.bid_price = ((this.form.bid_rate / 100) * this.form.size * this.lastKurs).toFixed(0);
+            },
+
+            init() {
+                this.updatePricesEdit(); // Hitung harga saat inisialisasi
+            }
+        }
+    }
+</script>

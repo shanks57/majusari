@@ -90,7 +90,7 @@
                     @enderror
                 </div>
 
-                <div x-data="showcaseForm()">
+                <div x-data="showcaseForm()" x-init="init">
                     <div class="flex gap-4 px-4">
                         <div class="w-full mb-4">
                             <label for="category" class="block text-sm text-gray-600">Kategori</label>
@@ -191,11 +191,9 @@
                         <div class="flex gap-4 px-4">
                             <div class="w-full mb-4">
                                 <label for="showcase_id" class="block text-sm text-gray-600">Etalase</label>
-                                <select id="showcase_id" name="showcase_id" x-model="form.showcase_id"
-                                    @change="updateTrays()"
+                                <select id="showcase_id" name="showcase_id" x-model="form.showcase_id" @change="updateTrays()"
                                     class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
                                     required>
-                                    <option value="" disabled selected>Pilih etalase</option>
                                     <template x-for="showcase in filteredShowcases" :key="showcase.id">
                                         <option :value="showcase.id" x-text="showcase.name"></option>
                                     </template>
@@ -303,73 +301,83 @@
 
 <script>
     function showcaseForm() {
-        return {
-            form: {
-                showcase_id: '',
-                tray_id: '',
-                position: '',
-                type_id: '',
-            },
-            trays: @json($trays),
-            showcases: @json($showcases), // Tambahkan data showcases di sini
-            occupiedPositions: @json($occupiedPositions),
-            filteredTrays: [],
-            filteredShowcases: [], // Variabel untuk menyimpan showcases yang sudah difilter
-            availablePositions: [],
-            
-            updateShowcases() {
-                // Filter showcases berdasarkan type_id
-                this.filteredShowcases = this.showcases.filter(showcase => showcase.type_id == this.form.type_id);
-                this.form.showcase_id = '';
-                this.updateTrays(); // Memastikan trays diupdate setiap kali showcase_id diubah
-            },
-            
-            updateTrays() {
-                this.filteredTrays = this.trays.filter(tray => tray.showcase_id == this.form.showcase_id);
-                this.form.tray_id = '';
-                this.updatePositions();
-            },
-
-            updatePositions() {
-                const selectedTray = this.trays.find(tray => tray.id == this.form.tray_id);
-                const capacity = selectedTray ? selectedTray.capacity : 0;
-
-                // Get occupied positions for the selected tray
-                const occupied = this.occupiedPositions[this.form.tray_id] || [];
-
-                // Generate positions excluding occupied ones
-                this.availablePositions = Array.from({
-                    length: capacity
-                }, (_, i) => i + 1).filter(pos => !occupied.includes(pos));
-                this.form.position = '';
-            },
-
-            init() {
-                // Initialize filteredShowcases based on initial type_id value
-                this.updateShowcases();
-            }
-        }
-    }
-</script>
-
-<script>
-function priceCalculator(lastKurs) {
     return {
-        form: {
-            ask_rate: 0,
-            bid_rate: 0,
-            size: 0,
-            ask_price: 0,
-            bid_price: 0,
-        },
-        updatePrices() {
-            const size = this.form.size;
-            const ask_rate = this.form.ask_rate / 100;
-            const bid_rate = this.form.bid_rate / 100;
+        trays: @json($trays),
+        showcases: @json($showcases),
+        occupiedPositions: @json($occupiedPositions),
+        filteredTrays: [],
+        filteredShowcases: [],
+        availablePositions: [],
 
-            this.form.ask_price = (ask_rate * size * lastKurs).toFixed(0);
-            this.form.bid_price = (bid_rate * size * lastKurs).toFixed(0);
+        // Mengupdate showcases berdasarkan type_id
+        updateShowcases() {
+            // Reset showcase_id, tray_id, dan position sebelum mengupdate showcases
+            this.form.showcase_id = null; // Set to null to ensure default option is selected
+            this.form.tray_id = '';     // Reset tray_id
+            this.form.position = '';    // Reset position
+
+            // Filter showcases berdasarkan type_id
+            this.filteredShowcases = this.showcases.filter(showcase => showcase.type_id == this.form.type_id);
+             this.filteredShowcases.unshift({
+                id: '',
+                name: 'Pilih Etalase',
+                disabled: true
+            });
+            // Memastikan trays diupdate setiap kali showcase_id diubah
+            this.updateTrays();
+        },
+        
+        // Mengupdate trays berdasarkan showcase_id
+        updateTrays() {
+            this.form.tray_id = ''; // Reset tray_id
+            this.form.position = ''; // Reset position
+
+            this.filteredTrays = this.trays.filter(tray => tray.showcase_id == this.form.showcase_id);
+
+            // Memastikan positions diupdate setiap kali tray_id diubah
+            this.updatePositions();
+        },
+
+        // Mengupdate positions berdasarkan tray_id
+        updatePositions() {
+            const selectedTray = this.trays.find(tray => tray.id == this.form.tray_id);
+            const capacity = selectedTray ? selectedTray.capacity : 0;
+
+            const occupied = this.occupiedPositions[this.form.tray_id] || [];
+
+            this.availablePositions = Array.from({
+                length: capacity
+            }, (_, i) => i + 1).filter(pos => !occupied.includes(pos));
+            this.form.position = '';
+        },
+
+        // Inisialisasi fungsi
+        init() {
+            this.updateShowcases(); // Mengupdate showcases saat inisialisasi
         }
     }
 }
+
+</script>
+
+<script>
+    function priceCalculator(lastKurs) {
+        return {
+            form: {
+                ask_rate: 0,
+                bid_rate: 0,
+                size: 0,
+                ask_price: 0,
+                bid_price: 0,
+            },
+            updatePrices() {
+                const size = this.form.size;
+                const ask_rate = this.form.ask_rate / 100;
+                const bid_rate = this.form.bid_rate / 100;
+
+                this.form.ask_price = (ask_rate * size * lastKurs).toFixed(0);
+                this.form.bid_price = (bid_rate * size * lastKurs).toFixed(0);
+            }
+        }
+    }
 </script>

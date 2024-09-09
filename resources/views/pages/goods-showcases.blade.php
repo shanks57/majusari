@@ -20,7 +20,7 @@
                         <th class="px-6 py-3 text-left">
                             <input type="checkbox" id="select-all">
                         </th>
-                        <th class="py-3 px-6 text-left !font-normal">Code</th>
+                        <th class="py-3 px-6 text-left !font-normal">Kode Barang</th>
                         <th class="py-3 px-6 text-left !font-normal">Tanggal Masuk</th>
                         <th class="py-3 px-6 text-left !font-normal">Gambar</th>
                         <th class="py-3 px-6 text-left !font-normal">Barang & Merek</th>
