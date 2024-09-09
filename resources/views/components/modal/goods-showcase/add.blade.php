@@ -1,22 +1,24 @@
 <div x-data="{ 
         form: { 
-            code: '', 
-            name: '', 
-            category: '', 
-            color: '', 
-            rate: '', 
-            size: '', 
-            dimensions: '', 
-            merk_id: '', 
-            ask_rate: '', 
-            bid_rate: '', 
-            ask_price: '', 
-            bid_price: '', 
-            image: '', 
-            type_id: '', 
-            tray_id: '', 
-            position: '', 
-            date_entry: '' 
+            id: '{{ $latestAddedGoods->id }}',
+            code: '{{ $latestAddedGoods->code }}',
+            unit: '{{ $latestAddedGoods->unit }}',  
+            name: '{{ $latestAddedGoods->name }}', 
+            category: '{{ $latestAddedGoods->category }}', 
+            color: '{{ $latestAddedGoods->color }}', 
+            rate: '{{ $latestAddedGoods->rate }}', 
+            size: '{{ $latestAddedGoods->size }}', 
+            dimensions: '{{ $latestAddedGoods->dimensions }}', 
+            merk_id: '{{ $latestAddedGoods->merk_id }}', 
+            ask_rate: '{{ $latestAddedGoods->ask_rate }}', 
+            bid_rate: '{{ $latestAddedGoods->bid_rate }}', 
+            ask_price: '{{ $latestAddedGoods->ask_price }}', 
+            bid_price: '{{ $latestAddedGoods->bid_price }}', 
+            image: '{{ $latestAddedGoods->image }}', 
+            type_id: '{{ $latestAddedGoods->type_id }}', 
+            {{-- tray_id: '{{ $latestAddedGoods->tray_id }}', 
+            position: '{{ $latestAddedGoods->position }}',  --}}
+            date_entry: '{{ $latestAddedGoods->date_entry }}' 
         } 
     }"
     class="hs-overlay hidden size-full fixed top-0 start-0 p-6 mt-4 mr-4 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none"
@@ -80,7 +82,7 @@
                     @enderror
                 </div>
 
-                <div class="px-4 mb-4">
+                <!-- <div class="px-4 mb-4">
                     <label for="code" class="block text-sm text-gray-600">Kode Barang</label>
                     <input type="text" id="code" name="code" x-model="form.code"
                         class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan Kode Barang" required
@@ -88,16 +90,31 @@
                     @error('code')
                     <span class="text-sm text-red-500">{{ $message }}</span>
                     @enderror
+                </div> -->
+
+                <div class="px-4 mb-4">
+                    <label for="category" class="block text-sm text-gray-600">Kategori</label>
+                    <input type="text" id="category" name="category" x-model="form.category"
+                        class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan kategori" required
+                        maxlength="20">
+                    @error('category')
+                    <span class="text-sm text-red-500">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div x-data="showcaseForm()" x-init="init">
                     <div class="flex gap-4 px-4">
                         <div class="w-full mb-4">
-                            <label for="category" class="block text-sm text-gray-600">Kategori</label>
-                            <input type="text" id="category" name="category" x-model="form.category"
-                                class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan kategori" required
-                                maxlength="20">
-                            @error('category')
+                            <label for="unit" class="block text-sm text-gray-600">Satuan</label>
+                            <select id="unit" name="unit" x-model="form.unit"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                required>
+                                <option value="" disabled selected>Pilih Satuan</option>
+                                <option value="pcs">PCS</option>
+                                <option value="pair">Pasang</option>
+                                <option value="set">Set</option>
+                            </select>
+                            @error('unit')
                             <span class="text-sm text-red-500">{{ $message }}</span>
                             @enderror
                         </div>
@@ -266,7 +283,7 @@
                                 <label for="ask_price" class="block text-sm font-normal text-gray-700">Harga Jual</label>
                                 <div class="flex items-center gap-1 mt-1 text-lg text-gray-700">
                                     <span>Rp</span> <input type="number" id="ask_price" name="ask_price" x-model="form.ask_price"
-                                    class="w-full text-lg bg-gray-100 border-transparent border-none focus:outline-none focus:border-transparent focus:ring-0" placeholder="Harga jual" readonly>
+                                        class="w-full text-lg bg-gray-100 border-transparent border-none focus:outline-none focus:border-transparent focus:ring-0" placeholder="Harga jual" readonly>
                                 </div>
                                 @error('ask_price')
                                 <span class="text-sm text-red-500">{{ $message }}</span>
@@ -275,7 +292,7 @@
 
                             <div class="w-full p-3 mb-4 bg-gray-100 border rounded">
                                 <label for="bid_price" class="block text-sm font-normal text-gray-700">Harga Bawah</label>
-                                 <div class="flex items-center gap-1 mt-1 text-lg text-gray-700">
+                                <div class="flex items-center gap-1 mt-1 text-lg text-gray-700">
                                     <span>Rp</span> <input type="number" id="bid_price" name="bid_price" x-model="form.bid_price"
                                         class="w-full text-lg bg-gray-100 border-transparent border-none focus:outline-none focus:border-transparent focus:ring-0" placeholder="Harga bawah" readonly>
                                 </div>
@@ -298,6 +315,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    //define a function to set cookies
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+</script>
 
 <script>
     function showcaseForm() {

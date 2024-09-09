@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Goods extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     protected $table = 'goods';
     protected $primaryKey = 'id';
     public $incrementing = false;
@@ -35,7 +35,8 @@ class Goods extends Model
         'position',
         'availability',
         'safe_status',
-        'date_entry'
+        'date_entry',
+        'unit'
     ];
 
     protected $dates = ['deleted_at'];
