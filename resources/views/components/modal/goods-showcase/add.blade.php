@@ -331,75 +331,74 @@
 
 <script>
     function showcaseForm() {
-    return {
-        trays: @json($trays),
-        showcases: @json($showcases),
-        occupiedPositions: @json($occupiedPositions),
-        filteredTrays: [],
-        filteredShowcases: [],
-        availablePositions: [],
+        return {
+            trays: @json($trays),
+            showcases: @json($showcases),
+            occupiedPositions: @json($occupiedPositions),
+            filteredTrays: [],
+            filteredShowcases: [],
+            availablePositions: [],
 
-        // Mengupdate showcases berdasarkan type_id
-        updateShowcases() {
-            // Reset showcase_id, tray_id, dan position sebelum mengupdate showcases
-            this.form.showcase_id = null; // Set to null to ensure default option is selected
-            this.form.tray_id = '';     // Reset tray_id
-            this.form.position = '';    // Reset position
+            // Mengupdate showcases berdasarkan type_id
+            updateShowcases() {
+                // Reset showcase_id, tray_id, dan position sebelum mengupdate showcases
+                this.form.showcase_id = null; // Set to null to ensure default option is selected
+                this.form.tray_id = ''; // Reset tray_id
+                this.form.position = ''; // Reset position
 
-            // Filter showcases berdasarkan type_id
-            this.filteredShowcases = this.showcases.filter(showcase => showcase.type_id == this.form.type_id);
-             this.filteredShowcases.unshift({
-                id: '',
-                name: 'Pilih Etalase',
-                disabled: true
-            });
-            // Memastikan trays diupdate setiap kali showcase_id diubah
-            this.updateTrays();
-        },
-        
-        // Mengupdate trays berdasarkan showcase_id
-        updateTrays() {
-            this.form.tray_id = ''; // Reset tray_id
-            this.form.position = ''; // Reset position
+                // Filter showcases berdasarkan type_id
+                this.filteredShowcases = this.showcases.filter(showcase => showcase.type_id == this.form.type_id);
+                this.filteredShowcases.unshift({
+                    id: '',
+                    name: 'Pilih Etalase',
+                    disabled: true
+                });
+                // Memastikan trays diupdate setiap kali showcase_id diubah
+                this.updateTrays();
+            },
 
-            this.filteredTrays = this.trays.filter(tray => tray.showcase_id == this.form.showcase_id);
+            // Mengupdate trays berdasarkan showcase_id
+            updateTrays() {
+                this.form.tray_id = ''; // Reset tray_id
+                this.form.position = ''; // Reset position
 
-            // Memastikan positions diupdate setiap kali tray_id diubah
-            this.updatePositions();
-        },
+                this.filteredTrays = this.trays.filter(tray => tray.showcase_id == this.form.showcase_id);
 
-        // Mengupdate positions berdasarkan tray_id
-        updatePositions() {
-            const selectedTray = this.trays.find(tray => tray.id == this.form.tray_id);
-            const capacity = selectedTray ? selectedTray.capacity : 0;
+                // Memastikan positions diupdate setiap kali tray_id diubah
+                this.updatePositions();
+            },
 
-            const occupied = this.occupiedPositions[this.form.tray_id] || [];
+            // Mengupdate positions berdasarkan tray_id
+            updatePositions() {
+                const selectedTray = this.trays.find(tray => tray.id == this.form.tray_id);
+                const capacity = selectedTray ? selectedTray.capacity : 0;
 
-            this.availablePositions = Array.from({
-                length: capacity
-            }, (_, i) => i + 1).filter(pos => !occupied.includes(pos));
-            this.form.position = '';
-        },
+                const occupied = this.occupiedPositions[this.form.tray_id] || [];
 
-        // Inisialisasi fungsi
-        init() {
-            this.updateShowcases(); // Mengupdate showcases saat inisialisasi
+                this.availablePositions = Array.from({
+                    length: capacity
+                }, (_, i) => i + 1).filter(pos => !occupied.includes(pos));
+                this.form.position = '';
+            },
+
+            // Inisialisasi fungsi
+            init() {
+                this.updateShowcases(); // Mengupdate showcases saat inisialisasi
+            }
         }
     }
-}
-
 </script>
 
 <script>
     function priceCalculator(lastKurs) {
         return {
-            form: {
-                ask_rate: 0,
-                bid_rate: 0,
-                size: 0,
-                ask_price: 0,
-                bid_price: 0,
-            },
+            // form: {
+            //     ask_rate: 0,
+            //     bid_rate: 0,
+            //     size: 0,
+            //     ask_price: 0,
+            //     bid_price: 0,
+            // },
             updatePrices() {
                 const size = this.form.size;
                 const ask_rate = this.form.ask_rate / 100;
