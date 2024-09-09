@@ -217,7 +217,7 @@
         <div class="grid grid-cols-3 gap-4 ">
             <div class="p-4 bg-white border rounded-lg">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-semibold">Total Berat Barang</h2>
+                    <h2 class="text-xl font-semibold">Total Jenis Barang</h2>
                 </div>
                 <canvas class="p-10" id="karatageTotalWeightChart"></canvas>
                 <div id="legend-container"></div>

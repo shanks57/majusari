@@ -86,9 +86,10 @@
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan kategori" required maxlength="20">
                     </div>
 
-                    <div class="w-full ">
+                    <input type="hidden" name="type_id" x-model="form.type_id">
+                    {{-- <div class="w-full ">
                         <label for="type_id" class="block text-sm text-gray-600">Jenis</label>
-                        <select id="type_id" name="type_id" x-model="form.type_id"
+                        <select id="type_id" name="type_id" 
                             class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
 
                             <option value="" disabled selected>Pilih Jenis</option>
@@ -96,7 +97,7 @@
                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
 
                     <div class="w-full ">
                         <label for="color" class="block text-sm text-gray-600">Warna</label>
@@ -125,6 +126,7 @@
                     </div>
                 </div>
 
+                <div x-data="priceCalculatorEdit()" x-init="init()" @input="updatePricesEdit()">
                 <div class="flex gap-4 px-4">
                     <div class="w-full ">
                         <label for="size" class="block text-sm text-gray-600">Berat</label>
@@ -180,12 +182,11 @@
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Harga bawah" required>
                     </div>
                 </div>
-
+                </div>
+                
                 <div class="flex items-center justify-end px-4 gap-x-2">
                     <button type="submit"
-                        :disabled="!form.code || !form.name || !form.category || !form.color || !form.rate || !form.size || !form.dimensions || !form.merk_id || !form.ask_rate || !form.bid_rate || !form.ask_price || !form.bid_price || !form.type_id || !form.date_entry"
-                        class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white"
-                        :class="{ 'opacity-50 cursor-not-allowed': !form.code || !form.name || !form.category || !form.color || !form.rate || !form.size || !form.dimensions || !form.merk_id || !form.ask_rate || !form.bid_rate || !form.ask_price || !form.bid_price || !form.type_id || !form.date_entry }">
+                        class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white">
                         Simpan
                         <i class="ph ph-floppy-disk ml-1.5"></i>
                     </button>
@@ -194,3 +195,32 @@
         </div>
     </div>
 </div>
+
+<script>
+    function priceCalculatorEdit() {
+        return {
+            form: {
+                ask_rate: @json($goodShowcase->ask_rate ?? 0),
+                bid_rate: @json($goodShowcase->bid_rate ?? 0),
+                size: @json($goodShowcase->size ?? 0),
+                ask_price: @json($goodShowcase->ask_price ?? 0),
+                bid_price: @json($goodShowcase->bid_price ?? 0),
+                date_entry: @json($goodShowcase->date_entry ?? ''),
+                merk_id: @json($goodShowcase->merk_id ?? ''),
+
+            },
+            lastKurs: @json($lastKursPrice), // Nilai tukar terbaru dari backend
+
+            updatePricesEdit() {
+                // Hitung harga jual dan harga bawah berdasarkan nilai tukar dan berat
+                this.form.ask_price = ((this.form.ask_rate / 100) * this.form.size * this.lastKurs).toFixed(0);
+                this.form.bid_price = ((this.form.bid_rate / 100) * this.form.size * this.lastKurs).toFixed(0);
+            },
+
+            init() {
+                this.updatePricesEdit(); // Hitung harga saat inisialisasi
+            }
+        }
+    }
+</script>
+
