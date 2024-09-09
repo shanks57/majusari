@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GoldRate;
 use App\Models\Goods;
 use App\Models\GoodsType;
 use App\Models\Merk;
@@ -22,7 +23,8 @@ class GoodSafeController extends Controller
         $brands = Merk::all();
         $title = 'Brangkas';
         $showcases = Showcase::all();
-
+        $lastKurs = GoldRate::latest('created_at')->first();
+        $lastKursPrice = $lastKurs ? $lastKurs->new_price : 0;
         $trays = Tray::select('id', 'code', 'showcase_id', 'capacity')->get();
 
         $occupiedPositions = Goods::select('tray_id', 'position')
@@ -35,7 +37,7 @@ class GoodSafeController extends Controller
             })
             ->toArray();
 
-        return view('pages.goods-safe', compact('goodsafes', 'showcases', 'trays','title', 'brands', 'types', 'occupiedPositions'));
+        return view('pages.goods-safe', compact('goodsafes', 'showcases', 'trays','title', 'brands', 'types', 'occupiedPositions', 'lastKursPrice'));
     }
 
     public function store(Request $request)
