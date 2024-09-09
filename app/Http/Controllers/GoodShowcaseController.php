@@ -9,6 +9,7 @@ use App\Models\Merk;
 use App\Models\Showcase;
 use App\Models\Tray;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Milon\Barcode\DNS1D;
 use Illuminate\Support\Str;
 
@@ -38,14 +39,20 @@ class GoodShowcaseController extends Controller
         $title = 'Barang';
         $lastKurs = GoldRate::latest('created_at')->first();
         $lastKursPrice = $lastKurs ? $lastKurs->new_price : 0;
-        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types','brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice'));
+
+        $latestAddedGoods = '';
+        if (Cookie::get('latestAddedGoodsCookie')) {
+            $latestAddedGoods = json_decode(Cookie::get('latestAddedGoodsCookie'));
+        }
+
+        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|string|max:255|unique:goods,code',
             'name' => 'required|string|max:255',
+            'unit' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
             'rate' => 'required|numeric|min:0',
@@ -61,8 +68,6 @@ class GoodShowcaseController extends Controller
             'tray_id' => 'required|exists:trays,id',
             'position' => 'required|string|max:255',
             'date_entry' => 'required|date',
-        ],[
-            'code.unique' => 'Code barang barang sudah digunakan. Silakan pilih code barang barang lain.',
         ]);
 
         try {
@@ -72,7 +77,8 @@ class GoodShowcaseController extends Controller
             // Create a new showcase entry
             $good = Goods::create([
                 'id' => (string) Str::uuid(),
-                'code' => $request->code,
+                'unit' => $request->unit,
+                'code' => $request->name . "" . time(),
                 'name' => $request->name,
                 'category' => $request->category,
                 'color' => $request->color,
@@ -105,6 +111,7 @@ class GoodShowcaseController extends Controller
             session()->flash('trayCode', $goodShowcases->tray->code);
             session()->flash('merk', $goodShowcases->merk->name);
             session()->flash('success-store', 'Berhasil Menambah Data Barang Etalase');
+            Cookie::queue('latestAddedGoodsCookie', json_encode($goodShowcases), 604800000);
             return redirect()->route('goods.showcase');
         } catch (\Exception $e) {
 
@@ -117,7 +124,6 @@ class GoodShowcaseController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:goods,code,'.$id,
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
             'rate' => 'required|numeric',
@@ -131,8 +137,6 @@ class GoodShowcaseController extends Controller
             'type_id' => 'required|exists:goods_types,id',
             'date_entry' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ],[
-            'code.unique' => 'Code barang barang sudah digunakan. Silakan pilih code barang barang lain.',
         ]);
 
         try {
@@ -202,7 +206,7 @@ class GoodShowcaseController extends Controller
     {
         try {
             $goodShowcase = Goods::findOrFail($id);
-            
+
             $goodShowcase->delete();
 
             return redirect()->route('goods.showcase')->with('success', 'Berhasil Menghapus Data Barang di Etalase');
