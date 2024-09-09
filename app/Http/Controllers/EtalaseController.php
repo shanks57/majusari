@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GoldRate;
 use App\Models\GoodsType;
 use Illuminate\Http\Request;
 use App\Models\Showcase;

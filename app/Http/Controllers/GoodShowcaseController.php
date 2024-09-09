@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GoldRate;
 use App\Models\Goods;
 use App\Models\GoodsType;
 use App\Models\Merk;
@@ -35,7 +36,9 @@ class GoodShowcaseController extends Controller
             ->toArray();
 
         $title = 'Barang';
-        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types','brands', 'showcases', 'trays', 'occupiedPositions'));
+        $lastKurs = GoldRate::latest('created_at')->first();
+        $lastKursPrice = $lastKurs ? $lastKurs->new_price : 0;
+        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types','brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice'));
     }
 
     public function store(Request $request)
