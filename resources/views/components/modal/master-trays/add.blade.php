@@ -1,6 +1,7 @@
 <div x-data="{ 
         form: { 
             code: '', 
+            unit: '', 
             name: '', 
             category: '', 
             color: '', 
@@ -80,16 +81,6 @@
                 </div>
 
                 <div class="px-4 mb-4">
-                    <label for="code" class="block text-sm text-gray-600">Kode Barang</label>
-                    <input type="text" id="code" name="code" x-model="form.code"
-                        class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan Kode Barang" required>
-                    @error('code')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="flex gap-4 px-4">
-                    <div class="w-full mb-4">
                         <label for="category" class="block text-sm text-gray-600">Kategori</label>
                         <input type="text" id="category" name="category" x-model="form.category"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan kategori" required>
@@ -98,20 +89,33 @@
                         @enderror
                     </div>
 
+                <div class="flex gap-4 px-4">
                     <div class="w-full mb-4">
-                        <label for="type_id" class="block text-sm text-gray-600">Jenis</label>
-                        <select id="type_id" name="type_id" x-model="form.type_id"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
+                            <label for="unit" class="block text-sm text-gray-600">Satuan</label>
+                            <select id="unit" name="unit" x-model="form.unit"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                required>
+                                <option value="" disabled selected>Pilih Satuan</option>
+                                <option value="pcs">PCS</option>
+                                <option value="pair">Pasang</option>
+                                <option value="set">Set</option>
+                            </select>
+                            @error('unit')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="w-full mb-4">
+                            <label for="type_id" class="block text-sm text-gray-600">Jenis</label>
+                            <select id="type_id" name="type_id" x-model="form.type_id"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
+                                <option value="{{ $tray->showcase->type_id }}" selected>{{ $tray->showcase->goodsType->name }}</option>
+                                
+                            </select>
+                            @error('type_id')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                            <option value="" disabled selected>Pilih Jenis</option>
-                            @foreach ($types as $type)
-                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('type_id')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
 
                     <div class="w-full mb-4">
                         <label for="color" class="block text-sm text-gray-600">Warna</label>
@@ -149,107 +153,110 @@
                     </div>
                 </div>
 
-                <div class="flex gap-4 px-4">
-                    <div class="w-full mb-4">
-                        <label for="size" class="block text-sm text-gray-600">Berat</label>
-                        <input type="number" id="size" name="size" x-model="form.size"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" step="0.001" min=0
-                            placeholder="Masukkan berat" required>
-                        @error('size')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
+                <div x-data="priceCalculator({{ $lastKursPrice }})">
+                    <div class="flex gap-4 px-4">
+                        <div class="w-full mb-4">
+                            <label for="size" class="block text-sm text-gray-600">Berat</label>
+                            <input type="number" id="size" name="size" x-model="form.size" @input="updatePrices"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg" step="0.001" min=0
+                                placeholder="Masukkan berat" required>
+                            @error('size')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="w-full mb-4">
+                            <label for="ask_rate" class="block text-sm text-gray-600">Nilai Tukar Atas</label>
+                            <input type="number" id="ask_rate" name="ask_rate" x-model="form.ask_rate" @input="updatePrices"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar atas"
+                                required>
+                            @error('ask_rate')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="w-full mb-4">
+                            <label for="bid_rate" class="block text-sm text-gray-600">Nilai Tukar Bawah</label>
+                            <input type="number" id="bid_rate" name="bid_rate" x-model="form.bid_rate" @input="updatePrices"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar bawah"
+                                required>
+                            @error('bid_rate')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
 
-                    <div class="w-full mb-4">
-                        <label for="ask_rate" class="block text-sm text-gray-600">Nilai Tukar Atas</label>
-                        <input type="number" id="ask_rate" name="ask_rate" x-model="form.ask_rate"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar atas"
-                            required>
-                        @error('ask_rate')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
+                    <div class="flex gap-4 px-4">
+                        <div class="w-full mb-4 rounded bg-[#F2F4F7] p-3">
+                            <label for="showcase_id" class="block text-sm text-[#344054] mb-2">Etalase</label>
+                            <span class="text-[#344054] text-lg font-medium">{{ $tray->showcase->name }}</span>
+                        </div>
+
+                        <div class="w-full mb-4 rounded bg-[#F2F4F7] p-3">
+                            <label for="tray_id" class="block text-sm text-[#344054] mb-2">Baki</label>
+                        <span class="text-[#344054] text-lg font-medium">{{ $tray->code }}</span>
+                        <input type="hidden" name="tray_id" value="{{ $tray->id }}">
+                        </div>
+
+                        <div class="w-full mb-4 rounded bg-[#F2F4F7] p-3">
+                            <label for="position" class="block text-sm text-[#344054] mb-2">Position</label>
+                            <span class="text-[#344054] text-lg font-medium">{{ $i }}</span>
+                            <input type="hidden" name="position" value="{{ $i }}">
+                        </div>
                     </div>
 
-                    <div class="w-full mb-4">
-                        <label for="bid_rate" class="block text-sm text-gray-600">Nilai Tukar Bawah</label>
-                        <input type="number" id="bid_rate" name="bid_rate" x-model="form.bid_rate"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan nilai tukar bawah"
-                            required>
-                        @error('bid_rate')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="flex gap-4 px-4">
-                    <div class="w-full mb-4 rounded bg-[#F2F4F7] p-3">
-                        <label for="showcase_id" class="block text-sm text-[#344054] mb-2">Etalase</label>
-                        <span class="text-[#344054] text-lg font-medium">{{ $tray->showcase->name }}</span>
-                    </div>
-
-                    <div class="w-full mb-4 rounded bg-[#F2F4F7] p-3">
-                        <label for="tray_id" class="block text-sm text-[#344054] mb-2">Baki</label>
-                       <span class="text-[#344054] text-lg font-medium">{{ $tray->code }}</span>
-                       <input type="hidden" name="tray_id" value="{{ $tray->id }}">
-                    </div>
-
-                    <div class="w-full mb-4 rounded bg-[#F2F4F7] p-3">
-                        <label for="position" class="block text-sm text-[#344054] mb-2">Position</label>
-                        <span class="text-[#344054] text-lg font-medium">{{ $i }}</span>
-                        <input type="hidden" name="position" value="{{ $i }}">
-                    </div>
-                </div>
-
-                <div class="px-4 mb-4">
-                    <label for="date_entry" class="block text-sm text-gray-600">Tanggal Masuk</label>
-                    <input type="date" id="date_entry" name="date_entry" x-model="form.date_entry"
-                        class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
-                    @error('date_entry')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="px-4 mb-4">
-                    <div class="w-full mb-4">
-                        <label for="merk_id" class="block text-sm text-gray-600">Merk</label>
-                        <select id="merk_id" name="merk_id" x-model="form.merk_id"
+                    <div class="px-4 mb-4">
+                        <label for="date_entry" class="block text-sm text-gray-600">Tanggal Masuk</label>
+                        <input type="date" id="date_entry" name="date_entry" x-model="form.date_entry"
                             class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
-                            <option value="" disabled selected>Pilih merk</option>
-                            @foreach ($brands as $brand)
-                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('merk_id')
+                        @error('date_entry')
                         <span class="text-sm text-red-500">{{ $message }}</span>
                         @enderror
+                    </div>
+
+                    <div class="px-4 mb-4">
+                        <div class="w-full mb-4">
+                            <label for="merk_id" class="block text-sm text-gray-600">Merk</label>
+                            <select id="merk_id" name="merk_id" x-model="form.merk_id"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
+                                <option value="" disabled selected>Pilih merk</option>
+                                @foreach ($brands as $brand)
+                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('merk_id')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 px-4">
+                         <div class="w-full p-3 mb-4 bg-gray-100 border rounded">
+                                <label for="ask_price" class="block text-sm font-normal text-gray-700">Harga Jual</label>
+                                <div class="flex items-center gap-1 mt-1 text-lg text-gray-700">
+                                    <span>Rp</span> <input type="number" id="ask_price" name="ask_price" x-model="form.ask_price"
+                                        class="w-full text-lg bg-gray-100 border-transparent border-none focus:outline-none focus:border-transparent focus:ring-0" placeholder="Harga jual" readonly>
+                                </div>
+                                @error('ask_price')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="w-full p-3 mb-4 bg-gray-100 border rounded">
+                                <label for="bid_price" class="block text-sm font-normal text-gray-700">Harga Bawah</label>
+                                <div class="flex items-center gap-1 mt-1 text-lg text-gray-700">
+                                    <span>Rp</span> <input type="number" id="bid_price" name="bid_price" x-model="form.bid_price"
+                                        class="w-full text-lg bg-gray-100 border-transparent border-none focus:outline-none focus:border-transparent focus:ring-0" placeholder="Harga bawah" readonly>
+                                </div>
+                                @error('bid_price')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
                     </div>
                 </div>
-
-                <div class="flex gap-4 px-4">
-                    <div class="w-full mb-4">
-                        <label for="ask_price" class="block text-sm text-gray-600">Harga Jual</label>
-                        <input type="number" id="ask_price" name="ask_price" x-model="form.ask_price"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Harga jual" required>
-                        @error('ask_price')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="w-full mb-4">
-                        <label for="bid_price" class="block text-sm text-gray-600">Harga Bawah</label>
-                        <input type="number" id="bid_price" name="bid_price" x-model="form.bid_price"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Harga bawah" required>
-                        @error('bid_price')
-                        <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
                 <div class="flex items-center justify-end px-4 gap-x-2">
                     <button type="submit"
-                        :disabled="!form.code || !form.name || !form.category || !form.color || !form.rate || !form.size || !form.dimensions || !form.merk_id || !form.ask_rate || !form.bid_rate || !form.ask_price || !form.bid_price || !form.type_id || !form.date_entry"
-                        class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white"
-                        :class="{ 'opacity-50 cursor-not-allowed': !form.code || !form.name || !form.category || !form.color || !form.rate || !form.size || !form.dimensions || !form.merk_id || !form.ask_rate || !form.bid_rate || !form.ask_price || !form.bid_price || !form.type_id || !form.date_entry }">
+                        class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white">
                         Simpan
                         <i class="ph ph-floppy-disk ml-1.5"></i>
                     </button>
@@ -258,3 +265,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    function priceCalculator(lastKursPrice) {
+        return {
+            form: {
+                ask_rate: 0,
+                bid_rate: 0,
+                size: 0,
+                ask_price: 0,
+                bid_price: 0,
+            },
+            updatePrices() {
+                const size = this.form.size;
+                const ask_rate = this.form.ask_rate / 100;
+                const bid_rate = this.form.bid_rate / 100;
+
+                this.form.ask_price = (ask_rate * size * lastKursPrice).toFixed(0);
+                this.form.bid_price = (bid_rate * size * lastKursPrice).toFixed(0);
+            }
+        }
+    }
+</script>

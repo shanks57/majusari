@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GoldRate;
 use App\Models\Goods;
 use App\Models\GoodsType;
 use App\Models\Merk;
@@ -62,7 +63,10 @@ class GoodTrayController extends Controller
             $showcases = Showcase::all();
             $brands = Merk::all();
 
-        return view('pages.trays-show', compact('tray', 'goods', 'countGoods', 'totalWeight', 'trayCapacity', 'trays', 'occupiedPositions', 'types', 'showcases', 'brands'));
+        $lastKurs = GoldRate::latest('created_at')->first();
+        $lastKursPrice = $lastKurs->new_price;
+
+        return view('pages.trays-show', compact('tray', 'goods', 'countGoods', 'totalWeight', 'trayCapacity', 'trays', 'occupiedPositions', 'types', 'showcases', 'brands','lastKursPrice'));
     }
 
     public function moveToSafe($id)
@@ -90,7 +94,7 @@ class GoodTrayController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|string|max:255',
+            'unit' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
@@ -116,7 +120,8 @@ class GoodTrayController extends Controller
             // Create a new showcase entry
             $good = Goods::create([
                 'id' => (string) Str::uuid(),
-                'code' => $request->code,
+                'code' => $request->name . "" . time(),
+                'unit' => $request->unit,
                 'name' => $request->name,
                 'category' => $request->category,
                 'color' => $request->color,
