@@ -9,7 +9,6 @@ use App\Models\Merk;
 use App\Models\Showcase;
 use App\Models\Tray;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 use Milon\Barcode\DNS1D;
 use Illuminate\Support\Str;
 
@@ -40,10 +39,7 @@ class GoodShowcaseController extends Controller
         $lastKurs = GoldRate::latest('created_at')->first();
         $lastKursPrice = $lastKurs ? $lastKurs->new_price : 0;
 
-        $latestAddedGoods = '';
-        if (Cookie::get('latestAddedGoodsCookie')) {
-            $latestAddedGoods = json_decode(Cookie::get('latestAddedGoodsCookie'));
-        }
+        $latestAddedGoods = Goods::latest('created_at')->first();
 
         return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods'));
     }
@@ -111,7 +107,6 @@ class GoodShowcaseController extends Controller
             session()->flash('trayCode', $goodShowcases->tray->code);
             session()->flash('merk', $goodShowcases->merk->name);
             session()->flash('success-store', 'Berhasil Menambah Data Barang Etalase');
-            Cookie::queue('latestAddedGoodsCookie', json_encode($goodShowcases), 604800000);
             return redirect()->route('goods.showcase');
         } catch (\Exception $e) {
 
