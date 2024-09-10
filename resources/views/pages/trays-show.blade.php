@@ -41,7 +41,7 @@
                         data-hs-overlay="#hs-move-to-safe-modal-{{ $good->id }}"
                     >
                         <div class="flex items-center justify-between mb-3">
-                            <p class="text-lg font-semibold">{{ $good->name }}100{{ $i }}</p>
+                            <p class="text-lg font-semibold">{{ $good->code }}</p>
                             <i class="ph ph-caret-right"></i>
                         </div>
                         <div class="flex justify-between">
