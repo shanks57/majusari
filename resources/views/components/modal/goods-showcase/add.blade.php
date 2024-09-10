@@ -1,6 +1,5 @@
 <div x-data="{ 
         form: { 
-            id: '{{ $latestAddedGoods->id }}',
             code: '{{ $latestAddedGoods->code }}',
             unit: '{{ $latestAddedGoods->unit }}',  
             name: '{{ $latestAddedGoods->name }}', 
