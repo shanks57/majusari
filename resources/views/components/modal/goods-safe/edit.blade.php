@@ -3,6 +3,7 @@
             id: '{{ $goodsafe->id }}',
             code: '{{ $goodsafe->code }}', 
             name: '{{ $goodsafe->name }}', 
+            unit: '{{ $goodsafe->unit }}', 
             category: '{{ $goodsafe->category }}', 
             color: '{{ $goodsafe->color }}', 
             rate: '{{ $goodsafe->rate }}', 
@@ -72,28 +73,25 @@
                 </div>
 
                 <div class="px-4">
-                    <label for="code" class="block text-sm text-gray-600">Kode Barang</label>
-                    <input type="text" id="code" name="code" x-model="form.code"
-                        class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan Kode Barang" required maxlength="10">
-                </div>
-
-                <div class="flex gap-4 px-4">
-                    <div class="w-full ">
                         <label for="category" class="block text-sm text-gray-600">Kategori</label>
                         <input type="text" id="category" name="category" x-model="form.category"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan kategori" required maxlength="20">
                     </div>
 
-                    <div class="w-full ">
-                        <label for="type_id" class="block text-sm text-gray-600">Jenis</label>
-                        <select id="type_id" name="type_id" x-model="form.type_id"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
-
-                            <option value="" disabled selected>Pilih Jenis</option>
-                            @foreach ($types as $type)
-                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                            @endforeach
-                        </select>
+                <div class="flex gap-4 px-4">
+                     <div class="w-full mb-4">
+                            <label for="unit" class="block text-sm text-gray-600">Satuan</label>
+                            <select id="unit" name="unit" x-model="form.unit"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                required>
+                                <option value="" disabled selected>Pilih Satuan</option>
+                                <option value="pcs">PCS</option>
+                                <option value="pair">Pasang</option>
+                                <option value="set">Set</option>
+                            </select>
+                            @error('unit')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
                     </div>
 
                     <div class="w-full ">

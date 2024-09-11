@@ -111,7 +111,6 @@ class GoodSafeController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:goods,code,'.$id,
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
             'rate' => 'required|numeric',
@@ -122,7 +121,6 @@ class GoodSafeController extends Controller
             'bid_rate' => 'required|numeric',
             'ask_price' => 'required|numeric',
             'bid_price' => 'required|numeric',
-            'type_id' => 'required|exists:goods_types,id',
             'date_entry' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ],[
@@ -177,6 +175,8 @@ class GoodSafeController extends Controller
             return redirect()->route('goods.safe')->with('error', 'Item not found');
         }
 
+
+        $typeId = $request->input('type_id');
         $trayId = $request->input('tray_id');
 
         $tray = Tray::find($trayId);
@@ -186,6 +186,7 @@ class GoodSafeController extends Controller
         }
 
         $good->safe_status = 0;
+        $good->type_id = $typeId;
         $good->tray_id = $trayId;
         $good->position = $request->input('position');;
         $good->save();
