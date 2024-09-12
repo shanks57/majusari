@@ -71,7 +71,7 @@ class ShowcaseController extends Controller
     public function show($id)
     {
         try {
-            $showcase = Showcase::find($id);
+            $showcase = Showcase::with('trays')->find($id);
 
             if (!$showcase) {
                 return response()->json([
@@ -97,7 +97,7 @@ class ShowcaseController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'code' => 'required|string|max:255|unique:showcases,code,'.$id,
+            'code' => 'required|string|max:255|unique:showcases,code,' . $id,
             'name' => 'required|string|max:255',
             'type_id' => 'required|uuid|exists:goods_types,id',
         ]);
@@ -180,15 +180,15 @@ class ShowcaseController extends Controller
         }
 
         $showcases = Showcase::with('goodsType')
-        ->where('status', 'showcase')
-        ->where(function ($q) use ($query) {
-            $q->where('code', 'LIKE', "%{$query}%")
-                ->orWhere('name', 'LIKE', "%{$query}%")
-                ->orWhereHas('goodsType', function ($q2) use ($query) {
-                    $q2->where('name', 'LIKE', "%{$query}%");
-                });
-        })
-        ->paginate($perPage);
+            ->where('status', 'showcase')
+            ->where(function ($q) use ($query) {
+                $q->where('code', 'LIKE', "%{$query}%")
+                    ->orWhere('name', 'LIKE', "%{$query}%")
+                    ->orWhereHas('goodsType', function ($q2) use ($query) {
+                        $q2->where('name', 'LIKE', "%{$query}%");
+                    });
+            })
+            ->paginate($perPage);
 
         if ($showcases->isEmpty()) {
             return response()->json([
@@ -197,7 +197,7 @@ class ShowcaseController extends Controller
             ], 404);
         }
 
-        $data = $showcases->map(function($showcase) {
+        $data = $showcases->map(function ($showcase) {
             return [
                 'id' => $showcase->id,
                 'code' => $showcase->code,
@@ -224,5 +224,4 @@ class ShowcaseController extends Controller
             'total' => $showcases->total()
         ]);
     }
-
 }
