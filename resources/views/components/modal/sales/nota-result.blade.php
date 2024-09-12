@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="flex items-center justify-center mb-4 gap-x-2">
-            <a href="{{ route('sale.printNota', $sale->id) }}"
+            <a href="{{ route('sale.printNota', session('nota-good-id', 0)) }}"
                 class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white">
                 Cetak
                 <i class="ph ph-printer ml-1.5"></i>

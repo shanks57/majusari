@@ -371,6 +371,7 @@ class SalesController extends Controller
 
         if ($transaction) {
             
+            session()->flash('nota-good-id', $transaction->id);
             session()->flash('nota-good-name', $transaction->goods->name);
             session()->flash('nota-penjualan', $transaction->nota);
             session()->flash('nota-goods-image', $transaction->goods->image);

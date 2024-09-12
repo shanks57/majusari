@@ -28,7 +28,7 @@
                         <th class="px-6 py-3 text-left">
                             <input type="checkbox" id="select-all">
                         </th>
-                        <th class="py-3 px-6 text-left !font-normal">No</th>
+                        <th class="py-3 px-6 text-left !font-normal">Nota</th>
                         <th class="py-3 px-6 text-left !font-normal">Tgl Penjualan</th>
                         <th class="py-3 px-6 text-left !font-normal">Gambar</th>
                         <th class="py-3 px-6 text-left !font-normal">ID & Nama Barang</th>
@@ -66,7 +66,7 @@
                         <td class="px-6 py-3 text-left">
                             <input type="checkbox" class="select-row">
                         </td>
-                        <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-3 font-bold text-left">{{ $sale->nota }}</td>
                         <td class="px-6 py-3 text-left text-transparent">
                             {{ $currentDate }}
                         </td>
@@ -84,14 +84,14 @@
                         </td>
                         <td class="px-6 py-3 font-semibold leading-6 text-left">
                             <span
-                                class="px-2 py-1 border boreder-[#D0D5DD] border-s rounded-full">{{ $sale->nota }}
+                                class="px-2 py-1 border boreder-[#D0D5DD] border-s rounded-full">{{ $sale->goods->code }}
                                 - {{ $sale->goods->name }}</span>
                         </td>
                         <td class="px-6 py-3 text-left">{{ $sale->goods->size }}gr <span
                                 class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $sale->goods->rate }}%</span>
                         </td>
                         <td class="px-6 py-3 text-left"><span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i>
-                                Bawah {{ 'Rp.' . number_format($sale->goods->bid_price, 0, ',', '.') }} <span
+                                Bawah {{ 'Rp.' . number_format($sale->harga_jual, 0, ',', '.') }} <span
                                     class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $sale->goods->bid_rate }}%</span></span>
                         </td>
                         <td class="px-6 py-3 text-left">

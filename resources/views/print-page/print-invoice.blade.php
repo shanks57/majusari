@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name') }} - Cetak Nota</title>
+    <title>Toko Emas Majusari - Cetak Nota</title>
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -108,7 +108,7 @@
                             </div>
                             <div>
                                 <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Kategori</h5>
-                                <p class="text-gray-800 max-w-20 truncate">{{ $sale->goods->goodsType->name }}</p>
+                                <p class="text-gray-800 truncate max-w-20">{{ $sale->goods->goodsType->name }}</p>
                             </div>
                             <div>
                                 <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Berat & Kadar</h5>
