@@ -196,7 +196,7 @@
         fetch('/get-weight-by-gold-rate')
             .then(response => response.json())
             .then(data => {
-                const labels = data.map(item => `${item.gold_rate} (${item.type_name})`);
+                const labels = data.map(item => `${item.gold_rate}% (${item.type_name})`);
                 const weights = data.map(item => {
                     const weight = parseFloat(item.total_weight);
                     return weight % 1 === 0 ? weight.toString() : weight.toFixed(3);

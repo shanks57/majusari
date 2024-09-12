@@ -51,10 +51,18 @@ class DashboardController extends Controller
 
             $goldRates = GoldRate::orderBy('created_at', 'desc')->paginate(5);
 
+            $cardGoodsSummary = Goods::select('rate')
+                ->selectRaw('SUM(size) as total_weight')
+                ->selectRaw('COUNT(*) as total_items')
+                ->where('availability', 1)
+                ->where('safe_status', 0)
+                ->groupBy('rate')
+                ->get();
+
             return view('pages.dashboard', [
     
                 'goldRates' => $goldRates,
-
+                'cardGoodsSummary' => $cardGoodsSummary,
                 'customer_stats' => [
                     'total_items' => $customers,
                 ],
