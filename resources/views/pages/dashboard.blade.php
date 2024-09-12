@@ -19,36 +19,36 @@
     <div id="tab-content-summary" class="tab-content">
         <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
             <div x-data="{ isOpen: false }" class="p-4 bg-white border rounded-lg">
-    <h2 class="mb-4 font-semibold text-md">Etalase</h2>
-    
-    <!-- Trigger Button for Accordion -->
-    <button @click="isOpen = !isOpen" class="flex items-center w-full gap-2">
-        <div class="text-3xl font-semibold">{{ $goods_in_showcase_stats['total_items'] }}</div>
-        <div class="px-3 py-1 text-xs text-green-500 bg-green-100 rounded-full">
-            {{ $goods_in_showcase_stats['total_weight'] }} gr
-        </div>
-        <!-- Accordion Indicator -->
-        <svg xmlns="http://www.w3.org/2000/svg" 
-             :class="{ 'rotate-180': isOpen }"
-             class="w-6 h-6 transition-transform duration-300 transform" 
-             fill="none" 
-             viewBox="0 0 24 24" 
-             stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-    </button>
+                <h2 class="mb-4 font-semibold text-md">Etalase</h2>
+                
+                <!-- Trigger Button for Accordion -->
+                <button @click="isOpen = !isOpen" class="flex items-center w-full gap-2">
+                    <div class="text-3xl font-semibold">{{ $goods_in_showcase_stats['total_items'] }}</div>
+                    <div class="px-3 py-1 text-xs text-green-500 bg-green-100 rounded-full">
+                        {{ $goods_in_showcase_stats['total_weight'] }} gr
+                    </div>
+                    <!-- Accordion Indicator -->
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                        :class="{ 'rotate-180': isOpen }"
+                        class="w-6 h-6 transition-transform duration-300 transform" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
 
-    <div class="mt-3 text-xs text-gray-400">Total barang di etalase</div>
+                <div class="mt-3 text-xs text-gray-400">Total barang di etalase</div>
 
-    <!-- Accordion Content -->
-    <div x-show="isOpen" x-transition class="mt-4 text-sm">
-        @foreach ($cardGoodsSummary as $summary)
-            <p class="mb-2">
-                Kadar <b>{{ $summary->rate }}%</b> : Total Berat <b>{{ number_format($summary->total_weight, 2) }}gr</b>, Total Barang <b>{{ $summary->total_items }}pcs</b>
-            </p>
-        @endforeach
-    </div>
-</div>
+                <!-- Accordion Content -->
+                <div x-show="isOpen" x-transition class="mt-4 text-sm">
+                    @foreach ($cardGoodsSummary as $summary)
+                        <p class="mb-2">
+                            Kadar <b>{{ $summary->rate }}%</b> : Total Berat <b>{{ number_format($summary->total_weight, 2) }}gr</b>, Total Barang <b>{{ $summary->total_items }}pcs</b>
+                        </p>
+                    @endforeach
+                </div>
+            </div>
 
             <div class="p-4 bg-white border rounded-lg">
                 <h2 class="mb-4 font-semibold text-md">Brankas</h2>
