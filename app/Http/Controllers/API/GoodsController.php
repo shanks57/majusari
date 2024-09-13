@@ -17,8 +17,8 @@ class GoodsController extends Controller
     {
         try {
             $goods = Goods::where('safe_status', false)
-            ->where('availability', true)
-            ->paginate();
+                ->where('availability', true)
+                ->paginate();
 
             return response()->json([
                 $goods
@@ -36,7 +36,7 @@ class GoodsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'code' => 'string|unique:goods,code|',
+            'unit' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'color' => 'required|string|max:255',
             'rate' => 'required|numeric|min:0',
@@ -70,7 +70,8 @@ class GoodsController extends Controller
 
             $goods = Goods::create([
                 'id' => Str::uuid(),
-                'code' => $request->code,
+                'unit' => $request->unit,
+                'code' => $request->name . "" . time(),
                 'name' => $request->name,
                 'category' => $request->category,
                 'color' => $request->color,
@@ -136,6 +137,7 @@ class GoodsController extends Controller
             // Validasi request
             $request->validate([
                 'name' => 'required|string|max:255',
+                'unit' => 'required|string|max:255',
                 'category' => 'required|string|max:255',
                 'color' => 'required|string|max:255',
                 'rate' => 'required|numeric|min:0',
@@ -166,6 +168,7 @@ class GoodsController extends Controller
             // Update fields menggunakan mass assignment
             $goods->update([
                 'name' => $request->name,
+                'unit' => $request->unit,
                 'category' => $request->category,
                 'color' => $request->color,
                 'rate' => $request->rate,
@@ -253,15 +256,15 @@ class GoodsController extends Controller
         $goods = Goods::with(['goodsType', 'merk'])
             ->where('safe_status', false)
             ->where('availability', true)
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%")
                     ->orWhere('rate', 'LIKE', "%{$query}%")
                     ->orWhere('size', 'LIKE', "%{$query}%")
                     ->orWhere('created_at', 'LIKE', "%{$query}%")
-                    ->orWhereHas('goodsType', function($q) use ($query) {
+                    ->orWhereHas('goodsType', function ($q) use ($query) {
                         $q->where('name', 'LIKE', "%{$query}%");
                     })
-                    ->orWhereHas('merk', function($q) use ($query) {
+                    ->orWhereHas('merk', function ($q) use ($query) {
                         $q->where('name', 'LIKE', "%{$query}%");
                     });
             })

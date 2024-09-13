@@ -120,6 +120,7 @@ class GoodShowcaseController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
+            'unit' => 'required|string|max:255',
             'color' => 'required|string|max:255',
             'rate' => 'required|numeric',
             'size' => 'required|numeric',
