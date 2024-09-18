@@ -159,14 +159,21 @@
                     </div>
 
                     <div class="px-4 mb-4">
-                        <div class="w-full ">
+                        <div class="w-full">
                             <label for="merk_id" class="block text-sm text-gray-600">Merk</label>
                             <select id="merk_id" name="merk_id" x-model="form.merk_id"
                                 class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
                                 <option value="" disabled selected>Pilih merk</option>
                                 @foreach ($brands as $brand)
-                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                <option value="{{ $brand->id }}" {{ $brand->id == $goodShowcase->merk_id ? 'selected' : '' }}>
+                                    {{ $brand->name }}
+                                </option>
                                 @endforeach
+                                
+                                <!-- Menambahkan secara manual jika merk_id status = 0 -->
+                                @if ($goodShowcase->merk && $goodShowcase->merk->status == 0)
+                                <option value="{{ $goodShowcase->merk->id }}" selected>{{ $goodShowcase->merk->name }}</option>
+                                @endif
                             </select>
                         </div>
                     </div>

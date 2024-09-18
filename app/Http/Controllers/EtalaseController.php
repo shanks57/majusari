@@ -20,7 +20,8 @@ class EtalaseController extends Controller
         ->orderBy('updated_at', 'desc')
         ->get();
 
-        $goodsTypes = GoodsType::all();
+        $goodsTypes = GoodsType::where('status', 1)->get();
+
         $title = 'Etalase';
         return view('pages.master-showcases', compact('etalases', 'title', 'goodsTypes'));
     }

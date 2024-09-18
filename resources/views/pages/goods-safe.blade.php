@@ -20,7 +20,7 @@
                         <th class="px-6 py-3 text-left">
                             <input type="checkbox" id="select-all">
                         </th>
-                        <th class="py-3 px-6 text-left !font-normal">No</th>
+                        <th class="py-3 px-6 text-left !font-normal">Kode Barang</th>
                         <th class="py-3 px-6 text-left !font-normal">Tanggal Masuk</th>
                         <th class="py-3 px-6 text-left !font-normal">Barang & Merek</th>
                         <th class="py-3 px-6 text-left !font-normal">Berat & Kadar</th>
@@ -35,7 +35,7 @@
                         <td class="px-6 py-3 text-left">
                             <input type="checkbox" class="select-row">
                         </td>
-                        <td class="px-6 py-3 text-left">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-3 text-left">{{ $goodsafe->code }}</td>
                         <td class="px-6 py-3 text-left">
                             {{ \Carbon\Carbon::parse($goodsafe->date_entry)->translatedFormat('d F Y') }}
                         </td>

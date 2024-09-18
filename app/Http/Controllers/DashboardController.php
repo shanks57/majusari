@@ -50,6 +50,8 @@ class DashboardController extends Controller
             }
 
             $goldRates = GoldRate::orderBy('created_at', 'desc')->paginate(5);
+            $today = Carbon::today();
+            $hasGoldRateToday = GoldRate::whereDate('created_at', $today)->exists();
 
             $cardGoodsSummary = Goods::select('rate')
                 ->selectRaw('SUM(size) as total_weight')
@@ -62,6 +64,7 @@ class DashboardController extends Controller
             return view('pages.dashboard', [
     
                 'goldRates' => $goldRates,
+                'hasGoldRateToday' => $hasGoldRateToday,
                 'cardGoodsSummary' => $cardGoodsSummary,
                 'customer_stats' => [
                     'total_items' => $customers,

@@ -61,7 +61,7 @@ class GoodTrayController extends Controller
 
             $types = GoodsType::all();
             $showcases = Showcase::all();
-            $brands = Merk::all();
+            $brands = Merk::where('status', 1)->get();
 
         $lastKurs = GoldRate::latest('created_at')->first();
         $lastKursPrice = $lastKurs->new_price;

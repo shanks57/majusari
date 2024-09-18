@@ -10,7 +10,7 @@
                 </h3>
             </div>
             <div class="flex items-center justify-center gap-4">
-                <form action="{{ route('goods-showcase.destroy', ['id' => $goodsafe->id]) }}" method="POST">
+                <form action="{{ route('goods-safe.destroy', ['id' => $goodsafe->id]) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit"

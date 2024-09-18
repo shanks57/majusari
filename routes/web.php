@@ -80,7 +80,7 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::post('/goods/safe-store', [GoodSafeController::class, 'store'])->name('goods.safeStore');
         Route::patch('/goods-safe/{id}/update', [GoodSafeController::class, 'update'])->name('goods.safeUpdate');
         Route::patch('/goods/{id}/move-to-showcase', [GoodSafeController::class, 'moveToShowcase'])->name('goods.moveToShowcase');
-        Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
+        Route::delete('/goods/{id}/safe', [GoodSafeController::class, 'destroy'])->name('goods-safe.destroy');
         Route::get('/goods/{id}/safe-print-barcode', [GoodSafeController::class, 'printBarcode'])->name('safe-showcase.printBarcode');
         // end route /goods/safe
 

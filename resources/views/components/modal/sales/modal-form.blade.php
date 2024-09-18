@@ -30,6 +30,10 @@
                     <div class="w-full px-3.5 py-2.5 border-b border-[#E5E5E5]">
                          <p class="mb-1">Kategori</p>
                          <p class="max-w-xs font-bold truncate">{{ session('good-type-form') }}</p>
+                         <p class="mb-1">Tambahan Biaya</p>
+                         <p class="max-w-xs font-bold truncate">
+                            Rp. {{ number_format(session('good-type-additional-cost-form'), 0, ',', '.') }}
+                        </p>
                     </div>
                     <div class="w-full px-3.5 py-2.5 border-b border-[#E5E5E5]">
                          <p class="mb-1">Tempat</p>
@@ -42,7 +46,7 @@
                 </div>
                 <div class="w-full px-3.5 py-2 border rounded-lg border-[#E5E5E5]">
                     <div class="mb-3">
-                        <label for="new_selling_price" class="block text-sm text-[#344054] border-[#E5E5E5]">Masukkan Harga</label>
+                        <label for="new_selling_price" class="block text-sm text-[#344054] border-[#E5E5E5]">Masukkan Harga + Tambahan Biaya</label>
                         <input type="number" id="new_selling_price" name="new_selling_price" x-model="form.new_selling_price"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Contoh 100000" required>
                         @error('new_selling_price')

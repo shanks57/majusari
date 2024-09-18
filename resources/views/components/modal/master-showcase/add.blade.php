@@ -72,7 +72,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <input type="number" :name="'trays['+index+'][capacity]'" x-model="tray.capacity"
-                                                class="w-full px-3.5 py-2.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]" min="1" max="100">
+                                                class="w-full px-3.5 py-2.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base placeholder:text-[#667085] text-[#344054]" min="1" max="300">
                                         </td>
                                     </tr>
                                 </template>
