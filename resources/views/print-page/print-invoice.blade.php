@@ -11,6 +11,23 @@
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('favicon/apple-icon-57x57.png') }}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('favicon/apple-icon-60x60.png') }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('favicon/apple-icon-72x72.png') }}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('favicon/apple-icon-76x76.png') }}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('favicon/apple-icon-114x114.png') }}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('favicon/apple-icon-120x120.png') }}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('favicon/apple-icon-144x144.png') }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('favicon/apple-icon-152x152.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-icon-180x180.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192"  href="{{ asset('favicon/android-icon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon/favicon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('favicon/manifest.json') }}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
+    <meta name="theme-color" content="#ffffff">
     @stack('styles')
     <script type="text/javascript">
         window.print();
@@ -94,7 +111,7 @@
                             <div class="text-xs font-medium text-gray-500 ">Nama Barang</div>
                             <div class="text-xs font-medium text-gray-500 text-start ">Kategori</div>
                             <div class="text-xs font-medium text-gray-500 text-start ">Berat & Kadar</div>
-                            <div class="text-xs font-medium text-gray-500 text-start ">Warna</div>
+                            <div class="text-xs font-medium text-gray-500 text-start ">Biaya Tambahan</div>
                             <div class="text-xs font-medium text-gray-500 text-end ">Jumlah</div>
                         </div>
 
@@ -102,9 +119,8 @@
 
                         <div class="grid grid-cols-3 gap-2 sm:grid-cols-5">
                             <div>
-                                <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Nama Barang</h5>
-                                <p class="font-medium text-gray-800 ">{{ $sale->goods->code }} -
-                                    {{ $sale->goods->name }}</p>
+                                <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden">Nama Barang</h5>
+                                <p class="font-medium text-gray-800 ">{{ $sale->goods->name }} - <br> {{ $sale->goods->code }}
                             </div>
                             <div>
                                 <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Kategori</h5>
@@ -115,13 +131,13 @@
                                 <p class="text-gray-800 ">{{ $sale->goods->size }}gr- {{ $sale->goods->rate }}%</p>
                             </div>
                             <div>
-                                <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Warna</h5>
-                                <p class="text-gray-800 ">{{ $sale->goods->color }}</p>
+                                <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Biaya Tambahan</h5>
+                                <p class="text-gray-800 ">{{ $sale->goods->goodsType->additional_cost }}</p>
                             </div>
                             <div>
                                 <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Jumlah</h5>
                                 <p class="text-gray-800 sm:text-end">
-                                    {{ 'Rp ' . number_format($sale->harga_jual, 0, ',', '.') }}</p>
+                                    {{ 'Rp ' . number_format($sale->harga_jual - $sale->goods->goodsType->additional_cost, 0, ',', '.') }}</p>
                             </div>
                         </div>
 
@@ -141,10 +157,10 @@
                                     {{ 'Rp ' . number_format($sale->harga_jual, 0, ',', '.') }}</dd>
                             </dl>
 
-                            <dl class="grid sm:grid-cols-5 gap-x-3">
+                            {{-- <dl class="grid sm:grid-cols-5 gap-x-3">
                                 <dt class="col-span-3 font-semibold text-gray-800 ">PPN:</dt>
                                 <dd class="col-span-2 text-gray-500 ">Rp. 0</dd>
-                            </dl>
+                            </dl> --}}
 
                             <dl class="grid sm:grid-cols-5 gap-x-3">
                                 <dt class="col-span-3 font-semibold text-gray-800 ">Jumlah yang dibayarkan:</dt>

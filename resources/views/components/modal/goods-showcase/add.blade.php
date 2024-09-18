@@ -1,23 +1,23 @@
 <div x-data="{ 
         form: { 
-            code: '{{ $latestAddedGoods->code }}',
-            unit: '{{ $latestAddedGoods->unit }}',  
-            name: '{{ $latestAddedGoods->name }}', 
-            category: '{{ $latestAddedGoods->category }}', 
-            color: '{{ $latestAddedGoods->color }}', 
-            rate: '{{ $latestAddedGoods->rate }}', 
-            size: '{{ $latestAddedGoods->size }}', 
-            dimensions: '{{ $latestAddedGoods->dimensions }}', 
-            merk_id: '{{ $latestAddedGoods->merk_id }}', 
-            ask_rate: '{{ $latestAddedGoods->ask_rate }}', 
-            bid_rate: '{{ $latestAddedGoods->bid_rate }}', 
-            ask_price: '{{ $latestAddedGoods->ask_price }}', 
-            bid_price: '{{ $latestAddedGoods->bid_price }}', 
-            image: '{{ $latestAddedGoods->image }}', 
-            type_id: '{{ $latestAddedGoods->type_id }}', 
+            code: '{{ $latestAddedGoods->code ?? '' }}',
+            unit: '{{ $latestAddedGoods->unit ?? '' }}',  
+            name: '{{ $latestAddedGoods->name ?? '' }}', 
+            category: '{{ $latestAddedGoods->category ?? '' }}', 
+            color: '{{ $latestAddedGoods->color ?? '' }}', 
+            rate: '{{ $latestAddedGoods->rate ?? '' }}', 
+            size: '{{ $latestAddedGoods->size ?? '' }}', 
+            dimensions: '{{ $latestAddedGoods->dimensions ?? '' }}', 
+            merk_id: '{{ $latestAddedGoods->merk_id ?? '' }}', 
+            ask_rate: '{{ $latestAddedGoods->ask_rate ?? '' }}', 
+            bid_rate: '{{ $latestAddedGoods->bid_rate ?? '' }}', 
+            ask_price: '{{ $latestAddedGoods->ask_price ?? '' }}', 
+            bid_price: '{{ $latestAddedGoods->bid_price ?? '' }}', 
+            image: '{{ $latestAddedGoods->image ?? '' }}', 
+            type_id: '{{ $latestAddedGoods->type_id ?? '' }}', 
             {{-- tray_id: '{{ $latestAddedGoods->tray_id }}', 
             position: '{{ $latestAddedGoods->position }}',  --}}
-            date_entry: '{{ $latestAddedGoods->date_entry }}' 
+            date_entry: '{{ $latestAddedGoods->date_entry ?? '' }}' 
         } 
     }"
     class="hs-overlay hidden size-full fixed top-0 start-0 p-6 mt-4 mr-4 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none"

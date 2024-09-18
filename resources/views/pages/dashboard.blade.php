@@ -1,7 +1,17 @@
 @section('title', 'Dashboard')
 <x-layout>
+    
+    <div class="my-2">
+        @if(!$hasGoldRateToday)
+        <div class="p-4 text-sm text-red-800 bg-red-100 border border-red-200 rounded-lg dark:bg-red-800/10 dark:border-red-900 dark:text-red-500" role="alert" tabindex="-1" aria-labelledby="hs-soft-color-danger-label">
+            <span id="hs-soft-color-danger-label" class="font-bold">Peringatan!</span> Harga Kurs Emas untuk hari ini belum diperbarui. Silakan perbarui harga kurs emas untuk hari ini.
+        </div>
+        @endif
+    </div>
+    
     <x-header title="Dashboard" subtitle="Dashboard">
     </x-header>
+
     <div x-data="{ activeTab: 'summary' }" class="flex p-1 mt-4 mb-6 bg-gray-100 rounded-lg w-fit">
         <button id="tab-summary" @click="activeTab = 'summary'" :class="{'bg-white': activeTab === 'summary'}"
             class="px-4 py-2 rounded tab-button"

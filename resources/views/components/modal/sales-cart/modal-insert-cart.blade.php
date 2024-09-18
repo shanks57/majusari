@@ -30,6 +30,10 @@
                     <div class="w-full px-3.5 py-2.5 border-b border-[#E5E5E5]">
                          <p class="mb-1">Kategori</p>
                          <p class="max-w-xs truncate">{{ session('good-type-form') }}</p>
+                         <p class="mb-1">Tambahan Biaya</p>
+                         <p class="max-w-xs font-bold truncate">
+                            Rp. {{ number_format(session('good-type-additional-cost-form'), 0, ',', '.') }}
+                        </p>
                     </div>
                     <div class="w-full px-3.5 py-2.5 border-b border-[#E5E5E5]">
                          <p class="mb-1">Tempat</p>

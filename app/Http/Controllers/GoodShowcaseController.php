@@ -19,8 +19,9 @@ class GoodShowcaseController extends Controller
         $goodShowcases = Goods::where('availability', 1)
             ->where('safe_status', 0)
             ->get();
-        $types = GoodsType::all();;
-        $brands = Merk::all();
+        $types = GoodsType::where('status', 1)->get();
+        $brands = Merk::where('status', 1)->get();
+        
         $showcases = Showcase::all();
 
         $trays = Tray::select('id', 'code', 'showcase_id', 'capacity')->get();
@@ -39,7 +40,10 @@ class GoodShowcaseController extends Controller
         $lastKurs = GoldRate::latest('created_at')->first();
         $lastKursPrice = $lastKurs ? $lastKurs->new_price : 0;
 
-        $latestAddedGoods = Goods::latest('created_at')->first();
+        $latestAddedGoods = Goods::where('availability', 1)
+            ->where('safe_status', 0)
+            ->latest('created_at')
+            ->first();
 
         return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods'));
     }

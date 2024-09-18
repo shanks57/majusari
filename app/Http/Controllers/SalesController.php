@@ -49,6 +49,7 @@ class SalesController extends Controller
             session()->flash('good-rate-form', $good->rate);
             session()->flash('good-size-form', $good->size);
             session()->flash('good-type-form', $good->goodsType->name);
+            session()->flash('good-type-additional-cost-form', $good->goodsType->additional_cost);
             session()->flash('good-showcase-form', $good->tray->showcase->name);
             session()->flash('good-tray-form', $good->tray->code);
             session()->flash('good-tray-id-form', $good->tray->id);

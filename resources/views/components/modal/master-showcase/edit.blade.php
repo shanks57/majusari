@@ -37,7 +37,7 @@
                         <label for="capacity" class="block text-sm text-[#344054] leading-5">Jumlah Item</label>
                         <input type="number" id="capacity" name="capacity" x-model="form.capacity"
                             class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base leading-6 text-[#667085]"
-                            placeholder="Masukkan jumlah item" required min="1" max="100">
+                            placeholder="Masukkan jumlah item" required min="1" max="300">
                     </div>
                 </div>
                 <input type="hidden" name="showcase_id" value="{{ $etalase->id }}">

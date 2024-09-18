@@ -19,8 +19,8 @@ class GoodSafeController extends Controller
             ->where('safe_status', 1)
             ->get();
 
-        $types = GoodsType::all();;
-        $brands = Merk::all();
+        $types = GoodsType::where('status', 1)->get();
+        $brands = Merk::where('status', 1)->get();
         $title = 'Brangkas';
         $showcases = Showcase::all();
         $lastKurs = GoldRate::latest('created_at')->first();
