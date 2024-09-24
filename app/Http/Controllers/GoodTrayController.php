@@ -16,7 +16,10 @@ class GoodTrayController extends Controller
     public function index()
     {
         $showcases = Showcase::get();
-        $goodtrays = Tray::with('showcase')->get();
+        $goodtrays = Tray::with('showcase')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
         
         return view('pages.goods-trays', compact('goodtrays', 'showcases'));
     }
@@ -159,6 +162,35 @@ class GoodTrayController extends Controller
             // Redirect back with an error message
             return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan saat menambah data barang. Silakan coba lagi.']);
         }
+    }
+
+    public function updateSlotBaki(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'capacity' => 'required|numeric|min:1|max:300',
+        ]);
+
+        // Ambil data tray berdasarkan ID dari request
+        $tray = Tray::find($request->tray_id); // Misal $tray_id dikirim dalam form
+
+        if (!$tray) {
+            return back()->withErrors(['error' => 'Tray tidak ditemukan']);
+        }
+
+        // Tambahkan kapasitas baru
+        $newCapacity = $tray->capacity + $request->capacity;
+
+        // Cek apakah kapasitas melebihi batas maksimum
+        if ($newCapacity > 300) {
+            return redirect()->back()->with('error', 'Kapasitas melebihi batas maksimum 300 slot.');
+        }
+
+        // Update kapasitas baki
+        $tray->capacity = $newCapacity;
+        $tray->save();
+
+        return redirect()->back()->with('success', 'Kapasitas baki berhasil ditambahkan');
     }
 
 

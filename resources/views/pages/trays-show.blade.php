@@ -1,12 +1,12 @@
 @section('title', 'Show Baki')
 <x-layout>
     <div class="container py-4 mx-auto">
-        <a href="/" class="flex items-center gap-4 mb-4 text-gray-500 hover:text-gray-700">
+        <a href="{{ route('/goods/tray') }}" class="flex items-center gap-4 mb-4 text-gray-500 hover:text-gray-700">
             <i class="text-2xl ph ph-caret-left"></i>
             <h1 class="text-2xl ">Etalase {{ $tray->showcase->name }}</h1>
         </a>
 
-        <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-3">
+        <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-4">
             <div class="grid gap-3 p-4 bg-white border rounded-lg">
                 <h2 class="text-lg">Jumlah Barang di Baki</h2>
                 <p class="text-4xl">{{ $countGoods }}</p>
@@ -22,6 +22,19 @@
                 <p class="text-4xl">{{ $totalWeight }} gr</p>
                 <p class="text-gray-500">Jumlah total berat baki</p>
             </div>
+            <div class="grid grid-cols-1 gap-2 mb-8 rid md:grid-cols-2">
+                <button type="button"
+                        class="bg-[#6634BB] text-[#F8F8F8] py-3 px-4 rounded-lg h-fit font-medium text-sm"
+                        aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal"
+                        data-hs-overlay="#hs-add-modal">Tambah Slot <i class="ph ph-cube-transparent"></i>
+                </button>
+                <button type="button"
+                        class="bg-[#F04438] text-[#F8F8F8] py-3 px-4 rounded-lg h-fit font-medium text-sm"
+                        aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal"
+                        data-hs-overlay="#hs-add-modal2">Hapus Baki <i class="ml-2 ph ph-trash"></i>
+                </button>
+            </div>
+            
         </div>
 
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
@@ -74,8 +87,10 @@
     </div>
 </x-layout>
 
+@include('components.modal.master-trays.update-slot-trays')
 @include('components.modal.master-trays.success-modal')
 @include('components.modal.master-trays.success')
+@include('components.modal.error-modal')
 @include('components.modal.goods-showcase.error-modal')
 <script>
     document.addEventListener('alpine:init', () => {

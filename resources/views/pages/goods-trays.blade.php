@@ -15,6 +15,17 @@
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
 
+        <!-- Kondisi untuk menampilkan pesan kosong jika belum ada pencarian -->
+        <template x-if="!search.trim()">
+             <div class="rounded-xl border-2 border-gray-200 min-h-[60vh] bg-gray-100 flex justify-center items-center">
+                <div class="flex flex-col items-center gap-3">
+                    <img class="max-w-sm" src="/images/empty-illustration.png" alt="empty-illustration">
+                    <span class="text-xl">Belum ada Etalase yang ditampilkan</span>
+                </div>
+            </div>
+        </template>
+
+        <!-- Kondisi untuk menampilkan hasil pencarian -->
         <template x-if="search.trim() && filteredShowcases.length === 0">
             <div class="rounded-xl border-2 border-gray-200 min-h-[60vh] bg-gray-100 flex justify-center items-center">
                 <div class="flex flex-col items-center gap-3">
@@ -24,12 +35,13 @@
             </div>
         </template>
 
+        <!-- Menampilkan showcase berdasarkan hasil pencarian -->
         <template x-if="search.trim()">
             <template x-for="showcase in filteredShowcases" :key="showcase.id">
                 <div class="px-4 py-3 mb-4 bg-white border-2 rounded-xl">
                     <div class="grid gap-3 mb-3">
                         <div class="flex gap-3">
-                            <span x-text="showcase.code"></span>
+                            {{-- <span x-text="showcase.code"></span> --}}
                             <span class="font-bold text-purple-400">-</span>
                             <span x-text="'Etalase ' + showcase.name"></span>
                         </div>

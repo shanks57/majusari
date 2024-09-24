@@ -90,6 +90,8 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::post('/goods/trays-store', [GoodTrayController::class, 'store'])->name('goods.trayStore');
         Route::patch('/goods-trays/{id}/move-to-safe', [GoodTrayController::class, 'moveToSafe'])
             ->name('goods-tray.moveToSafe');
+        Route::post('/goods-traysgoods-trays/slot/update', [GoodTrayController::class, 'updateSlotBaki'])->name('traysgoods.slot.update');
+
         // end route detail baki
 
         // start notif
