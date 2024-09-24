@@ -142,6 +142,11 @@
                                 <option value="" disabled selected>Pilih Warna</option>
                                 <option value="Gold">Gold</option>
                                 <option value="Silver">Silver</option>
+                                <option value="White Gold">White Gold</option>
+                                <option value="Black Gold">Black Gold</option>
+                                <option value="Rose Gold">Rose Gold</option>
+                                <option value="Yellow Gold">Yellow Gold</option>
+                                <option value="Gold Kombinasi">Gold Kombinasi</option>
                             </select>
                             @error('color')
                             <span class="text-sm text-red-500">{{ $message }}</span>
