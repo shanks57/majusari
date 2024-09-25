@@ -17,6 +17,7 @@ class Goods extends Model
 
     protected $fillable = [
         'id',
+        'serial_number',
         'code',
         'name',
         'category',

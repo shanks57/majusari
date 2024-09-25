@@ -16,7 +16,10 @@ class GoodTrayController extends Controller
     public function index()
     {
         $showcases = Showcase::get();
-        $goodtrays = Tray::with('showcase')->get();
+        $goodtrays = Tray::with('showcase')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
         
         return view('pages.goods-trays', compact('goodtrays', 'showcases'));
     }
@@ -161,5 +164,51 @@ class GoodTrayController extends Controller
         }
     }
 
+    public function updateSlotBaki(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'capacity' => 'required|numeric|min:1|max:300',
+        ]);
+
+        // Ambil data tray berdasarkan ID dari request
+        $tray = Tray::find($request->tray_id); // Misal $tray_id dikirim dalam form
+
+        if (!$tray) {
+            return back()->withErrors(['error' => 'Tray tidak ditemukan']);
+        }
+
+        // Tambahkan kapasitas baru
+        $newCapacity = $tray->capacity + $request->capacity;
+
+        // Cek apakah kapasitas melebihi batas maksimum
+        if ($newCapacity > 300) {
+            return redirect()->back()->with('error', 'Kapasitas melebihi batas maksimum 300 slot.');
+        }
+
+        // Update kapasitas baki
+        $tray->capacity = $newCapacity;
+        $tray->save();
+
+        return redirect()->back()->with('success', 'Kapasitas baki berhasil ditambahkan');
+    }
+
+    public function deleteTrayAndGoods($id)
+    {
+        // Cari tray berdasarkan ID
+        $tray = Tray::findOrFail($id);
+
+        // Hapus semua goods yang memiliki tray_id sama, availability = 1, dan safe_status = 0
+        Goods::where('tray_id', $id)
+            ->where('availability', 1)
+            ->where('safe_status', 0)
+            ->delete();
+
+        // Hapus tray
+        $tray->delete();
+
+        // Redirect atau return response sesuai kebutuhan
+        return redirect()->route('/goods/tray')->with('success', 'Tray dan barang terkait berhasil dihapus.');
+    }
 
 }

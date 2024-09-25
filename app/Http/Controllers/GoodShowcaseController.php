@@ -74,30 +74,34 @@ class GoodShowcaseController extends Controller
             // Handle the image upload
             $imagePath = $request->file('image')->store('goods_images', 'public');
 
-            // Create a new showcase entry
-            $good = Goods::create([
-                'id' => (string) Str::uuid(),
-                'unit' => $request->unit,
-                'code' => $request->name . "" . time(),
-                'name' => $request->name,
-                'category' => $request->category,
-                'color' => $request->color,
-                'rate' => $request->rate,
-                'size' => $request->size,
-                'dimensions' => $request->dimensions,
-                'merk_id' => $request->merk_id,
-                'ask_rate' => $request->ask_rate,
-                'bid_rate' => $request->bid_rate,
-                'ask_price' => $request->ask_price,
-                'bid_price' => $request->bid_price,
-                'image' => $imagePath,
-                'type_id' => $request->type_id,
-                'tray_id' => $request->tray_id,
-                'position' => $request->position,
-                'availability' => 1,
-                'safe_status' => 0,
-                'date_entry' => $request->date_entry,
-            ]);
+            $good = new Goods();
+
+            $good->id = (string) Str::uuid();
+            $good->unit = $request->unit;
+            $good->name = $request->name;
+            $good->category = $request->category;
+            $good->color = $request->color;
+            $good->rate = $request->rate;
+            $good->size = $request->size;
+            $good->dimensions = $request->dimensions;
+            $good->merk_id = $request->merk_id;
+            $good->ask_rate = $request->ask_rate;
+            $good->bid_rate = $request->bid_rate;
+            $good->ask_price = $request->ask_price;
+            $good->bid_price = $request->bid_price;
+            $good->image = $imagePath;
+            $good->type_id = $request->type_id;
+            $good->tray_id = $request->tray_id;
+            $good->position = $request->position;
+            $good->availability = 1;
+            $good->safe_status = 0;
+            $good->date_entry = $request->date_entry;
+
+            $good->save();
+            $good->refresh();
+            
+            $good->code = $good->name . '-' . $good->serial_number;
+            $good->save();
 
             $goodShowcases = Goods::find($good->id);
 

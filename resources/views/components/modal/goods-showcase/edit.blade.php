@@ -16,8 +16,8 @@
             bid_price: '{{ $goodShowcase->bid_price }}', 
             image: '{{ $goodShowcase->image }}', 
             type_id: '{{ $goodShowcase->type_id }}', 
-            {{-- tray_id: '{{ $goodShowcase->tray_id }}', 
-            position: '{{ $goodShowcase->position }}',  --}}
+            tray_id: '{{ $goodShowcase->tray_id }}', 
+            position: '{{ $goodShowcase->position }}', 
             date_entry: '{{ $goodShowcase->date_entry }}' 
         }
     }"
@@ -80,8 +80,10 @@
                         <input type="text" id="category" name="category" x-model="form.category"
                             class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan kategori" required
                             maxlength="20">
-                    </div>
+                </div>
 
+                {{-- start --}}
+                <div x-data="showcaseFormEdit()" x-init="init">
                 <div class="flex gap-4 px-4">
                     
                         <div class="w-full mb-4">
@@ -99,18 +101,37 @@
                             @enderror
                         </div>
 
-                    <input type="hidden" name="type_id" x-model="form.type_id">
+                         <div class="w-full mb-4">
+                            <label for="type_id" class="block text-sm text-gray-600">Jenis</label>
+                            <select id="type_id" name="type_id" x-model="form.type_id" @change="updateShowcases()"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                required>
+                                
+                                <option value="" disabled selected>Pilih Jenis</option>
+                                @foreach ($types as $type)
+                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('type_id')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                    <div class="w-full ">
-                        <label for="color" class="block text-sm text-gray-600">Warna</label>
-                        <select id="color" name="color" x-model="form.color"
-                            class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
-                            <!-- Add your options here -->
-                            <option value="" disabled selected>Pilih Warna</option>
-                            <option value="Gold">Gold</option>
-                            <option value="Silver">Silver</option>
-                        </select>
-                    </div>
+                        <div class="w-full ">
+                            <label for="color" class="block text-sm text-gray-600">Warna</label>
+                            <select id="color" name="color" x-model="form.color"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]" required>
+                                <!-- Add your options here -->
+                                <option value="" disabled selected>Pilih Warna</option>
+                                    <option value="Gold">Gold</option>
+                                    <option value="Silver">Silver</option>
+                                    <option value="White Gold">White Gold</option>
+                                    <option value="Black Gold">Black Gold</option>
+                                    <option value="Rose Gold">Rose Gold</option>
+                                    <option value="Yellow Gold">Yellow Gold</option>
+                                    <option value="Gold Kombinasi">Gold Kombinasi</option>
+                            </select>
+                        </div>
                 </div>
 
                 <div class="flex gap-4 px-4">
@@ -151,6 +172,59 @@
                                 max=100 required>
                         </div>
                     </div>
+
+                    <div class="flex gap-4 px-4">
+                            <div class="w-full mb-4">
+                                <label for="showcase_id" class="block text-sm text-gray-600">Etalase</label>
+                                <select id="showcase_id" name="showcase_id" x-model="form.showcase_id" @change="updateTrays()"
+                                    class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                    required>
+                                    <option value="{{ $goodShowcase->tray->showcase_id }}">{{ $goodShowcase->tray->showcase->name }}</option>
+                                    
+                                    <template x-for="showcase in filteredShowcases" :key="showcase.id">
+                                        <option :value="showcase.id" x-text="showcase.name"></option>
+                                    </template>
+                                </select>
+                                @error('showcase_id')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="w-full mb-4">
+                                <label for="tray_id" class="block text-sm text-gray-600">Baki</label>
+                                <select id="tray_id" name="tray_id" x-model="form.tray_id" @change="updatePositions()"
+                                    class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                    required>
+                                    <option selected value="{{ $goodShowcase->tray_id }}">{{ $goodShowcase->tray->code }}</option>
+                                    <option value="" disabled>Pilih Baki</option>
+                                    <template x-for="tray in filteredTrays" :key="tray.id">
+                                        <option :value="tray.id" x-text="tray.code"></option>
+                                    </template>
+                                </select>
+                                @error('tray_id')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="w-full mb-4">
+                                <label for="position" class="block text-sm text-gray-600">Position</label>
+                                <select id="position" name="position" x-model="form.position"
+                                    class="w-full px-3 py-2 mt-1 border rounded-lg border-[#D0D5DD] text-[#344054]"
+                                    required>
+                                    <option selected value="{{ $goodShowcase->position }}">{{ $goodShowcase->position }}</option>
+                                    {{-- <option value="" disabled>Pilih Position</option> --}}
+                                    <template x-for="position in availablePositions" :key="position">
+                                        <option :value="position" x-text="position"></option>
+                                    </template>
+                                </select>
+                                @error('position')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+                    </div>
+                    
+                </div>    
+                {{-- end --}}
 
                     <div class="px-4 mb-4">
                         <label for="date_entry" class="block text-sm text-gray-600">Tanggal Masuk</label>
@@ -212,6 +286,59 @@
     </div>
 </div>
 
+<script>
+    function showcaseFormEdit() {
+        return {
+            trays: @json($trays),
+            showcases: @json($showcases),
+            occupiedPositions: @json($occupiedPositions),
+            filteredTrays: [],
+            filteredShowcases: [],
+            availablePositions: [],
+
+            // Mengupdate showcases berdasarkan type_id
+            updateShowcases() {
+            
+                // Filter showcases berdasarkan type_id
+                this.filteredShowcases = this.showcases.filter(showcase => showcase.type_id == this.form.type_id);
+                this.filteredShowcases.unshift({
+                    id: '',
+                    name: 'Pilih Etalase',
+                    disabled: true
+                });
+                // Memastikan trays diupdate setiap kali showcase_id diubah
+                this.updateTrays();
+            },
+
+            // Mengupdate trays berdasarkan showcase_id
+            updateTrays() {
+
+                this.filteredTrays = this.trays.filter(tray => tray.showcase_id == this.form.showcase_id);
+
+                // Memastikan positions diupdate setiap kali tray_id diubah
+                this.updatePositions();
+            },
+
+            // Mengupdate positions berdasarkan tray_id
+            updatePositions() {
+                const selectedTray = this.trays.find(tray => tray.id == this.form.tray_id);
+                const capacity = selectedTray ? selectedTray.capacity : 0;
+
+                const occupied = this.occupiedPositions[this.form.tray_id] || [];
+
+                this.availablePositions = Array.from({
+                    length: capacity
+                }, (_, i) => i + 1).filter(pos => !occupied.includes(pos));
+                this.form.position = '';
+            },
+
+            // Inisialisasi fungsi
+            init() {
+                this.updateShowcases(); // Mengupdate showcases saat inisialisasi
+            }
+        }
+    }
+</script>
 
 <script>
     function priceCalculatorEdit() {

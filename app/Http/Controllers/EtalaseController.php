@@ -15,7 +15,7 @@ class EtalaseController extends Controller
     {
         $etalases = Showcase::withCount('trays')
         ->with(['trays' => function($query) {
-            $query->orderBy('created_at', 'desc');
+            $query->orderBy('created_at', 'asc');
         }])
         ->orderBy('updated_at', 'desc')
         ->get();
