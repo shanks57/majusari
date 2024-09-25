@@ -64,7 +64,7 @@
                     </p>
                 </div>
                 @endif
-                <div class="flex gap-12 p-3 bg-gray-100">
+                <div class="flex gap-8 p-3 bg-gray-100">
                     <div class="grid gap-3">
                         <span class="text-sm">Berat & Kadar</span>
                         <div class="flex items-center gap-1">
@@ -76,6 +76,25 @@
                         <span class="text-sm">Tempat</span>
                         <span class="text-base font-medium">{{ $cart->goods->tray->showcase->name }} BAKI
                             {{ $cart->goods->tray->code }}</span>
+                    </div>
+                    <div class="grid gap-3">
+                        <span class="text-sm">Harga Jual</span>
+                        <span><i class="ph ph-arrow-line-up-right text-[#027A48]"></i> Jual
+                            {{ 'Rp.' . number_format($cart->goods->ask_price, 0, ',', '.') }}
+                            <span
+                                class="bg-[#ECFDF3] text-[#027A48] text-xs leading-6 rounded-xl px-2">{{ $cart->goods->ask_rate }}%
+                            </span>
+                        </span>
+
+                    </div>
+                    <div class="grid gap-3">
+                        <span class="text-sm">Batas Bawah</span>
+                        <span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i> Bawah
+                            {{ 'Rp.' . number_format($cart->goods->bid_price, 0, ',', '.') }}
+                            <span
+                                class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $cart->goods->bid_rate }}%
+                            </span>
+                        </span>
                     </div>
                     <div class="grid gap-3">
                         <span class="text-sm">Harga</span>
