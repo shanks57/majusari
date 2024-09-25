@@ -67,6 +67,8 @@
         </template>
     </div>
 
+    @include('components.modal.success-modal')
+
     <script>
         function goodsTraySearch() {
             return {

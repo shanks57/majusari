@@ -193,5 +193,22 @@ class GoodTrayController extends Controller
         return redirect()->back()->with('success', 'Kapasitas baki berhasil ditambahkan');
     }
 
+    public function deleteTrayAndGoods($id)
+    {
+        // Cari tray berdasarkan ID
+        $tray = Tray::findOrFail($id);
+
+        // Hapus semua goods yang memiliki tray_id sama, availability = 1, dan safe_status = 0
+        Goods::where('tray_id', $id)
+            ->where('availability', 1)
+            ->where('safe_status', 0)
+            ->delete();
+
+        // Hapus tray
+        $tray->delete();
+
+        // Redirect atau return response sesuai kebutuhan
+        return redirect()->route('/goods/tray')->with('success', 'Tray dan barang terkait berhasil dihapus.');
+    }
 
 }

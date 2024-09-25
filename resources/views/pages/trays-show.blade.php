@@ -31,7 +31,7 @@
                 <button type="button"
                         class="bg-[#F04438] text-[#F8F8F8] py-3 px-4 rounded-lg h-fit font-medium text-sm"
                         aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal"
-                        data-hs-overlay="#hs-add-modal2">Hapus Baki <i class="ml-2 ph ph-trash"></i>
+                        data-hs-overlay="#hs-delete-baki">Hapus Baki <i class="ml-2 ph ph-trash"></i>
                 </button>
             </div>
             
@@ -90,6 +90,7 @@
 @include('components.modal.master-trays.update-slot-trays')
 @include('components.modal.master-trays.success-modal')
 @include('components.modal.master-trays.success')
+@include('components.modal.master-trays.delete-baki')
 @include('components.modal.error-modal')
 @include('components.modal.goods-showcase.error-modal')
 <script>

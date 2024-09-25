@@ -91,6 +91,8 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::patch('/goods-trays/{id}/move-to-safe', [GoodTrayController::class, 'moveToSafe'])
             ->name('goods-tray.moveToSafe');
         Route::post('/goods-traysgoods-trays/slot/update', [GoodTrayController::class, 'updateSlotBaki'])->name('traysgoods.slot.update');
+        Route::delete('/traysgoods/baki/delete/{id}', [GoodTrayController::class, 'deleteTrayAndGoods'])->name('traysgoods.baki.delete');
+
 
         // end route detail baki
 
