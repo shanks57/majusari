@@ -140,8 +140,6 @@
                                 required>
                                 <!-- Add your options here -->
                                 <option value="" disabled selected>Pilih Warna</option>
-                                <option value="Gold">Gold</option>
-                                <option value="Silver">Silver</option>
                                 <option value="White Gold">White Gold</option>
                                 <option value="Black Gold">Black Gold</option>
                                 <option value="Rose Gold">Rose Gold</option>
