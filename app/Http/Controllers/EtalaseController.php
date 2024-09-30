@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ShowcaseExport;
 use App\Models\GoldRate;
 use App\Models\GoodsType;
 use Illuminate\Http\Request;
 use App\Models\Showcase;
 use App\Models\Tray;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class EtalaseController extends Controller
 {
@@ -111,5 +114,30 @@ class EtalaseController extends Controller
         }
     }
 
+    public function downloadPdf()
+    {
+        $showcases = Showcase::withCount('trays')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        $pdf = PDF::loadView('/pdf-page/showcase', compact('showcases'));
+
+        return $pdf->download(now()->format('His').'-Laporan-Data-Etalase.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $fileName = now()->format('His').'-Laporan-Data-Etalase.xlsx';
+        return Excel::download(new ShowcaseExport, $fileName);
+    }
+
+    public function print()
+    {
+        $showcases = Showcase::withCount('trays')
+            ->orderBy('updated_at', 'desc') 
+            ->get();
+                      
+        return view('/print-page/print-showcase', compact('showcases'));
+    }
 }
 

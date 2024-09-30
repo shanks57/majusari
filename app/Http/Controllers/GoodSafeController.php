@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\GoodsSafeExport;
 use App\Models\GoldRate;
 use App\Models\Goods;
 use App\Models\GoodsType;
@@ -10,6 +11,8 @@ use App\Models\Showcase;
 use App\Models\Tray;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class GoodSafeController extends Controller
 {
@@ -220,5 +223,32 @@ class GoodSafeController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('goods.showcase')->with('error', 'Terjadi kesalahan saat menghasilkan barcode1. Silakan coba lagi.');
         }
+    }
+
+    public function downloadPdf()
+    {
+        $goodsSafe = Goods::where('availability', 1)
+            ->where('safe_status', 1)
+            ->get();
+
+        $pdf = PDF::loadView('/pdf-page/goods-safe', compact('goodsSafe'))
+        ->setPaper('landscape');
+
+        return $pdf->download(now()->format('His').'-Laporan-Data-Barang-Brankas.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $fileName = now()->format('His').'-Laporan-Data-Barang-Brankas.xlsx';
+        return Excel::download(new GoodsSafeExport, $fileName);
+    }
+
+    public function print()
+    {
+        $goodsSafe = Goods::where('availability', 1)
+            ->where('safe_status', 1)
+            ->get();
+                      
+        return view('/print-page/print-goods-safe', compact('goodsSafe'));
     }
 }

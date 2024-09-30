@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SalesExport;
 use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Goods;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -15,6 +17,8 @@ use Illuminate\Database\QueryException;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SalesController extends Controller
 {
@@ -406,6 +410,57 @@ class SalesController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('sale.index')->with('error', 'Terjadi kesalahan saat menghasilkan barcode. Silakan coba lagi.');
         }
+    }
+
+    public function export(Request $request)
+    {
+        $query = TransactionDetail::query();
+
+        // Ambil parameter date_start dan date_end
+        $dateStart = $request->input('date_start');
+        $dateEnd = $request->input('date_end');
+
+        // Filter berdasarkan tanggal jika ada
+        if ($dateStart) {
+            $query->whereDate('created_at', '>=', Carbon::parse($dateStart));
+        }
+        if ($dateEnd) {
+            $query->whereDate('created_at', '<=', Carbon::parse($dateEnd));
+        }
+
+        // Dapatkan data yang sudah difilter
+        $sales = $query->with('goods')->get();
+
+        // Tentukan format export (PDF, Excel, atau Print)
+        $format = $request->input('format');
+        
+        switch ($format) {
+            case 'pdf':
+                // Export ke PDF
+                return $this->exportToPDF($sales);
+            case 'excel':
+                // Export ke Excel
+                return $this->exportToExcel($sales);
+            case 'print':
+                // Menampilkan halaman Print
+                return view('print-page.print-sales', compact('sales'));
+            default:
+                // Default action (misal redirect kembali)
+                return redirect()->back();
+        }
+    }
+
+    // Contoh method untuk export PDF
+    public function exportToPDF($sales)
+    {
+        $pdf = PDF::loadView('pdf-page.sales-report', ['sales' => $sales]);
+        return $pdf->download('Laporan-Penjualan.pdf');
+    }
+
+    // Contoh method untuk export Excel
+    public function exportToExcel($sales)
+    {
+        return Excel::download(new SalesExport($sales), 'Laporan-penjualan.xlsx');
     }
 
 }

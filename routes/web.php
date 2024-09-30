@@ -37,6 +37,10 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::post('/master-showcase/store', [EtalaseController::class, 'store'])->name('master.showcase.store');
         Route::post('/master/showcase/add-trays', [EtalaseController::class, 'addTrays'])->name('master.showcase.add-trays');
         Route::delete('/master-showcase/{id}', [EtalaseController::class, 'destroy'])->name('master.showcase.destroy');
+
+        Route::get('/master/showcase/export-pdf', [EtalaseController::class, 'downloadPdf'])->name('master.showcase.export-pdf');
+        Route::get('/master/showcase/export-excel', [EtalaseController::class, 'exportExcel'])->name('master.showcase.export-excel');
+        Route::get('/master/showcase/print', [EtalaseController::class, 'print'])->name('master.showcase.print');
         // end master/showcases
 
         // master type
@@ -55,6 +59,10 @@ Route::middleware('auth', 'verified')->group(function () {
 
         // start route /master/customers
         Route::get('/master/customers', [CustomerController::class, 'index'])->name("master-customer");
+
+        Route::get('/customer/export-pdf', [CustomerController::class, 'downloadPdf'])->name('master.customer.export-pdf');
+        Route::get('/customer/export-excel', [CustomerController::class, 'exportExcel'])->name('master.customer.export-excel');
+        Route::get('/customer/print', [CustomerController::class, 'print'])->name('master.customer.print');
         // end route /master/customers
 
         // route master emplyee
@@ -63,6 +71,10 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::put('/master-employees/{id}/update', [UserController::class, 'update'])->name('master.employees.update');
         Route::put('/master-employees/{id}/set-password', [UserController::class, 'setPassword'])->name('master.employees.set-password');
         Route::put('/employees/{id}/reset-password', [UserController::class, 'resetPassword'])->name('employees.reset-password');
+
+        Route::get('/employees/export-pdf', [UserController::class, 'downloadPdf'])->name('master.employees.export-pdf');
+        Route::get('/employees/export-excel', [UserController::class, 'exportExcel'])->name('master.employees.export-excel');
+        Route::get('/employees/print', [UserController::class, 'print'])->name('master.employees.print');
         // end route master emplyee
 
         // start route /goods/showcases
@@ -73,6 +85,10 @@ Route::middleware('auth', 'verified')->group(function () {
             ->name('goods.moveToSafe');
         Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
         Route::get('/goods/{id}/print-barcode', [GoodShowcaseController::class, 'printBarcode'])->name('goods-showcase.printBarcode');
+
+        Route::get('/goods/showcases/export-pdf/{uniqueCode}', [GoodShowcaseController::class, 'downloadPdf'])->name('goods.showcase.export-pdf');
+        Route::get('/goods/showcases/export-excel{uniqueCode}', [GoodShowcaseController::class, 'exportExcel'])->name('goods.showcase.export-excel');
+        Route::get('/goods/showcases/print', [GoodShowcaseController::class, 'print'])->name('goods.showcase.print');
         // end route /goods/showcases
 
         // start route /goods/safe
@@ -82,6 +98,10 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::patch('/goods/{id}/move-to-showcase', [GoodSafeController::class, 'moveToShowcase'])->name('goods.moveToShowcase');
         Route::delete('/goods/{id}/safe', [GoodSafeController::class, 'destroy'])->name('goods-safe.destroy');
         Route::get('/goods/{id}/safe-print-barcode', [GoodSafeController::class, 'printBarcode'])->name('safe-showcase.printBarcode');
+
+        Route::get('/goods/safe/export-pdf/{uniqueCode}', [GoodSafeController::class, 'downloadPdf'])->name('goods.safe.export-pdf');
+        Route::get('/goods/safe/export-excel{uniqueCode}', [GoodSafeController::class, 'exportExcel'])->name('goods.safe.export-excel');
+        Route::get('/goods/safe/print', [GoodSafeController::class, 'print'])->name('goods.safe.print');
         // end route /goods/safe
 
         // start route detail baki
@@ -115,6 +135,8 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::post('/checkout', [SalesController::class, 'checkout'])->name('sale.checkout');
     Route::post('/sale/search-nota', [SalesController::class, 'searchNota'])->name('sale.search-nota');
     Route::get('/sale/{id}/print-nota', [SalesController::class, 'printNota'])->name('sale.printNota');
+
+    Route::get('/sales/export', [SalesController::class, 'export'])->name('sales.export');
     // end route penjualan
 
     // start profile
