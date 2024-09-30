@@ -12,8 +12,21 @@
                 class="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#79799B]"
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
+        </div>    
+
+        <div class="inline-flex justify-center w-full mx-auto rounded-md" role="group">
+            <a href="{{ route('master.employees.export-pdf') }}" class="p-3 font-normal text-white bg-gray-400 rounded-s-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
+                PDF
+            </a>
+            <a href="{{ route('master.employees.export-excel') }}" class="px-2.5 py-3 font-normal text-white bg-gray-400 hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
+                Excel
+            </a>
+            <a href="{{ route('master.employees.print') }}" class="p-3 font-normal text-white bg-gray-400 rounded-e-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
+                Print
+            </a>
         </div>
-        <div class="overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
+
+        <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">

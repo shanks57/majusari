@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\GoodsShowcaseExport;
 use App\Models\GoldRate;
 use App\Models\Goods;
 use App\Models\GoodsType;
@@ -11,6 +12,8 @@ use App\Models\Tray;
 use Illuminate\Http\Request;
 use Milon\Barcode\DNS1D;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class GoodShowcaseController extends Controller
 {
@@ -240,5 +243,32 @@ class GoodShowcaseController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('goods.showcase')->with('error', 'Terjadi kesalahan saat menghasilkan barcode. Silakan coba lagi.');
         }
+    }
+
+    public function downloadPdf()
+    {
+        $goodsShowcase = Goods::where('availability', 1)
+            ->where('safe_status', 0)
+            ->get();
+
+        $pdf = PDF::loadView('/pdf-page/goods-showcase', compact('goodsShowcase'))
+        ->setPaper('landscape');
+
+        return $pdf->download(now()->format('His').'-Laporan-Data-Barang-Etalase.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $fileName = now()->format('His').'-Laporan-Data-Barang-Etalase.xlsx';
+        return Excel::download(new GoodsShowcaseExport, $fileName);
+    }
+
+    public function print()
+    {
+        $goodsShowcase = Goods::where('availability', 1)
+            ->where('safe_status', 0)
+            ->get();
+                      
+        return view('/print-page/print-goods-showcase', compact('goodsShowcase'));
     }
 }

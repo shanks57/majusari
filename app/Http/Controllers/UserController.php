@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EmployeesExport;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +12,8 @@ use Illuminate\Support\Str;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -167,5 +171,27 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'Password berhasil diperbarui!');
+    }
+
+    public function downloadPdf()
+    {
+        $users = User::select('name', 'username', 'phone', 'debt_receipt', 'address', 'status', 'created_at')->get();
+
+        $pdf = PDF::loadView('/pdf-page/employee', compact('users'));
+
+        return $pdf->download(now()->format('His').'-Laporan-Data-Pegawai.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $fileName = now()->format('His').'-Laporan-Data-Pegawai.xlsx';
+        return Excel::download(new EmployeesExport, $fileName);
+    }
+
+    public function print()
+    {
+        $users = User::select('name', 'username', 'phone', 'debt_receipt', 'address', 'status', 'created_at')->get();
+                      
+        return view('/print-page/print-employees', compact('users'));
     }
 }

@@ -21,7 +21,28 @@
                 placeholder="Cari di etalase">
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
-        <div class="overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
+
+        <form action="{{ route('sales.export') }}" method="GET">
+            <div  class="flex items-center justify-center w-full mx-auto">
+                <div class="relative">
+                <input name="date_start" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Tanggal Mulai"> 
+                </div>
+                <span class="mx-4 text-gray-500">-></span>
+                <div class="relative">
+                <input name="date_end" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="Tanggal Berakhir"> 
+                </div>
+            </div>
+
+            <!-- Tombol Export -->
+            <div class="inline-flex justify-center w-full mx-auto mt-4" role="group">
+                <button type="submit" name="format" value="pdf" class="p-3 font-normal text-white bg-gray-400 rounded-s-xl hover:bg-gray-500">PDF</button>
+                <button type="submit" name="format" value="excel" class="px-2.5 py-3 font-normal text-white bg-gray-400 hover:bg-gray-500">Excel</button>
+                <button type="submit" name="format" value="print" class="p-3 font-normal text-white bg-gray-400 rounded-e-xl hover:bg-gray-500">Print</button>
+            </div>
+        </form>
+
+        
+        <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white text-sm leading-normal">
