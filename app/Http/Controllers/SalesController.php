@@ -38,9 +38,9 @@ class SalesController extends Controller
         ]);
 
         $good = Goods::where('code', $request->input('code'))
-                 ->where('availability', 1)
-                 ->where('safe_status', 0)
-                 ->first();
+            ->where('availability', 1)
+            ->where('safe_status', 0)
+            ->first();
 
         // Check if a good was found
         if ($good) {
@@ -90,7 +90,7 @@ class SalesController extends Controller
             'status_price' => $status_price,
             'new_selling_price' => $sellingPrice,
         ]);
-    
+
         $good = Goods::find($goodsId);
 
         $good->update(['availability' => 0]);
@@ -135,7 +135,7 @@ class SalesController extends Controller
             'status_price' => $status_price,
             'new_selling_price' => $sellingPrice,
         ]);
-    
+
         $good = Goods::find($goodsId);
 
         $good->update(['availability' => 0]);
@@ -261,22 +261,22 @@ class SalesController extends Controller
     public function rejectPrice($notifId, Request $request)
     {
         $notification = Cart::findOrFail($notifId);
-        
+
         $notification->status_price = $request->status_price;
-        
+
         $notification->save();
-        
+
         return redirect()->back()->with('success', 'Harga yang diajukan ditolak.');
     }
 
     public function agreePrice($notifId, Request $request)
     {
         $notification = Cart::findOrFail($notifId);
-        
+
         $notification->status_price = $request->status_price;
-        
+
         $notification->save();
-        
+
         return redirect()->back()->with('success', 'Harga berhasil disetujui.');
     }
 
@@ -371,11 +371,11 @@ class SalesController extends Controller
         ]);
 
         $nota = $request->input('nota');
-        
+
         $transaction = TransactionDetail::where('nota', $nota)->first();
 
         if ($transaction) {
-            
+
             session()->flash('nota-good-id', $transaction->id);
             session()->flash('nota-good-name', $transaction->goods->name);
             session()->flash('nota-penjualan', $transaction->nota);
@@ -390,7 +390,7 @@ class SalesController extends Controller
             session()->flash('nota-harga-jual', $transaction->harga_jual);
 
             return redirect()->route('sale.index', $transaction->id)
-                             ->with('nota-result', 'Transaksi ditemukan.');
+                ->with('nota-result', 'Transaksi ditemukan.');
         } else {
             return redirect()->back()->with('error', 'Kode penjualan tidak ditemukan.');
         }
@@ -399,7 +399,7 @@ class SalesController extends Controller
     public function printNota($id)
     {
         try {
-            $sale = TransactionDetail::findOrFail($id);
+            $sale = TransactionDetail::with(['goods'])->findOrFail($id);
 
             return view('print-page.print-invoice', [
                 'sale' => $sale,
@@ -433,7 +433,7 @@ class SalesController extends Controller
 
         // Tentukan format export (PDF, Excel, atau Print)
         $format = $request->input('format');
-        
+
         switch ($format) {
             case 'pdf':
                 // Export ke PDF
@@ -462,5 +462,5 @@ class SalesController extends Controller
     {
         return Excel::download(new SalesExport($sales), 'Laporan-penjualan.xlsx');
     }
-
+    
 }
