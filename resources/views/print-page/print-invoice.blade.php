@@ -37,7 +37,7 @@
     </script>
 </head>
 
-<body class="h-full">
+<body class="h-full" style="zoom: 80%">
     <!-- Invoice -->
     <div class="max-w-3xl mx-auto bg-white p-8">
 
