@@ -56,12 +56,12 @@
 <body>
     <div class="print-section">
         <div class="barcode">
-            <img src="data:image/png;base64,{{ $barcode }}" alt="{{ $goodShowcase->id }}">
+            <img style="width: 100%; height: auto; max-width: 100px;" src="data:image/png;base64,{{ $barcode }}" alt="{{ $goodShowcase->id }}">
         </div>
         <div class="info">
-            <span>{{ $goodShowcase->code }}</span>
+            <span class="text-xl">{{ $goodShowcase->code }}</span>
             <br>
-            <span>{{ $goodShowcase->rate }} % | {{ $goodShowcase->size }} gr</span>
+            <span class="text-sm">{{ $goodShowcase->rate }}% | <br> {{ $goodShowcase->size }} gr</span>
         </div>
     </div>
 </body>
