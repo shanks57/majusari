@@ -1,12 +1,18 @@
 @section('title', 'Keranjang Penjualan')
 <x-layout>
     <x-header title="Penjualan" subtitle="Keranjang Penjualan">
-        <x-button-add>
-            Tambah Barang
+        <x-button-add :disabled="count($carts) >= 4">
+            {{ count($carts) >= 4 ? 'Maksimal 4 barang' : 'Tambah Barang' }}
         </x-button-add>
     </x-header>
     <div class="grid grid-cols-4 gap-5 mt-6">
         <div class="flex flex-col col-span-3 gap-4">
+            @if (count($carts) >= 4)
+            <div class="p-4 text-sm text-red-800 bg-red-100 border border-red-200 rounded-lg dark:bg-red-800/10 dark:border-red-900 dark:text-red-500" tabindex="-1" aria-labelledby="hs-soft-color-danger-label" role="alert">
+                Jumlah maksimal 4 barang dalam 1 Nota
+            </div>
+            @endif
+
             @forelse ($carts as $cart)
             <div class="overflow-hidden border rounded-xl">
                 <div class="flex items-start justify-between p-3 bg-white">

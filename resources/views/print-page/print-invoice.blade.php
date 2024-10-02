@@ -20,7 +20,7 @@
     <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('favicon/apple-icon-144x144.png') }}">
     <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('favicon/apple-icon-152x152.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon/apple-icon-180x180.png') }}">
-    <link rel="icon" type="image/png" sizes="192x192"  href="{{ asset('favicon/android-icon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('favicon/android-icon-192x192.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon/favicon-96x96.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon/favicon-16x16.png') }}">
@@ -31,160 +31,88 @@
     @stack('styles')
     <script type="text/javascript">
         window.print();
-        window.addEventListener('afterprint', function () {
-            window.location.href = '/sales';
-        });
-
+        // window.addEventListener('afterprint', function() {
+        //     window.location.href = '/sales';
+        // });
     </script>
 </head>
 
 <body class="h-full">
     <!-- Invoice -->
-    <div class="max-w-[85rem] px-4 sm:px-6 lg:px-8 mx-auto my-4 sm:my-10">
-        <div class="mx-auto sm:w-11/12 lg:w-3/4">
-            <!-- Card -->
-            <div class="flex flex-col p-4 bg-white shadow-md sm:p-10 rounded-xl dark:bg-neutral-800">
-                <!-- Grid -->
-                <div class="flex justify-between">
-                    <div>
-                        <img class="object-cover"
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxHEfHvhA3rxFqIbu4H7XXAqCuJqIXQBIFUQ&s"
-                            alt="">
+    <div class="max-w-3xl mx-auto bg-white p-8">
 
-                        <h1 class="mt-2 ml-4 text-lg font-semibold text-gray-900 md:text-xl dark:text-white">Toko Emas
-                            Maju Sari</h1>
-                    </div>
-                    <!-- Col -->
+        <!-- Header Section -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <!-- Left Logo and Store Info -->
+            <div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxHEfHvhA3rxFqIbu4H7XXAqCuJqIXQBIFUQ&s" alt="Logo" class="w-24 mb-4">
+                <h2 class="text-lg font-bold">Toko Emas Maju Sari</h2>
+                <p class="text-sm">Lantai Dasar Blok 173-182 Pasar Besar, Malang</p>
+                <p class="text-sm">Telp: (0341) 5015595</p>
+                <p class="text-sm">Kritik & Saran hubungi: 08222924500</p>
 
-                    <div class="text-end">
-                        <h2 class="text-2xl font-semibold text-gray-800 md:text-3xl ">Nota #</h2>
-                        <span class="block mt-1 text-gray-500 ">{{ $sale->nota }}</span>
-
-                        <address class="mt-4 not-italic text-gray-800 ">
-                            Pasar Besar, Jl. Pasar Besar Lantai Dasar,<br>
-                            Sukoharjo, Klojen, Malang City,<br>
-                            Jawa Timur 65118<br>
-                        </address>
-                    </div>
-                    <!-- Col -->
-                </div>
-                <!-- End Grid -->
-
-                <!-- Grid -->
-                <div class="grid gap-3 mt-8 sm:grid-cols-2">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 ">Pembayaran kepada:</h3>
-                        <h3 class="text-lg font-semibold text-gray-800 ">{{ $sale->transaction->customer->name }}</h3>
-                        <address class="mt-2 not-italic text-gray-500 ">
-                            {{ $sale->transaction->customer->phone }},<br>
-                            {{ $sale->transaction->customer->address }}<br>
-                        </address>
-                    </div>
-                    <!-- Col -->
-
-                    <div class="space-y-2 sm:text-end">
-                        <!-- Grid -->
-                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-1 sm:gap-2">
-                            <dl class="grid sm:grid-cols-5 gap-x-3">
-                                <dt class="col-span-3 font-semibold text-gray-800 ">Tanggal nota:</dt>
-                                <dd class="col-span-2 text-gray-500 ">
-                                    {{ Carbon\Carbon::parse($sale->transaction->date)->translatedFormat('j F Y') }}
-                                </dd>
-                            </dl>
-                            <dl class="grid sm:grid-cols-5 gap-x-3">
-                                <dt class="col-span-3 font-semibold text-gray-800 ">Sales:</dt>
-                                <dd class="col-span-2 text-gray-500 ">
-                                    {{ $sale->transaction->user->name }}
-                                </dd>
-                            </dl>
-                        </div>
-                        <!-- End Grid -->
-                    </div>
-                    <!-- Col -->
-                </div>
-                <!-- End Grid -->
-
-                <!-- Table -->
-                <div class="mt-6">
-                    <div class="p-4 space-y-4 border border-gray-200 rounded-lg dark:border-neutral-700">
-                        <div class="hidden sm:grid sm:grid-cols-5">
-                            <div class="text-xs font-medium text-gray-500 ">Nama Barang</div>
-                            <div class="text-xs font-medium text-gray-500 text-start ">Kategori</div>
-                            <div class="text-xs font-medium text-gray-500 text-start ">Berat & Kadar</div>
-                            <div class="text-xs font-medium text-gray-500 text-start ">Biaya Tambahan</div>
-                            <div class="text-xs font-medium text-gray-500 text-end ">Jumlah</div>
-                        </div>
-
-                        <div class="hidden border-b border-gray-200 sm:block dark:border-neutral-700"></div>
-
-                        <div class="grid grid-cols-3 gap-2 sm:grid-cols-5">
-                            <div>
-                                <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden">Nama Barang</h5>
-                                <p class="font-medium text-gray-800 ">{{ $sale->goods->name }} - <br> {{ $sale->goods->code }}
-                            </div>
-                            <div>
-                                <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Kategori</h5>
-                                <p class="text-gray-800 truncate max-w-20">{{ $sale->goods->goodsType->name }}</p>
-                            </div>
-                            <div>
-                                <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Berat & Kadar</h5>
-                                <p class="text-gray-800 ">{{ $sale->goods->size }}gr- {{ $sale->goods->rate }}%</p>
-                            </div>
-                            <div>
-                                <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Biaya Tambahan</h5>
-                                <p class="text-gray-800 ">{{ $sale->goods->goodsType->additional_cost }}</p>
-                            </div>
-                            <div>
-                                <h5 class="text-xs font-medium text-gray-500 uppercase sm:hidden ">Jumlah</h5>
-                                <p class="text-gray-800 sm:text-end">
-                                    {{ 'Rp ' . number_format($sale->harga_jual - $sale->goods->goodsType->additional_cost, 0, ',', '.') }}</p>
-                            </div>
-                        </div>
-
-                        <div class="border-b border-gray-200 sm:hidden dark:border-neutral-700"></div>
-                    </div>
-                </div>
-                <!-- End Table -->
-
-                <!-- Flex -->
-                <div class="flex mt-8 sm:justify-end">
-                    <div class="w-full max-w-2xl space-y-2 sm:text-end">
-                        <!-- Grid -->
-                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-1 sm:gap-2">
-                            <dl class="grid sm:grid-cols-5 gap-x-3">
-                                <dt class="col-span-3 font-semibold text-gray-800 ">Total:</dt>
-                                <dd class="col-span-2 text-gray-500 ">
-                                    {{ 'Rp ' . number_format($sale->harga_jual, 0, ',', '.') }}</dd>
-                            </dl>
-
-                            {{-- <dl class="grid sm:grid-cols-5 gap-x-3">
-                                <dt class="col-span-3 font-semibold text-gray-800 ">PPN:</dt>
-                                <dd class="col-span-2 text-gray-500 ">Rp. 0</dd>
-                            </dl> --}}
-
-                            <dl class="grid sm:grid-cols-5 gap-x-3">
-                                <dt class="col-span-3 font-semibold text-gray-800 ">Jumlah yang dibayarkan:</dt>
-                                <dd class="col-span-2 text-gray-500 ">
-                                    {{ 'Rp ' . number_format($sale->harga_jual, 0, ',', '.') }}</dd>
-                            </dl>
-                        </div>
-                        <!-- End Grid -->
-                    </div>
-                </div>
-                <!-- End Flex -->
-
-                <div class="mt-8 sm:mt-12">
-                    <h4 class="text-lg font-semibold text-gray-800 ">Terima kasih!</h4>
-                    <p class="text-gray-500 ">Jika Anda memiliki pertanyaan mengenai faktur ini, gunakan informasi
-                        kontak berikut:</p>
-                    <div class="mt-2">
-                        <p class="block text-sm font-medium text-gray-800 ">tokoemasmajusari.com</p>
-                        <p class="block text-sm font-medium text-gray-800 ">(0341) 361271</p>
-                    </div>
+                <!-- Social Media -->
+                <div class="flex items-center space-x-4 mt-2">
+                    <a href="#" class="text-teal-600">@maju_sari</a>
+                    <a href="#" class="text-teal-600">www.tokoemasmajusari.com</a>
                 </div>
             </div>
-            <!-- End Card -->
 
+            <!-- Right Info Section -->
+            <div class="text-right">
+                <h2 class="text-2xl font-bold text-teal-500">NOTA : {{ $sale->nota }}</h2>
+                <p class="mt-2"><strong>Tanggal:</strong> {{ Carbon\Carbon::parse($sale->transaction->date)->translatedFormat('j F Y') }}</p>
+                <p><strong>Nama:</strong> {{ $sale->transaction->customer->name }}</p>
+                <p><strong>Alamat:</strong> {{ $sale->transaction->customer->address }}</p>
+            </div>
+        </div>
+
+        <!-- Item Table Section -->
+        <table class="w-full table-auto mb-6">
+            <thead class="bg-teal-500 text-white">
+                <tr>
+                    <th class="p-2 text-left">QTY</th>
+                    <th class="p-2 text-left">Nama Barang</th>
+                    <th class="p-2 text-left">Kadar</th>
+                    <th class="p-2 text-left">Berat</th>
+                    <th class="p-2 text-left">Harga</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Item Rows (can be dynamically generated) -->
+                <tr class="border-b">
+                    <td class="p-2">1</td>
+                    <td class="p-2">{{ $sale->goods->name }} - {{ $sale->goods->code }}</td>
+                    <td class="p-2">{{ $sale->goods->rate }}%</td>
+                    <td class="p-2">{{ $sale->goods->size }}gr </td>
+                    <td class="p-2">{{ 'Rp ' . number_format($sale->harga_jual - $sale->goods->goodsType->additional_cost, 0, ',', '.') }}</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="p-2">1</td>
+                    <td class="p-2">{{ $sale->goods->name }} - {{ $sale->goods->code }}</td>
+                    <td class="p-2">{{ $sale->goods->rate }}%</td>
+                    <td class="p-2">{{ $sale->goods->size }}gr </td>
+                    <td class="p-2">{{ 'Rp ' . number_format($sale->harga_jual - $sale->goods->goodsType->additional_cost, 0, ',', '.') }}</td>
+                </tr>
+                <!-- Additional rows can be added -->
+            </tbody>
+        </table>
+
+        <!-- Total and Signature Section -->
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <p><strong>Penting:</strong> Ketetapan tentang jual beli emas ada di belakang nota, mohon untuk diperhatikan.</p>
+            </div>
+            <div class="text-right">
+                <p><strong>Total:</strong> {{ 'Rp ' . number_format($sale->harga_jual, 0, ',', '.') }}</p>
+                <p><strong>Pegawai:</strong> {{ $sale->transaction->user->name }}</p>
+            </div>
+        </div>
+
+        <!-- Footer Message -->
+        <div class="text-center text-teal-600">
+            <p>Terima kasih atas kunjungan anda</p>
+            <p>Semoga anda banyak rejeki</p>
         </div>
     </div>
     <!-- End Invoice -->
