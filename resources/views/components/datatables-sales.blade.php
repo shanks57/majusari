@@ -24,7 +24,7 @@
             "order": [],
             "columnDefs": [{
                 "orderable": false,
-                "targets": [0, 2]
+                "targets": [0, 1, 2, 7, 8]
             }],
             pagingType: 'simple',
             "lengthMenu": [10, 25, 50, 75, 100],

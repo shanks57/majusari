@@ -43,7 +43,7 @@
 
         
         <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
-            <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
+            <table id="etalaseTable" class="min-w-full bg-white border border-gray-200">
                 <thead>
                     <tr class="w-full bg-[#79799B] text-white text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
@@ -83,59 +83,76 @@
                     $lastDate = $currentDate;
                     @endphp
                     @endif
-                    <tr class="border-b border-gray-200 hover:bg-gray-100">
-                        <td class="px-6 py-3 text-left">
-                            <input type="checkbox" class="select-row">
-                        </td>
-                        <td class="px-6 py-3 font-bold text-left">{{ $sale->nota }}</td>
-                        <td class="px-6 py-3 text-left text-transparent">
-                            {{ $currentDate }}
-                        </td>
-                        <td class="px-6 py-3 text-left">
-                            <button type="button" aria-haspopup="dialog" aria-expanded="false"
-                                aria-controls="hs-image-sale-modal-{{ $sale->id }}"
-                                data-hs-overlay="#hs-image-sale-modal-{{ $sale->id }}">
-                                <img src="storage/{{ $sale->goods->image }}" class="rounded-full size-10"
-                                    alt="{{ $sale->goods->name }}">
-                            </button>
+                    
+                    @php
+                        $detailCount = $sale->details->count();
+                    @endphp
+                    
+                    @foreach($sale->details as $index => $detail)
+                        <tr>
+                            @if($index === 0)
+                                <td class="px-6 py-3 text-left" rowspan="{{ $detailCount }}">
+                                    <input type="checkbox" class="select-row">
+                                </td>
+                                <td class="px-6 py-3 font-bold text-left" rowspan="{{ $detailCount }}">
+                                    {{ $sale->code }}
+                                </td>
+                            @endif
 
-                            {{-- modal image sale --}}
-                            @include('components.modal.image-sale')
-                            
-                        </td>
-                        <td class="px-6 py-3 font-semibold leading-6 text-left">
-                            <span
-                                class="px-2 py-1 border boreder-[#D0D5DD] border-s rounded-full">{{ $sale->goods->code }}
-                                - {{ $sale->goods->name }}</span>
-                        </td>
-                        <td class="px-6 py-3 text-left">{{ $sale->goods->size }}gr <span
-                                class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $sale->goods->rate }}%</span>
-                        </td>
-                        <td class="px-6 py-3 text-left"><span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i>
-                                Bawah {{ 'Rp.' . number_format($sale->harga_jual, 0, ',', '.') }} <span
-                                    class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $sale->goods->bid_rate }}%</span></span>
-                        </td>
-                        <td class="px-6 py-3 text-left">
-                            {{ $sale->transaction->user->name }}
-                        </td>
-                        <td class="px-6 py-3 text-center">
-                            <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
-                                <button id="hs-dropright" type="button"
-                                    class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]"
-                                    aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
-                                    <i class="ph ph-dots-three-outline-vertical"></i> Opsi
+                            <td class="px-6 py-3 text-left text-transparent">
+                                {{ $currentDate }}
+                            </td>
+
+                            <td class="px-6 py-3 text-left">
+                                <button type="button" aria-haspopup="dialog" aria-expanded="false"
+                                    aria-controls="hs-image-sale-modal-{{ $detail->id }}"
+                                    data-hs-overlay="#hs-image-sale-modal-{{ $detail->id }}">
+                                    <img src="storage/{{ $detail->goods->image }}" class="rounded-full size-10"
+                                        alt="{{ $detail->goods->name }}">
                                 </button>
-                                <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl px-3 py-1"
-                                    role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
-                                    <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
-                                        href="{{ route('sale.printNota', $sale->id) }}">
-                                        <i class="ph ph-printer"></i>
-                                        Cetak Nota
-                                    </a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+                                @include('components.modal.image-sale')
+                            </td>
+                            <td class="px-6 py-3 font-semibold leading-6 text-left">
+                                <span class="px-2 py-1 border boreder-[#D0D5DD] border-s rounded-full">{{ $detail->goods->code }}
+                                    - {{ $detail->goods->name }}</span>
+                            </td>
+                            <td class="px-6 py-3 text-left">{{ $detail->goods->size }}gr 
+                                <span class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">
+                                    {{ $detail->goods->rate }}%
+                                </span>
+                            </td>
+                            <td class="px-6 py-3 text-left">
+                                <span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i>
+                                    Bawah {{ 'Rp.' . number_format($detail->harga_jual, 0, ',', '.') }} 
+                                    <span class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">
+                                        {{ $detail->goods->bid_rate }}%
+                                    </span>
+                                </span>
+                            </td>
+                            @if($index === 0)
+                                <td class="px-6 py-3 text-left" rowspan="{{ $detailCount }}">
+                                    {{ $sale->user->name }}
+                                </td>
+                                <td class="px-6 py-3 text-center" rowspan="{{ $detailCount }}">
+                                    <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
+                                        <button id="hs-dropright" type="button"
+                                            class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]"
+                                            aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                                            <i class="ph ph-dots-three-outline-vertical"></i> Opsi
+                                        </button>
+                                        <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl px-3 py-1"
+                                            role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
+                                            <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
+                                                href="{{ route('sale.printNota', $sale->id) }}">
+                                                <i class="ph ph-printer"></i>
+                                                Cetak Nota
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            @endif
+                        </tr>
+                    @endforeach
                     @endforeach
                 </tbody>
             </table>
