@@ -23,27 +23,37 @@ class SalesExport implements FromCollection, WithStyles, WithHeadings
     /**
     * @return \Illuminate\Support\Collection
     */
-        public function collection()
+
+    public function collection()
     {
         return $this->sales->map(function ($sale) {
-                return [
-                    'nota' => $sale->nota,
-                    'name' => $sale->goods->name,
-                    'category' => $sale->goods->category,
-                    'unit' => $sale->goods->unit,
-                    'type' => $sale->goods->goodsType->name,
-                    'color' => $sale->goods->color,
-                    'rate' => number_format($sale->goods->rate, 0) . '%', 
-                    'size' => number_format($sale->goods->size, 2) . 'gr',
-                    'merk' => $sale->goods->merk->name,
-                    'ask_price' => $sale->goods->ask_price,
-                    'ask_rate' => number_format($sale->goods->ask_rate, 0) . '%',
-                    'bid_price' => $sale->goods->bid_price,
-                    'bid_rate' => number_format($sale->goods->bid_rate, 0) . '%',
-                    'harga_jual' => $sale->harga_jual,
-                    'date' => Carbon::parse($sale->transaction->date)->format('d/m/Y'),
-                ];
-            });
+            $details = $sale->details;
+            return [
+                'nota' => $sale->code,
+                'name' => $details->pluck('goods.name')->implode(', '),
+                'category' => $details->pluck('goods.category')->implode(', '),
+                'unit' => $details->pluck('goods.unit')->implode(', '),
+                'type' => $details->pluck('goods.goodsType.name')->implode(', '),
+                'color' => $details->pluck('goods.color')->implode(', '),
+                'rate' => $details->pluck('goods.rate')->map(function($rate) {
+                    return number_format($rate, 0) . '%';
+                })->implode(', '),
+                'size' => $details->pluck('goods.size')->map(function($size) {
+                    return number_format($size, 2) . 'gr';
+                })->implode(', '),
+                'merk' => $details->pluck('goods.merk.name')->implode(', '),
+                'ask_price' => $details->pluck('goods.ask_price')->implode(', '),
+                'ask_rate' => $details->pluck('goods.ask_rate')->map(function($ask_rate) {
+                    return number_format($ask_rate, 0) . '%';
+                })->implode(', '),
+                'bid_price' => $details->pluck('goods.bid_price')->implode(', '),
+                'bid_rate' => $details->pluck('goods.bid_rate')->map(function($bid_rate) {
+                    return number_format($bid_rate, 0) . '%';
+                })->implode(', '),
+                'harga_jual' => $details->pluck('harga_jual')->implode(', '),
+                'date' => Carbon::parse($sale->date)->format('d/m/Y'),
+            ];
+        });
     }
 
     /**
@@ -72,13 +82,13 @@ class SalesExport implements FromCollection, WithStyles, WithHeadings
         ];
     }
 
-   public function styles(Worksheet $sheet)
+    public function styles(Worksheet $sheet)
     {
         // Format kolom K (Harga Jual) sebagai IDR
         $sheet->getStyle('K')->getNumberFormat()->setFormatCode('Rp #,##0'); // Format untuk Harga Jual
         // Format kolom M (Harga Bawah) sebagai IDR
         $sheet->getStyle('M')->getNumberFormat()->setFormatCode('Rp #,##0'); // Format untuk Harga Bawah
-        $sheet->getStyle('O')->getNumberFormat()->setFormatCode('Rp #,##0'); // Format untuk Harga Bawah
+        $sheet->getStyle('O')->getNumberFormat()->setFormatCode('Rp #,##0'); // Format untuk Uang Masuk
 
         return [];
     }

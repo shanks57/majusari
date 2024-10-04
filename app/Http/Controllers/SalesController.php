@@ -432,13 +432,11 @@ class SalesController extends Controller
 
     public function export(Request $request)
     {
-        $query = TransactionDetail::query();
+        $query = Transaction::query();
 
-        // Ambil parameter date_start dan date_end
         $dateStart = $request->input('date_start');
         $dateEnd = $request->input('date_end');
 
-        // Filter berdasarkan tanggal jika ada
         if ($dateStart) {
             $query->whereDate('created_at', '>=', Carbon::parse($dateStart));
         }
@@ -446,36 +444,29 @@ class SalesController extends Controller
             $query->whereDate('created_at', '<=', Carbon::parse($dateEnd));
         }
 
-        // Dapatkan data yang sudah difilter
-        $sales = $query->with('goods')->get();
+        $sales = $query->with('details.goods')->get();
 
-        // Tentukan format export (PDF, Excel, atau Print)
         $format = $request->input('format');
 
         switch ($format) {
             case 'pdf':
-                // Export ke PDF
                 return $this->exportToPDF($sales);
             case 'excel':
-                // Export ke Excel
                 return $this->exportToExcel($sales);
             case 'print':
-                // Menampilkan halaman Print
                 return view('print-page.print-sales', compact('sales'));
             default:
-                // Default action (misal redirect kembali)
                 return redirect()->back();
         }
     }
 
-    // Contoh method untuk export PDF
     public function exportToPDF($sales)
     {
-        $pdf = PDF::loadView('pdf-page.sales-report', ['sales' => $sales]);
+         $pdf = PDF::loadView('pdf-page.sales-report', ['sales' => $sales])
+              ->setPaper('a4', 'landscape');
         return $pdf->download('Laporan-Penjualan.pdf');
     }
 
-    // Contoh method untuk export Excel
     public function exportToExcel($sales)
     {
         return Excel::download(new SalesExport($sales), 'Laporan-penjualan.xlsx');

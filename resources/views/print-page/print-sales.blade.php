@@ -41,27 +41,48 @@
 <body class="text-black bg-white">
     <div class="container p-4 mx-auto">
         <h2 class="mb-6 text-2xl font-bold text-center">Data Penjualan</h2>
-        
         <table class="w-full bg-white border">
             <thead>
                 <tr>
-                    <th>Nota</th>
+                    <th class="px-4 py-2 border">Nota</th>
                     <th class="px-4 py-2 border">Tanggal Penjualan</th>
-                    <th class="px-4 py-2 border">ID & Nama</th>
-                    <th class="px-4 py-2 border">Berat & Kadar</th>
+                    <th class="px-4 py-2 border">Nama Barang</th>
+                    <th class="px-4 py-2 border">Kadar</th>
+                    <th class="px-4 py-2 border">Nilai Tukar Jual</th>
+                    <th class="px-4 py-2 border">Nilai Tukar Bawah</th>
+                    <th class="px-4 py-2 border">Berat</th>
                     <th class="px-4 py-2 border">Harga Jual</th>
-                    <th class="px-4 py-2 border">Harga Bawah</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($sales as $sale)
                     <tr>
-                        <td class="px-4 py-2 border">{{ $sale->nota }}</td>
-                        <td class="px-4 py-2 border">{{ \Carbon\Carbon::parse($sale->transaction->date)->format('d/m/Y') }}</td>
-                        <td class="px-4 py-2 border">{{ $sale->goods->code }} - {{ $sale->goods->name }}</td>
-                        <td class="px-4 py-2 border">{{ $sale->goods->size }} gr - {{ $sale->goods->rate }}%</td>
-                        <td class="px-4 py-2 border">{{ 'Rp.' . number_format($sale->goods->ask_price, 0, ',', '.') }} - {{ $sale->goods->ask_rate }}%</td>
-                        <td class="px-4 py-2 border">{{ 'Rp.' . number_format($sale->goods->bid_price, 0, ',', '.') }} - {{ $sale->goods->bid_rate }}%</td>
+                        <td class="px-4 py-2 border">{{ $sale->code }}</td>
+                        <td class="px-4 py-2 border">{{ \Carbon\Carbon::parse($sale->date)->format('d/m/Y') }}</td>
+                        
+                        <td class="px-4 py-2 border">
+                            {{ $sale->details->pluck('goods.name')->implode(', ') }}
+                        </td>
+                        
+                        <td class="px-4 py-2 border">
+                            {{ $sale->details->pluck('goods.rate')->map(fn($rate) => number_format($rate, 0) . '%')->implode(', ') }}
+                        </td>
+                        
+                        <td class="px-4 py-2 border">
+                            {{ $sale->details->pluck('goods.ask_rate')->map(fn($ask_rate) => number_format($ask_rate, 0) . '%')->implode(', ') }}
+                        </td>
+                        
+                        <td class="px-4 py-2 border">
+                            {{ $sale->details->pluck('goods.bid_rate')->map(fn($bid_rate) => number_format($bid_rate, 0) . '%')->implode(', ') }}
+                        </td>
+                        
+                        <td class="px-4 py-2 border">
+                            {{ $sale->details->pluck('goods.size')->map(fn($size) => number_format($size, 2) . 'gr')->implode(', ') }}
+                        </td>
+                        
+                        <td class="px-4 py-2 border">
+                            {{ $sale->details->pluck('harga_jual')->map(fn($harga_jual) => 'Rp. ' . number_format($harga_jual, 0, ',', '.'))->implode(', ') }}
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

@@ -45,22 +45,54 @@
             <tr>
                 <th>Nota</th>
                 <th>Tanggal Penjualan</th>
-                <th>ID & Nama</th>
-                <th>Berat & Kadar</th>
+                <th>Nama Barang</th>
+                <th>Kadar</th>
+                <th>Nilai Tukar Jual</th>
+                <th>Nilai Tukar Bawah</th>
+                <th>Berat</th>
                 <th>Harga Jual</th>
-                <th>Harga Bawah</th>
             </tr>
         </thead>
         <tbody>
             @foreach($sales as $sale)
-            <tr>
-                <td>{{ $sale->nota }}</td>
-                <td>{{ \Carbon\Carbon::parse($sale->transaction->date)->format('d/m/Y') }}</td>
-                <td>{{ $sale->goods->code }} - {{ $sale->goods->name }}</td>
-                <td>{{ $sale->goods->size }} gr - {{ $sale->goods->rate }}%</td>
-                <td>{{ 'Rp.' . number_format($sale->goods->ask_price, 0, ',', '.') }} - {{ $sale->goods->ask_rate }}%</td>
-                <td>{{ 'Rp.' . number_format($sale->goods->bid_price, 0, ',', '.') }} - {{ $sale->goods->bid_rate }}%</td>
-            </tr>
+                <tr>
+                    <td>
+                        {{ $sale->code }}
+                    </td>
+                    <td>
+                        {{ \Carbon\Carbon::parse($sale->date)->format('d/m/Y') }}
+                    </td>
+                    <td>
+                        @foreach($sale->details as $detail)
+                            {{ $detail->goods->name }}
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($sale->details as $detail)
+                            {{ $detail->goods->rate }}%
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($sale->details as $detail)
+                            {{ number_format($detail->goods->ask_rate, 0) }}%
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($sale->details as $detail)
+                            {{ number_format($detail->goods->bid_rate, 0) }}%
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($sale->details as $detail)
+                            {{ number_format($detail->goods->size, 2) }}gr
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($sale->details as $detail)
+                            {{ 'Rp.' . number_format($detail->goods->ask_price, 0, ',', '.') }}
+                        @endforeach
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
