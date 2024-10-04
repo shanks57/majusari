@@ -31,10 +31,9 @@
     @stack('styles')
     <script type="text/javascript">
         window.print();
-        window.addEventListener('afterprint', function () {
+        window.addEventListener('afterprint', function() {
             window.location.href = '/sales';
         });
-
     </script>
 </head>
 
@@ -64,7 +63,8 @@
             <div class="text-right">
                 <h2 class="text-2xl font-bold text-teal-500">NOTA : {{ $transaction->code }}</h2>
                 <p class="mt-2"><strong>Tanggal:</strong>
-                    {{ Carbon\Carbon::parse($transaction->date)->translatedFormat('j F Y') }}</p>
+                    {{ Carbon\Carbon::parse($transaction->date)->translatedFormat('j F Y') }}
+                </p>
                 <p><strong>Nama:</strong> {{ $transaction->customer->name }}</p>
                 <p><strong>Alamat:</strong> {{ $transaction->customer->address }}</p>
             </div>
@@ -81,11 +81,7 @@
                     </div>
                     @endforeach
                 </div>
-                <div class="flex flex-col justify-center p-2 mt-2">
-                    <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($transaction->code, 'C128') }}"
-                        alt="{{ $transaction->code }}">
-                    <p class="mt-2 text-center">TRX-ID : {{ $transaction->code }}</p>
-                </div>
+
             </div>
             <div class="col-span-2">
                 <!-- Item Table Section -->
@@ -127,6 +123,13 @@
                         <p><strong>Pegawai:</strong> {{ $transaction->user->name }}</p>
                     </div>
                 </div>
+
+                <div class="flex flex-col justify-center p-2 mt-2">
+                    <img class="h-10 max-w-xs mx-auto" src="data:image/png;base64,{{ DNS1D::getBarcodePNG($transaction->code, 'C128') }}"
+                        alt="{{ $transaction->code }}">
+                    <p class="mt-2 text-center">TRX-ID : {{ $transaction->code }}</p>
+                </div>
+
                 <!-- Footer Message -->
                 <div class="mt-4 text-center text-teal-600">
                     <p>Terima kasih atas kunjungan anda</p>
