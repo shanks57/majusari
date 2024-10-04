@@ -7,7 +7,7 @@
     </x-header>
     <div class="grid grid-cols-4 gap-5 mt-6">
         <div class="flex flex-col col-span-3 gap-4">
-            @if (count($carts) >= 4)
+            @if (count($carts) > 4)
             <div class="p-4 text-sm text-red-800 bg-red-100 border border-red-200 rounded-lg dark:bg-red-800/10 dark:border-red-900 dark:text-red-500" tabindex="-1" aria-labelledby="hs-soft-color-danger-label" role="alert">
                 Jumlah maksimal 4 barang dalam 1 Nota
             </div>
@@ -208,19 +208,21 @@
                     <p class="text-lg">Rp. {{ number_format($totalSales, 0, ',', '.') }}</p>
                 </div>
 
-                <div x-data="{
+               <div x-data="{
                     carts: {{ json_encode($carts) }},
                     isDisabled() {
-                            return this.carts.length === 0 || this.carts.some(cart => cart.status_price === 0 || cart.status_price === 2);
-                        }
-                    }">
-                    <button type="button" class="w-full py-3 text-sm text-white bg-[#7F56D9] rounded-lg"
+                        return this.carts.length === 0 || this.carts.length > 4 || this.carts.some(cart => cart.status_price === 0 || cart.status_price === 2);
+                    }
+                }">
+                    <button type="button" class="w-full py-3 text-sm text-white bg-[#7F56D9] rounded-lg" 
+                        :disabled="isDisabled()"
                         aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal"
-                        data-hs-overlay="#hs-create-transaction-modal" :disabled="isDisabled()"
+                        data-hs-overlay="#hs-create-transaction-modal"
                         :class="{ 'opacity-50 cursor-not-allowed': isDisabled() }">
                         Selanjutnya
                     </button>
                 </div>
+
             </div>
         </div>
     </div>

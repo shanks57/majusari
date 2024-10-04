@@ -22,12 +22,9 @@
     $(document).ready(function () {
         var table = $('#etalaseTable').DataTable({
             "order": [],
-            "columnDefs": [{
-                "orderable": false,
-                "targets": [0, 2]
-            }],
+            "ordering": false,
             pagingType: 'simple',
-            "lengthMenu": [10, 25, 50, 75, 100],
+            "lengthMenu": [50, 100, 200, 300, 500],
             "language": {
                 "paginate": {
                     "previous": '<i class="w-4 h-4 ph-bold ph-caret-left"></i>',
@@ -64,35 +61,36 @@
                 // Tambahkan class Tailwind ke dropdown
                 $('.dataTables_length select').addClass(
                     'py-2 px-2.5 pe-6 border-gray-200 rounded-lg text-xs disabled:opacity-50 disabled:pointer-events-none '
-                    );
+                );
             }
         });
 
-        $('#dataTablePagination').prepend($('.dataTables_info').addClass('mr-4'));
+        $('#dataTablePagination').prepend($('.dataTables_info').addClass('mr-4 flex items-center'));
 
         table.on('draw.dt', function () {
             window.HSStaticMethods.autoInit();
         });
-        
-        $('#searchEtalase').on('keyup', function () {
-            table.search(this.value).draw();
-        });
 
-        $('#select-all').on('click', function () {
-            var rows = table.rows({
-                'search': 'applied'
-            }).nodes();
-            $('input[type="checkbox"]', rows).prop('checked', this.checked);
-        });
+            $('#searchEtalase').on('keyup', function () {
+                table.search(this.value).draw();
+            });
 
-        $('#etalaseTable tbody').on('change', 'input[type="checkbox"]', function () {
-            if ($('input[type="checkbox"]:not(:checked)').length == 0) {
-                $('#select-all').prop('checked', true);
-            } else {
-                $('#select-all').prop('checked', false);
-            }
+            // Handle click on "Select all" control
+            $('#select-all').on('click', function () {
+                // Check/uncheck all checkboxes in the table
+                var rows = table.rows({
+                    'search': 'applied'
+                }).nodes();
+                $('input[type="checkbox"]', rows).prop('checked', this.checked);
+            });
+
+        // Expand and collapse detail rows
+        $('#etalaseTable tbody').on('click', '.main-row', function () {
+            var saleId = $(this).data('sale-id');
+            var detailRows = $(this).nextUntil('.main-row');
+
+            detailRows.toggleClass('hidden');
         });
     });
-
 </script>
 @endpush

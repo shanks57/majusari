@@ -24,8 +24,10 @@ class SalesController extends Controller
 {
     public function index()
     {
-        $sales = TransactionDetail::orderBy('created_at', 'desc')
-            ->get();
+        $sales = Transaction::with('details.goods')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
         $title = 'Penjualan';
         return view('pages.sales', compact('sales', 'title'));
     }
@@ -370,24 +372,38 @@ class SalesController extends Controller
             'nota' => 'required|string'
         ]);
 
-        $nota = $request->input('nota');
+        $code = $request->input('nota');
 
-        $transaction = TransactionDetail::where('nota', $nota)->first();
+        // Temukan transaksi berdasarkan kode
+        $transaction = Transaction::with(['details.goods'])
+            ->where('code', $code)
+            ->first();
 
         if ($transaction) {
-
+            // Simpan ID transaksi
             session()->flash('nota-good-id', $transaction->id);
-            session()->flash('nota-good-name', $transaction->goods->name);
-            session()->flash('nota-penjualan', $transaction->nota);
-            session()->flash('nota-goods-image', $transaction->goods->image);
-            session()->flash('nota-good-color', $transaction->goods->color);
-            session()->flash('nota-good-merk', $transaction->goods->merk->name);
-            session()->flash('nota-good-rate', $transaction->goods->rate);
-            session()->flash('nota-good-size', $transaction->goods->size);
-            session()->flash('nota-good-type', $transaction->goods->goodsType->name);
-            session()->flash('nota-good-showcase', $transaction->tray->showcase->name);
-            session()->flash('nota-good-tray', $transaction->tray->code);
-            session()->flash('nota-harga-jual', $transaction->harga_jual);
+            session()->flash('transaction-code', $transaction->code);
+
+            // Simpan array detail barang
+            $goodsDetails = [];
+            foreach ($transaction->details as $detail) {
+                $goodsDetails[] = [
+                    'id' => $detail->goods->id,
+                    'name' => $detail->goods->name,
+                    'image' => $detail->goods->image,
+                    'color' => $detail->goods->color,
+                    'merk' => $detail->goods->merk->name,
+                    'rate' => $detail->goods->rate,
+                    'size' => $detail->goods->size,
+                    'type' => $detail->goods->goodsType->name,
+                    'showcase' => $detail->tray->showcase->name,
+                    'tray' => $detail->tray->code,
+                    'harga_jual' => $detail->harga_jual,
+                ];
+            }
+
+            // Simpan array detail barang ke session
+            session()->flash('nota-goods-details', $goodsDetails);
 
             return redirect()->route('sale.index', $transaction->id)
                 ->with('nota-result', 'Transaksi ditemukan.');
@@ -399,10 +415,12 @@ class SalesController extends Controller
     public function printNota($id)
     {
         try {
-            $sale = TransactionDetail::with(['goods'])->findOrFail($id);
+            $transaction = Transaction::findOrFail($id);
+            $sales = TransactionDetail::with('goods')->where('transaction_id', $id)->get();
 
             return view('print-page.print-invoice', [
-                'sale' => $sale,
+                'sales' => $sales,
+                'transaction' => $transaction
             ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             // Barang tidak ditemukan
