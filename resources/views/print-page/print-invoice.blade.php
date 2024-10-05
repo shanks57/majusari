@@ -57,10 +57,10 @@
         }
     </style>
     <script type="text/javascript">
-        // window.print();
-        // window.addEventListener('afterprint', function() {
-        //     window.location.href = '/sales';
-        // });
+        window.print();
+        window.addEventListener('afterprint', function() {
+            window.location.href = '/sales';
+        });
     </script>
 </head>
 
