@@ -22,16 +22,17 @@
             <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
         </div>
 
-        <form action="{{ route('sales.export') }}" method="GET">
+        <div x-data="{ dateStart: '', dateEnd: '' }">
+            <form action="{{ route('sales.export') }}" method="GET">
             <div class="flex items-center justify-center w-full mx-auto">
                 <div class="relative">
-                    <input name="date_start" type="date"
+                    <input name="date_start" type="date" x-model="dateStart" @change="updateSales"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                         placeholder="Tanggal Mulai">
                 </div>
                 <span class="mx-4 text-gray-500">-></span>
                 <div class="relative">
-                    <input name="date_end" type="date"
+                    <input name="date_end" type="date" x-model="dateEnd" @change="updateSales"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                         placeholder="Tanggal Berakhir">
                 </div>
@@ -160,8 +161,10 @@
             </table>
 
         </div>
+        </div>
+        
         <div
-            class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
+            class="flex items-center justify-between mb-4 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
             <div id="dataTableInfo" class="px-4 py-3"></div>
             <div class="flex items-center space-x-8">
                 <div id="dataTableLength" class="flex items-center"></div>
@@ -171,8 +174,44 @@
                 </div>
             </div>
         </div>
+        <div class="mb-16 px-4 text-sm">
+            Total Barang Terjual : 
+            <span id="totalItems" class="font-bold">
+                {{ $sales->sum(function($sale) { return $sale->details->count(); }) }} pcs
+            </span>
+        </div>
     </div>
 </x-layout>
+
+<script>
+    function updateSales() {
+        const dateStart = this.dateStart;
+        const dateEnd = this.dateEnd;
+
+        fetch(`/sales?date_start=${dateStart}&date_end=${dateEnd}`)
+            .then(response => response.text())
+            .then(html => {
+                // Update table body
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newTableBody = doc.querySelector('tbody').innerHTML;
+                document.querySelector('#etalaseTable tbody').innerHTML = newTableBody;
+
+                // Update total items sold
+                const totalItems = doc.querySelector('#totalItems').innerHTML;
+                document.querySelector('#totalItems').innerHTML = totalItems;
+
+                // Update DataTable
+                const table = $('#etalaseTable').DataTable();
+                table.clear(); // Kosongkan tabel yang ada
+                table.rows.add($(doc).find('tbody tr')); // Tambahkan baris baru
+                table.draw(); // Gambar ulang tabel untuk update infoCallback
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+
+
 
 @include('components.modal.sales.new-sale')
 @include('components.modal.sales.modal-form')
