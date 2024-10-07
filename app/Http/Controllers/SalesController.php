@@ -22,14 +22,33 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class SalesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $sales = Transaction::with('details.goods')
-        ->orderBy('created_at', 'desc')
-        ->get();
+        $query = Transaction::with('details.goods')->orderBy('created_at', 'desc');
+
+        // Ambil input tanggal dari request
+        $dateStart = $request->input('date_start');
+        $dateEnd = $request->input('date_end');
+
+        // Jika tanggal mulai ada, tambahkan ke query
+        if ($dateStart) {
+            $query->whereDate('created_at', '>=', Carbon::parse($dateStart));
+        }
+
+        // Jika tanggal akhir ada, tambahkan ke query
+        if ($dateEnd) {
+            $query->whereDate('created_at', '<=', Carbon::parse($dateEnd));
+        }
+
+        // Ambil data penjualan
+        $sales = $query->get();
+        $totalItems = $sales->sum(function($sale) {
+            return $sale->details->count();
+        });
 
         $title = 'Penjualan';
-        return view('pages.sales', compact('sales', 'title'));
+
+        return view('pages.sales', compact('sales', 'title', 'totalItems'));
     }
 
     public function searchCode(Request $request)

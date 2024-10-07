@@ -24,7 +24,7 @@
             "order": [],
             "ordering": false,
             pagingType: 'simple',
-            "lengthMenu": [50, 100, 200, 300, 500],
+            "lengthMenu": [50, 100, 200, 500, 1000],
             "language": {
                 "paginate": {
                     "previous": '<i class="w-4 h-4 ph-bold ph-caret-left"></i>',
@@ -37,20 +37,18 @@
                 "infoFiltered": "",
             },
             "infoCallback": function (settings, start, end, max, total, pre) {
-                // Hitung total entri tanpa baris yang memiliki data-ignore="true"
                 var totalRows = $('#etalaseTable tbody tr').not('[data-ignore="true"]').length; 
                 
-                var adjustedStart = Math.max(start, 1); // Untuk menyesuaikan agar start tidak kurang dari 1
-                var adjustedEnd = Math.min(end, totalRows); // Mengambil nilai end yang disesuaikan
-                var dataRangeInfo = adjustedStart + ' - ' + adjustedEnd + ' dari ' + totalRows + ' data'; // Menggunakan totalRows yang dihitung manual
+                var adjustedStart = Math.max(start, 1);
+                var adjustedEnd = Math.min(end, totalRows);
+                var dataRangeInfo = adjustedStart + ' - ' + adjustedEnd + ' dari ' + totalRows + ' data';
 
-                // Menampilkan jumlah data yang sedang ditampilkan dan total data (tanpa data-ignore)
                 $('#dataTableInfo').html('Menampilkan ' + adjustedStart + ' - ' + adjustedEnd + ' Data ' + '{{ $title }}' + ' dari ' + totalRows + ' data');
                 $('#dataTableInfoEntry').html(dataRangeInfo);
 
-                return ''; // Jika tidak ingin mengembalikan string bawaan dari DataTables
+                return '';
             },
-
+       
             "drawCallback": function (settings) {
                 $('#dataTableLength').append($('.dataTables_length'));
                 $('#dataTablePagination').append($('.dataTables_paginate'));
