@@ -31,7 +31,7 @@
     <style>
         @media print {
             @page {
-                size: landscape;
+                size: A4 landscape;
                 margin: 0;
             }
         }
@@ -49,7 +49,7 @@
                     <th class="px-4 py-2 border">Kode Barang</th>
                     <th class="px-4 py-2 border">Tanggal Masuk</th>
                     <th class="px-4 py-2 border">Gambar</th>
-                    <th class="px-4 py-2 border">Barang & Merk</th>
+                    <th class="px-4 py-2 border">Barang</th>
                     <th class="px-4 py-2 border">Berat & Kadar</th>
                     <th class="px-4 py-2 border">Kategori</th>
                     <th class="px-4 py-2 border">Harga Jual</th>
@@ -67,7 +67,7 @@
                              <img src="{{ asset('storage/' . $goods->image) }}" class="size-10"
                                     alt="{{ $goods->name }}">
                         </td>
-                        <td class="px-4 py-2 border">{{ $goods->code }} - {{ $goods->merk->name }}</td>
+                        <td class="px-4 py-2 border">{{ $goods->code }}</td>
                         <td class="px-4 py-2 border">{{ $goods->size }} gr - {{ $goods->rate }}%</td>
                         <td class="px-4 py-2 border">{{ $goods->goodsType->name }}</td>
                         <td class="px-4 py-2 border">{{ 'Rp.' . number_format($goods->ask_price, 0, ',', '.') }} - {{ $goods->ask_rate }}%</td>

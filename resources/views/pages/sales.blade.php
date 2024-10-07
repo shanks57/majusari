@@ -161,7 +161,7 @@
 
         </div>
         <div
-            class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
+            class="flex items-center justify-between mb-4 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
             <div id="dataTableInfo" class="px-4 py-3"></div>
             <div class="flex items-center space-x-8">
                 <div id="dataTableLength" class="flex items-center"></div>
@@ -170,6 +170,15 @@
                     <div id="dataTablePagination" class="flex items-center px-4"></div>
                 </div>
             </div>
+        </div>
+        <div class="mb-16 px-4 text-sm">
+            Total Barang Terjual : 
+            <span class="font-bold">
+                {{ $totalItems = $sales->sum(function($sale) {
+                    return $sale->details->count();
+                    });
+                }} pcs
+            </span>
         </div>
     </div>
 </x-layout>

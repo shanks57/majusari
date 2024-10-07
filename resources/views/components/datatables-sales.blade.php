@@ -37,14 +37,18 @@
                 "infoFiltered": "",
             },
             "infoCallback": function (settings, start, end, max, total, pre) {
-                var totalRows = $('#etalaseTable tbody tr').not('[data-ignore="true"]').length;
-                var adjustedStart = Math.max(start, 1);
-                var adjustedEnd = Math.min(end, totalRows);
-                var dataRangeInfo = adjustedStart + ' - ' + adjustedEnd + ' dari ' + totalRows +
-                    ' data';
-                $('#dataTableInfo').html('Menampilkan ' + adjustedEnd + ' Data ' + '{{ $title }}');
+                // Hitung total entri tanpa baris yang memiliki data-ignore="true"
+                var totalRows = $('#etalaseTable tbody tr').not('[data-ignore="true"]').length; 
+                
+                var adjustedStart = Math.max(start, 1); // Untuk menyesuaikan agar start tidak kurang dari 1
+                var adjustedEnd = Math.min(end, totalRows); // Mengambil nilai end yang disesuaikan
+                var dataRangeInfo = adjustedStart + ' - ' + adjustedEnd + ' dari ' + totalRows + ' data'; // Menggunakan totalRows yang dihitung manual
+
+                // Menampilkan jumlah data yang sedang ditampilkan dan total data (tanpa data-ignore)
+                $('#dataTableInfo').html('Menampilkan ' + adjustedStart + ' - ' + adjustedEnd + ' Data ' + '{{ $title }}' + ' dari ' + totalRows + ' data');
                 $('#dataTableInfoEntry').html(dataRangeInfo);
-                return '';
+
+                return ''; // Jika tidak ingin mengembalikan string bawaan dari DataTables
             },
 
             "drawCallback": function (settings) {

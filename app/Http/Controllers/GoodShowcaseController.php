@@ -252,7 +252,7 @@ class GoodShowcaseController extends Controller
             ->get();
 
         $pdf = PDF::loadView('/pdf-page/goods-showcase', compact('goodsShowcase'))
-        ->setPaper('landscape');
+         ->setPaper('a4', 'landscape');
 
         return $pdf->download(now()->format('His').'-Laporan-Data-Barang-Etalase.pdf');
     }

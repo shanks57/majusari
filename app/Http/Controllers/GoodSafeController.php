@@ -232,7 +232,7 @@ class GoodSafeController extends Controller
             ->get();
 
         $pdf = PDF::loadView('/pdf-page/goods-safe', compact('goodsSafe'))
-        ->setPaper('landscape');
+        ->setPaper('a4', 'landscape');
 
         return $pdf->download(now()->format('His').'-Laporan-Data-Barang-Brankas.pdf');
     }

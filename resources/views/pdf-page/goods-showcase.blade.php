@@ -47,7 +47,7 @@
                 <th>Kode Barang</th>
                 <th>Tanggal Masuk</th>
                 <th>Gambar</th>
-                <th>Barang & Merk</th>
+                <th>Barang</th>
                 <th>Berat & Kadar</th>
                 <th>Kategori</th>
                 <th>Harga Jual</th>
@@ -63,7 +63,7 @@
                 <td>
                     <img src="{{ public_path('storage/' . $goods->image) }}" alt="{{ $goods->name }}" class="rounded-full size-10">
                 </td>
-                <td>{{ $goods->code }} - {{ $goods->merk->name }}</td>
+                <td>{{ $goods->code }}</td>
                 <td>{{ $goods->size }} gr - {{ $goods->rate }}%</td>
                 <td>{{ $goods->goodsType->name }}</td>
                 <td>{{ 'Rp.' . number_format($goods->ask_price, 0, ',', '.') }} - {{ $goods->ask_rate }}%</td>
