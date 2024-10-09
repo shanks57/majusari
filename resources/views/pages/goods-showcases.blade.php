@@ -126,7 +126,7 @@
                             </div>
                         </td>
                     </tr>
-                    
+
                     {{-- modal pindah ke brankas --}}
                     @include('components.modal.goods-showcase.modal-move-to-safe')
                     {{-- modal edit --}}
@@ -136,7 +136,7 @@
                     @endforeach
                 </tbody>
             </table>
-            
+
         </div>
         <div
             class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
@@ -149,6 +149,24 @@
                 </div>
             </div>
         </div>
+        <div class="grid grid-cols-3 gap-10">
+            <div class="p-4 bg-white border rounded-lg">
+                <p class="text-neutral-500 text-sm">Total Barang</p>
+                <p class="text-3xl">{{$totalItemsInShowcase}}</p>
+            </div>
+            <div class="p-4 bg-white border rounded-lg">
+                <p class="text-neutral-500 text-sm">Total Berat Keseluruhan Barang</p>
+                <p class="text-3xl">{{$totalWeightInShowcase}}</p>
+            </div>
+            <div class="p-4 bg-white border rounded-lg">
+                @foreach ($cardGoodsSummary as $summary)
+                <p class="mb-2">
+                    Kadar <b>{{ $summary->rate }}%</b> : Total Berat <b>{{ number_format($summary->total_weight, 2) }}gr</b>, Total Barang <b>{{ $summary->total_items }}pcs</b>
+                </p>
+                @endforeach
+            </div>
+        </div>
+
     </div>
 </x-layout>
 @include('components.modal.error-form-modal')

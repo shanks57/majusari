@@ -24,7 +24,7 @@ class GoodShowcaseController extends Controller
             ->get();
         $types = GoodsType::where('status', 1)->get();
         $brands = Merk::where('status', 1)->get();
-        
+
         $showcases = Showcase::all();
 
         $trays = Tray::select('id', 'code', 'showcase_id', 'capacity')->get();
@@ -48,7 +48,21 @@ class GoodShowcaseController extends Controller
             ->latest('created_at')
             ->first();
 
-        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods'));
+        $cardGoodsSummary = Goods::select('rate')
+            ->selectRaw('SUM(size) as total_weight')
+            ->selectRaw('COUNT(*) as total_items')
+            ->where('availability', 1)
+            ->where('safe_status', 0)
+            ->groupBy('rate')
+            ->get();
+
+        $goodsInShowcase = Goods::where('availability', true)
+            ->where('safe_status', false)
+            ->get();
+        $totalItemsInShowcase = $goodsInShowcase->count();
+        $totalWeightInShowcase = $goodsInShowcase->sum('size');
+
+        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase'));
     }
 
     public function store(Request $request)
@@ -102,7 +116,7 @@ class GoodShowcaseController extends Controller
 
             $good->save();
             $good->refresh();
-            
+
             $good->code = $good->name . '-' . $good->serial_number;
             $good->save();
 
@@ -252,14 +266,14 @@ class GoodShowcaseController extends Controller
             ->get();
 
         $pdf = PDF::loadView('/pdf-page/goods-showcase', compact('goodsShowcase'))
-         ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'landscape');
 
-        return $pdf->download(now()->format('His').'-Laporan-Data-Barang-Etalase.pdf');
+        return $pdf->download(now()->format('His') . '-Laporan-Data-Barang-Etalase.pdf');
     }
 
     public function exportExcel()
     {
-        $fileName = now()->format('His').'-Laporan-Data-Barang-Etalase.xlsx';
+        $fileName = now()->format('His') . '-Laporan-Data-Barang-Etalase.xlsx';
         return Excel::download(new GoodsShowcaseExport, $fileName);
     }
 
@@ -268,7 +282,7 @@ class GoodShowcaseController extends Controller
         $goodsShowcase = Goods::where('availability', 1)
             ->where('safe_status', 0)
             ->get();
-                      
+
         return view('/print-page/print-goods-showcase', compact('goodsShowcase'));
     }
 }
