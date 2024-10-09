@@ -88,12 +88,12 @@
             <!-- Right Info Section -->
             <div class="text-right">
                 <h2 class="text-2xl font-bold text-teal-500"><span class="no-print">NOTA :</span> {{ $transaction->code }}</h2>
-                <div class="no-print">
-                    <p class="mt-2"><strong>Tanggal:</strong>
+                <div class=>
+                    <p class="mt-2"><strong class="no-print">Tanggal:</strong>
                         {{ Carbon\Carbon::parse($transaction->date)->translatedFormat('j F Y') }}
                     </p>
-                    <p><strong>Nama:</strong> {{ $transaction->customer->name }}</p>
-                    <p><strong>Alamat:</strong> {{ $transaction->customer->address }}</p>
+                    <p><strong class="no-print">Nama:</strong> {{ $transaction->customer->name }}</p>
+                    <p><strong class="no-print">Alamat:</strong> {{ $transaction->customer->address }}</p>
                 </div>
             </div>
         </div>
