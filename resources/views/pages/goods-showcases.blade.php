@@ -99,6 +99,7 @@
                                         <i class="ph ph-barcode"></i>
                                         Cetak Barcode
                                     </a>
+                                    @role('superadmin')
                                     <button type="button"
                                         class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 "
                                         aria-haspopup="dialog" aria-expanded="false"
@@ -122,6 +123,7 @@
                                         <i class="ph ph-trash"></i>
                                         Hapus
                                     </button>
+                                    @endrole
                                 </div>
                             </div>
                         </td>

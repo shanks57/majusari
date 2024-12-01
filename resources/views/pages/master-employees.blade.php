@@ -39,7 +39,7 @@
                         <th class="py-3 px-6 text-left !font-normal">No Telp</th>
                         <th class="py-3 px-6 text-left !font-normal">Bon Hutang</th>
                         <th class="py-3 px-6 text-left !font-normal">Alamat</th>
-                        <th class="py-3 px-6 text-left !font-normal">Status</th>
+                        <th class="py-3 px-6 text-left !font-normal">Status/Role</th>
                         <th class="py-3 px-6 text-center !font-normal"></th>
                     </tr>
                 </thead>
@@ -58,11 +58,20 @@
                         </td>
                         <td class="max-w-xs px-6 py-3 text-left truncate">{{ $employee->address }}</td>
                         <td class="px-6 py-3 text-left">
-                            @if ($employee->status == 1)
-                            <span class="text-[#12B76A]">Aktif</span>
-                            @else
-                            <span class="text-[#F04438]">Tidak Aktif</span>
-                            @endif
+                            <div>
+                                @if ($employee->status == 1)
+                                <span class="text-[#12B76A]">Aktif</span>
+                                @else
+                                <span class="text-[#F04438]">Tidak Aktif</span>
+                                @endif
+                            </div>
+                            <div>
+                                @if($employee->roles->isNotEmpty())
+                                    {{ $employee->roles->map(fn($role) => $roleLabels[$role->name] ?? $role->name)->join(', ') }}
+                                @else
+                                    Tidak ada role
+                                @endif
+                            </div>
                         </td>
                         <td class="px-6 py-3 text-center">
                             <button <button x-data="{ passwordIsNull: {{ $employee->password ? 'false' : 'true' }} }"

@@ -9,9 +9,11 @@
                 Cek Nota
             </x-button-add>
         </x-slot>
+        @role('superadmin|store_employee')
         <x-button-add>
             Penjualan baru
         </x-button-add>
+        @endrole
     </x-header>
 
     <div class="container py-4 mx-auto">

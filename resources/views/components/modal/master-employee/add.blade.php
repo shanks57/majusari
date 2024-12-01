@@ -1,4 +1,4 @@
-<div x-data="{ form: { name: '', email: '',username: '', phone: '', debt_receipt: '', wages: '', address: '', status: false } }"
+<div x-data="{ form: { name: '', email: '',username: '', phone: '', debt_receipt: '', wages: '', address: '', role: '', status: false } }"
     class="hs-overlay hidden size-full fixed top-0 start-0 p-6 mt-4 mr-4 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none"
     role="dialog" tabindex="-1" aria-labelledby="form-modal-label" id="hs-add-modal">
 
@@ -78,6 +78,20 @@
                         <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="w-full mb-4">
+                        <label for="role" class="block text-sm text-[#344054]">Pilih Role Pegawai</label>
+                        <select id="role" name="role" x-model="form.role"
+                            class="w-full px-3.5 py-2.5 mt-1.5 border border-[#D0D5DD] rounded-lg focus:outline-none focus:border-[#79799B] text-base text-black"
+                            required>
+                            <option value="" disabled selected>Pilih Role</option>
+                            <option value="superadmin">Superadmin</option>
+                            <option value="store_employee">Store Employee</option>
+                            <option value="home_employee">Home Employee</option>
+                        </select>
+                        @error('role')
+                        <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <div class="flex items-center justify-between w-full mb-4">
                         <label for="status" class="block text-sm text-[#344054] leading-5">Status Pegawai</label>
                         <div class="flex items-center mb-4">
@@ -92,9 +106,9 @@
                 </div>
                 <div class="flex items-center justify-end px-4 gap-x-2">
                     <button type="submit"
-                        :disabled="!form.name || !form.email || !form.username || !form.phone || !form.debt_receipt || !form.wages || !form.address"
+                        :disabled="!form.name || !form.email || !form.username || !form.phone || !form.debt_receipt || !form.wages || !form.address || !form.role"
                         class="flex items-center justify-center px-4 py-3 text-sm font-medium leading-5 rounded-lg bg-[#7F56D9] text-white"
-                        :class="{ 'opacity-50 cursor-not-allowed': !form.name || !form.email || !form.username || !form.phone || !form.debt_receipt || !form.wages || !form.address }">
+                        :class="{ 'opacity-50 cursor-not-allowed': !form.name || !form.email || !form.username || !form.phone || !form.debt_receipt || !form.wages || !form.address || !form.role }">
                         <span>Simpan</span>
                         <i class="ph ph-floppy-disk ml-1.5"></i>
                     </button>

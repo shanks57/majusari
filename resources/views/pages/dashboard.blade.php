@@ -128,11 +128,15 @@
                             {{ Carbon\Carbon::now()->format('d M Y') }}
                         </div>
                     </div>
-                    <button type="button"
+                    @role('superadmin')
+                        <button type="button"
                         class="bg-[#6634BB] text-[#F8F8F8] py-3 px-4 rounded-lg h-fit font-medium text-sm"
                         aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-scale-animation-modal"
                         data-hs-overlay="#hs-add-modal">Update
-                        Kurs</button>
+                            Kurs
+                        </button>
+                    @else
+                    @endrole
                 </div>
                 <div class="mt-4">
                     @php
