@@ -93,8 +93,8 @@ class GoodsController extends Controller
 
             $good->save();
             $good->refresh();
-            
-            $good->code = $good->name . '-' . $good->serial_number;
+
+            $good->code = $good->serial_number;
             $good->save();
 
             return response()->json([

@@ -21,6 +21,7 @@ class GoodShowcaseController extends Controller
     {
         $goodShowcases = Goods::where('availability', 1)
             ->where('safe_status', 0)
+            ->latest()
             ->get();
         $types = GoodsType::where('status', 1)->get();
         $brands = Merk::where('status', 1)->get();
@@ -117,7 +118,7 @@ class GoodShowcaseController extends Controller
             $good->save();
             $good->refresh();
 
-            $good->code = $good->name . '-' . $good->serial_number;
+            $good->code = $good->serial_number;
             $good->save();
 
             $goodShowcases = Goods::find($good->id);

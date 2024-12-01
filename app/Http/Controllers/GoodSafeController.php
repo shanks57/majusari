@@ -20,6 +20,7 @@ class GoodSafeController extends Controller
     {
         $goodsafes = Goods::where('availability', 1)
             ->where('safe_status', 1)
+            ->latest()
             ->get();
 
         $types = GoodsType::where('status', 1)->get();
