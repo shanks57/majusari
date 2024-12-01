@@ -19,9 +19,15 @@ class UserController extends Controller
 {
     public function index()
     {
-        $employees = User::orderBy('updated_at', 'desc')->get();
+        $employees = User::with('roles')->orderBy('updated_at', 'desc')->get();
         $title = 'Pegawai';
-        return view('pages.master-employees', compact('employees', 'title'));
+        $roleLabels = [
+            'store_employee' => 'Co Admin (Toko)',
+            'home_employee' => 'Co Admin (Dirumah)',
+            'superadmin' => 'SuperAdmin',
+            'admin' => 'Admin'
+        ];
+        return view('pages.master-employees', compact('employees', 'title', 'roleLabels'));
     }
 
     public function store(Request $request)
@@ -55,7 +61,7 @@ class UserController extends Controller
             $employee->address = $request->input('address');
             $employee->status = $request->input('status');
             $employee->email_verified_at = Carbon::now();
-            $employee->assignRole('admin');
+            $employee->assignRole($request->input('role'));
             
             $employee->save();
             session()->flash('success', 'Berhasil Menambah Pegawai Baru');

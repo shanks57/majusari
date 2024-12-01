@@ -6,6 +6,7 @@
             Dashboard
         </a>
         
+        @role('superadmin|home_employee')
         @role('superadmin')
         <x-dropdown
             class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('master/*') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
@@ -23,19 +24,22 @@
                     id="menu-item-2">Pegawai</a>
             </div>
         </x-dropdown>
+        @endrole
         <x-dropdown
             class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('goods/*') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
             title="Barang">
             <div class="py-1" role="none">
                 <a href="/goods/showcases" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                     id="menu-item-0">Etalase</a>
+                @role('superadmin')
                 <a href="/goods/trays" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                     id="menu-item-1">Detail Baki</a>
                 <a href="/goods/safe" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                     id="menu-item-2">Brankas</a>
+                @endrole
             </div>
         </x-dropdown>
-        @endauth
+        @endrole
 
         <a href="/sales"
             class="px-6 py-3 rounded-md  {{ request()->is('sales') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
@@ -69,6 +73,7 @@
         ->count();
         @endphp
 
+        @role('superadmin|store_employee')
          <a href="{{ route('pages.cart') }}"
             class="relative inline-flex items-center justify-center text-sm font-semibold text-gray-800 bg-green-100 rounded-full shadow-sm size-10 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
             <i class="ph ph-shopping-cart-simple text-2xl text-green-500"></i>
@@ -79,6 +84,7 @@
             </span>
             @endif
         </a>
+        @endrole
 
         @php
         $name = Auth::user()->name;
