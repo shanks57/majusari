@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Milon\Barcode\DNS1D;
 use Milon\Barcode\DNS2D;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\GoodsShowcaseExport;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class GoodsController extends Controller
 {
@@ -344,5 +348,50 @@ class GoodsController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function downloadPdf()
+    {
+        // Ambil data goodsShowcase
+        $goodsShowcase = Goods::where('availability', 1)
+            ->where('safe_status', 0)
+            ->get();
+
+        // Load view dan generate PDF
+        $pdf = PDF::loadView('/pdf-page/goods-showcase', compact('goodsShowcase'))
+            ->setPaper('a4', 'landscape');
+
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $fileName = "Laporan-Data-Barang-Etalase_{$timestamp}.pdf";
+
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => (new ResponseHeaderBag())->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $fileName
+            ),
+            'Cache-Control' => 'no-store, no-cache',
+            'Pragma' => 'no-cache',
+        ]);
+    }
+
+    public function exportExcel()
+    {
+        // Nama file dengan timestamp lengkap
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $fileName = "Laporan-Data-Barang-Etalase_{$timestamp}.xlsx";
+
+        // Generate file Excel
+        $excelData = Excel::raw(new GoodsShowcaseExport, \Maatwebsite\Excel\Excel::XLSX);
+
+        return response($excelData, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => (new ResponseHeaderBag())->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $fileName
+            ),
+            'Cache-Control' => 'no-store, no-cache',
+            'Pragma' => 'no-cache',
+        ]);
     }
 }

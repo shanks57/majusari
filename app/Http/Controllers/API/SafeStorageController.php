@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exports\GoodsSafeExport;
 use App\Http\Controllers\Controller;
 use App\Models\Goods;
 use Illuminate\Http\Request;
@@ -9,10 +10,14 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Milon\Barcode\DNS2D;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\GoodsShowcaseExport;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class SafeStorageController extends Controller
 {
-        public function index()
+    public function index()
     {
         try {
             $goods = Goods::where('safe_status', true)
@@ -204,7 +209,6 @@ class SafeStorageController extends Controller
         }
     }
 
-
     public function destroy($id)
     {
         try {
@@ -332,5 +336,50 @@ class SafeStorageController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function downloadPdf()
+    {
+        // Ambil data goodsShowcase
+        $goodsSafe = Goods::where('availability', 1)
+            ->where('safe_status', 1)
+            ->get();
+
+        // Load view dan generate PDF
+        $pdf = PDF::loadView('/pdf-page/goods-safe', compact('goodsSafe'))
+        ->setPaper('a4', 'landscape');
+
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $fileName = "Laporan-Data-Barang-Brankas_{$timestamp}.pdf";
+
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => (new ResponseHeaderBag())->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $fileName
+            ),
+            'Cache-Control' => 'no-store, no-cache',
+            'Pragma' => 'no-cache',
+        ]);
+    }
+
+    public function exportExcel()
+    {
+        // Nama file dengan timestamp lengkap
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $fileName = "Laporan-Data-Barang-Brankas_{$timestamp}.xlsx";
+
+        // Generate file Excel
+        $excelData = Excel::raw(new GoodsSafeExport, \Maatwebsite\Excel\Excel::XLSX);
+
+        return response($excelData, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => (new ResponseHeaderBag())->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $fileName
+            ),
+            'Cache-Control' => 'no-store, no-cache',
+            'Pragma' => 'no-cache',
+        ]);
     }
 }
