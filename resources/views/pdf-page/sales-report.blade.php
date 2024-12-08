@@ -89,7 +89,7 @@
                     </td>
                     <td>
                         @foreach($sale->details as $detail)
-                            {{ 'Rp.' . number_format($detail->goods->ask_price, 0, ',', '.') }}
+                            {{ 'Rp.' . number_format($detail->harga_jual, 0, ',', '.') }}
                         @endforeach
                     </td>
                 </tr>

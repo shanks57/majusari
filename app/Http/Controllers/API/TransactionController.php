@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Exports\SalesExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransactionController extends Controller
 {
@@ -361,38 +365,246 @@ class TransactionController extends Controller
         }
     }
 
-    public function searchNota(Request $request)
+    public function exportExcel(Request $request)
     {
         $request->validate([
+            'date_start' => 'nullable|date',
+            'date_end' => 'nullable|date|after_or_equal:date_start',
+        ]);
+
+        $startDate = $request->input('date_start');
+        $endDate = $request->input('date_end');
+
+        // Ambil data transaksi beserta detailnya
+        $sales = Transaction::with('details.goods.goodsType', 'details.goods.merk')
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->where('date', '>=', $startDate);
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->where('date', '<=', $endDate);
+            })
+            ->get();
+
+        // Format data untuk ekspor
+        $data = $sales->map(function ($sale) {
+            $details = $sale->details;
+
+            return [
+                'nota' => $sale->code,
+                'name' => $details->pluck('goods.name')->implode(', '),
+                'category' => $details->pluck('goods.category')->implode(', '),
+                'unit' => $details->pluck('goods.unit')->implode(', '),
+                'type' => $details->pluck('goods.goodsType.name')->implode(', '),
+                'color' => $details->pluck('goods.color')->implode(', '),
+                'rate' => $details->pluck('goods.rate')->map(fn($rate) => number_format($rate, 0) . '%')->implode(', '),
+                'size' => $details->pluck('goods.size')->map(fn($size) => number_format($size, 2) . 'gr')->implode(', '),
+                'merk' => $details->pluck('goods.merk.name')->implode(', '),
+                'ask_price' => $details->pluck('goods.ask_price')->implode(', '),
+                'ask_rate' => $details->pluck('goods.ask_rate')->map(fn($ask_rate) => number_format($ask_rate, 0) . '%')->implode(', '),
+                'bid_price' => $details->pluck('goods.bid_price')->implode(', '),
+                'bid_rate' => $details->pluck('goods.bid_rate')->map(fn($bid_rate) => number_format($bid_rate, 0) . '%')->implode(', '),
+                'harga_jual' => $details->pluck('harga_jual')->implode(', '),
+                'date' => Carbon::parse($sale->date)->format('d/m/Y'),
+            ];
+        });
+
+        // Gunakan export untuk menghasilkan file Excel
+        $export = new SalesExport($data);
+        $file = \Maatwebsite\Excel\Facades\Excel::raw($export, \Maatwebsite\Excel\Excel::XLSX);
+
+        // Tambahkan elemen dinamis ke nama file
+        $timestamp = now()->format('Y-m-d_H-i-s'); // Format tanggal dan waktu
+        $filename = "Laporan-penjualan_{$timestamp}.xlsx";
+
+        // Kustomisasi header response
+        return response($file, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => (new ResponseHeaderBag())->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $filename
+            ),
+            'Cache-Control' => 'no-store, no-cache',
+            'Pragma' => 'no-cache',
+        ]);
+    }
+
+    public function exportPDF(Request $request)
+    {
+        $request->validate([
+            'date_start' => 'nullable|date',
+            'date_end' => 'nullable|date|after_or_equal:date_start',
+        ]);
+        // Validasi parameter filter tanggal
+        $request->validate([
+            'date_start' => 'nullable|date',
+            'date_end' => 'nullable|date|after_or_equal:date_start',
+        ]);
+
+        // Ambil parameter filter tanggal dari request
+        $dateStart = $request->input('date_start');
+        $dateEnd = $request->input('date_end');
+
+        // Buat query dasar
+        $query = Transaction::query();
+
+        // Tambahkan relasi detail barang
+        $query->with('details.goods');
+
+        // Tambahkan filter tanggal jika parameter ada
+        if ($dateStart) {
+            $query->whereDate('created_at', '>=', Carbon::parse($dateStart));
+        }
+
+        if ($dateEnd) {
+            $query->whereDate('created_at', '<=', Carbon::parse($dateEnd));
+        }
+
+        // Eksekusi query untuk mendapatkan data
+        $sales = $query->get();
+
+        // Buat PDF menggunakan dompdf
+        $pdf = PDF::loadView('pdf-page.sales-report', ['sales' => $sales])
+            ->setPaper('a4', 'landscape');
+
+        // Tambahkan elemen dinamis ke nama file
+        $timestamp = now()->format('Y-m-d_H-i-s'); // Format tanggal dan waktu
+        $filename = "Laporan-Penjualan_{$timestamp}.pdf";
+
+        // Kustomisasi header response
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => (new ResponseHeaderBag())->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $filename
+            ),
+            'Cache-Control' => 'no-store, no-cache',
+            'Pragma' => 'no-cache',
+        ]);
+    }
+
+    public function printNota($id)
+    {
+        try {
+            // Ambil transaksi berdasarkan ID
+            $transaction = Transaction::findOrFail($id);
+
+            // Ambil detail transaksi
+            $sales = TransactionDetail::with('goods')->where('transaction_id', $id)->get();
+
+            // Render PDF menggunakan view yang ada
+            $pdf = PDF::loadView('print-page.print-invoice', [
+                'sales' => $sales,
+                'transaction' => $transaction
+            ])->setPaper('a4', 'portrait'); // Set ukuran dan orientasi kertas
+
+            // Tambahkan elemen dinamis untuk nama file
+            $timestamp = now()->format('Y-m-d_H-i-s');
+            $filename = "Nota-Transaksi_{$timestamp}.pdf";
+
+            // Return response dengan header
+            return response($pdf->output(), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => (new ResponseHeaderBag())->makeDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    $filename
+                ),
+                'Cache-Control' => 'no-store, no-cache',
+                'Pragma' => 'no-cache',
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Jika transaksi tidak ditemukan
+            return response()->json(['error' => 'Transaction not found'], 404);
+        } catch (\Exception $e) {
+            // Jika terjadi kesalahan umum
+            return response()->json(['error' => 'An error occurred while generating the PDF'], 500);
+        }
+    }
+
+    public function searchNota(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
             'nota' => 'required|string'
         ]);
 
-        $nota = $request->input('nota');
-        
-        $transaction = TransactionDetail::where('nota', $nota)->with(['goods', 'tray', 'goods.merk', 'goods.goodsType', 'tray.showcase'])->first();
+        $code = $validated['nota'];
+
+        // Temukan transaksi berdasarkan kode
+        $transaction = Transaction::with(['details.goods', 'details.tray.showcase', 'details.goods.goodsType', 'details.goods.merk'])
+            ->where('code', $code)
+            ->first();
 
         if ($transaction) {
+            // Siapkan array detail barang
+            $goodsDetails = [];
+            foreach ($transaction->details as $detail) {
+                $goodsDetails[] = [
+                    'id' => $detail->goods->id,
+                    'name' => $detail->goods->name,
+                    'image' => $detail->goods->image,
+                    'color' => $detail->goods->color,
+                    'merk' => $detail->goods->merk->name ?? null,
+                    'rate' => $detail->goods->rate,
+                    'size' => $detail->goods->size,
+                    'type' => $detail->goods->goodsType->name ?? null,
+                    'showcase' => $detail->tray->showcase->name ?? null,
+                    'tray' => $detail->tray->code ?? null,
+                    'harga_jual' => $detail->harga_jual,
+                ];
+            }
+
+            // Return data dalam format JSON
             return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'goods_name' => $transaction->goods->name,
-                    'nota' => $transaction->nota,
-                    'goods_image' => $transaction->goods->image,
-                    'goods_color' => $transaction->goods->color,
-                    'goods_merk' => $transaction->goods->merk->name,
-                    'goods_rate' => $transaction->goods->rate,
-                    'goods_size' => $transaction->goods->size,
-                    'goods_type' => $transaction->goods->goodsType->name,
-                    'showcase_name' => $transaction->tray->showcase->name,
-                    'tray_code' => $transaction->tray->code,
-                    'harga_jual' => $transaction->harga_jual
-                ]
-            ]);
+                'success' => true,
+                'message' => 'Transaksi ditemukan.',
+                'transaction' => [
+                    'id' => $transaction->id,
+                    'code' => $transaction->code,
+                ],
+                'goodsDetails' => $goodsDetails,
+            ], 200);
         } else {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Kode penjualan tidak ditemukan.'
             ], 404);
         }
     }
+
+    public function filterSalesByDate(Request $request)
+    {
+        // Buat query dasar
+        $query = Transaction::with('details.goods')->orderBy('created_at', 'desc');
+
+        // Ambil input tanggal dari request
+        $dateStart = $request->input('date_start');
+        $dateEnd = $request->input('date_end');
+
+        // Filter berdasarkan tanggal mulai jika tersedia
+        if ($dateStart) {
+            $query->whereDate('created_at', '>=', Carbon::parse($dateStart));
+        }
+
+        // Filter berdasarkan tanggal akhir jika tersedia
+        if ($dateEnd) {
+            $query->whereDate('created_at', '<=', Carbon::parse($dateEnd));
+        }
+
+        // Eksekusi query untuk mendapatkan data
+        $sales = $query->get();
+
+        // Hitung total item di semua transaksi
+        $totalItems = $sales->sum(function ($sale) {
+            return $sale->details->count();
+        });
+
+        // Kembalikan data dalam format JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Data transaksi berhasil difilter.',
+            'sales' => $sales,
+            'total_items' => $totalItems,
+        ], 200);
+    }
+
 }

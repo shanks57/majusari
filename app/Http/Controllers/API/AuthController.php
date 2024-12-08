@@ -13,6 +13,7 @@ class AuthController extends Controller
     {
         $credentials = $request->validate([
             'username' => ['required', 'string'],
+            // 'email' => ['required', 'string'], login dengan email
             'password' => ['required', 'string'],
         ]);
 
@@ -22,10 +23,12 @@ class AuthController extends Controller
             $token = $user->createToken('api-token')->plainTextToken;
 
             return response()->json([
-                'status' => 'Login succesfull',
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-            ]);
+            'status' => 'Login successful',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            // 'role' => $user->getRoleNames()->first(), jika ingin ditambah informasi user role
+        ]);
+
         }
 
         return response()->json(['message' => 'Unauthorized'], 401);

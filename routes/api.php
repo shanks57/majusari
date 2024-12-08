@@ -15,6 +15,7 @@ use App\Http\Controllers\API\ShowcaseController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\TrayController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\SalesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -40,8 +41,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile/{id}/password', [UserController::class, 'updatePassword']);
 
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        $user = $request->user();
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'username' => $user->username,
+            'phone' => $user->phone,
+            'debt_receipt' => $user->debt_receipt,
+            'wages' => $user->wages,
+            'address' => $user->address,
+            'status' => $user->status,
+            'role' => $user->getRoleNames()->first()
+        ]);
     });
+    Route::get('/user/{id}', [UserController::class, 'show']);
 
     Route::apiResource('customers', CustomerController::class);
     Route::get('customers-data/search', [CustomerController::class, 'search']);
@@ -103,4 +118,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('dashboard/stats', [DashboardController::class, 'getStats']);
     Route::get('dashboard/sales-summary', [DashboardController::class, 'getSalesSummary']);
     Route::get('dashboard/goods-summary', [DashboardController::class, 'getGoodsSummary']);
+
+    Route::get('sales/filter', [TransactionController::class, 'filterSalesByDate']);
+
+
+
+    
 });
+
+    Route::get('/sales/export-excel', [TransactionController::class, 'exportExcel']);
+    Route::get('/sales/export-pdf', [TransactionController::class, 'exportPDF']);
+    Route::get('sales/{id}/print-nota', [TransactionController::class, 'printNota']);
+
+    Route::get('/goods/showcases/export-pdf', [GoodsController::class, 'downloadPdf']);
+    Route::get('/goods/showcases/export-excel', [GoodsController::class, 'exportExcel']);
+
+    Route::get('/goods/safe/export-pdf', [SafeStorageController::class, 'downloadPdf']);
+    Route::get('/goods/safe/export-excel', [SafeStorageController::class, 'exportExcel']);

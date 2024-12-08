@@ -481,14 +481,44 @@ class SalesController extends Controller
 
     public function exportToPDF($sales)
     {
-         $pdf = PDF::loadView('pdf-page.sales-report', ['sales' => $sales])
-              ->setPaper('a4', 'landscape');
-        return $pdf->download('Laporan-Penjualan.pdf');
+        $pdf = PDF::loadView('pdf-page.sales-report', ['sales' => $sales])->setPaper('a4', 'landscape');
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        return $pdf->download("Laporan-Penjualan_{$timestamp}.pdf");
     }
 
     public function exportToExcel($sales)
     {
-        return Excel::download(new SalesExport($sales), 'Laporan-penjualan.xlsx');
+        // Format data untuk ekspor
+        $data = $sales->map(function ($sale) {
+            $details = $sale->details;
+
+            return [
+                'nota' => $sale->code,
+                'name' => $details->pluck('goods.name')->implode(', '),
+                'category' => $details->pluck('goods.category')->implode(', '),
+                'unit' => $details->pluck('goods.unit')->implode(', '),
+                'type' => $details->pluck('goods.goodsType.name')->implode(', '),
+                'color' => $details->pluck('goods.color')->implode(', '),
+                'rate' => $details->pluck('goods.rate')->map(fn($rate) => number_format($rate, 0) . '%')->implode(', '),
+                'size' => $details->pluck('goods.size')->map(fn($size) => number_format($size, 2) . 'gr')->implode(', '),
+                'merk' => $details->pluck('goods.merk.name')->implode(', '),
+                'ask_price' => $details->pluck('goods.ask_price')->implode(', '),
+                'ask_rate' => $details->pluck('goods.ask_rate')->map(fn($ask_rate) => number_format($ask_rate, 0) . '%')->implode(', '),
+                'bid_price' => $details->pluck('goods.bid_price')->implode(', '),
+                'bid_rate' => $details->pluck('goods.bid_rate')->map(fn($bid_rate) => number_format($bid_rate, 0) . '%')->implode(', '),
+                'harga_jual' => $details->pluck('harga_jual')->implode(', '),
+                'date' => Carbon::parse($sale->date)->format('d/m/Y'),
+            ];
+        });
+
+        // Gunakan export untuk menghasilkan file Excel
+        $export = new SalesExport($data);
+        $file = \Maatwebsite\Excel\Facades\Excel::raw($export, \Maatwebsite\Excel\Excel::XLSX);
+
+        // Tambahkan elemen dinamis ke nama file
+        $timestamp = now()->format('Y-m-d_H-i-s'); // Format tanggal dan waktu
+        $filename = "Laporan-penjualan_{$timestamp}.xlsx";
+
+        return Excel::download(new SalesExport($data), $filename);
     }
-    
 }
