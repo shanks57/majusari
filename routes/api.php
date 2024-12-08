@@ -121,11 +121,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('sales/filter', [TransactionController::class, 'filterSalesByDate']);
 
-
-
-    
-});
-
     Route::get('/sales/export-excel', [TransactionController::class, 'exportExcel']);
     Route::get('/sales/export-pdf', [TransactionController::class, 'exportPDF']);
     Route::get('sales/{id}/print-nota', [TransactionController::class, 'printNota']);
@@ -135,3 +130,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/goods/safe/export-pdf', [SafeStorageController::class, 'downloadPdf']);
     Route::get('/goods/safe/export-excel', [SafeStorageController::class, 'exportExcel']);
+});
