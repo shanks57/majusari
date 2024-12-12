@@ -5,8 +5,7 @@
             class="px-6 py-3 rounded-md  {{ request()->is('/') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
             Dashboard
         </a>
-        
-        @role('superadmin|home_employee')
+
         @role('superadmin')
         <x-dropdown
             class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('master/*') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
@@ -39,7 +38,6 @@
                 @endrole
             </div>
         </x-dropdown>
-        @endrole
 
         <a href="/sales"
             class="px-6 py-3 rounded-md  {{ request()->is('sales') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
@@ -73,8 +71,7 @@
         ->count();
         @endphp
 
-        @role('superadmin|store_employee')
-         <a href="{{ route('pages.cart') }}"
+        <a href="{{ route('pages.cart') }}"
             class="relative inline-flex items-center justify-center text-sm font-semibold text-gray-800 bg-green-100 rounded-full shadow-sm size-10 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none">
             <i class="ph ph-shopping-cart-simple text-2xl text-green-500"></i>
             @if ($cartByUserCount > 0)
@@ -84,7 +81,6 @@
             </span>
             @endif
         </a>
-        @endrole
 
         @php
         $name = Auth::user()->name;

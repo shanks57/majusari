@@ -2,9 +2,11 @@
 @include('components.datatables')
 <x-layout>
     <x-header title="Etalase" subtitle="Etalase">
+        @role('superadmin|home_employee')
         <x-button-add url="{{ route('goods-types.index') }}">
             Tambah Barang Etalase
         </x-button-add>
+        @endrole
     </x-header>
     <div class="container py-4 mx-auto">
         <div class="relative w-full mx-auto mb-4">

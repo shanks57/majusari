@@ -495,7 +495,16 @@ class TransactionController extends Controller
             $pdf = PDF::loadView('print-page.print-invoice', [
                 'sales' => $sales,
                 'transaction' => $transaction
-            ])->setPaper('a4', 'portrait'); // Set ukuran dan orientasi kertas
+            ])->setPaper('a2', 'portrait')->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultPaperSize' => 'a2',
+                'margin_top' => 0,
+                'margin_bottom' => 0,
+                'margin_left' => 0,
+                'margin_right' => 0,
+                'css_float' => true,
+            ]); // Set ukuran dan orientasi kertas
 
             // Tambahkan elemen dinamis untuk nama file
             $timestamp = now()->format('Y-m-d_H-i-s');
