@@ -17,15 +17,25 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class GoodsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $goods = Goods::where('safe_status', false)
-                ->where('availability', true)
-                ->paginate();
+            // Ambil parameter 'per_page' dari request, default ke null
+            $perPage = $request->input('per_page');
+
+            // Query barang dengan filter 'safe_status' dan 'availability'
+            $query = Goods::where('safe_status', false)
+                ->where('availability', true);
+
+            // Jika 'per_page' null atau kurang dari 1, ambil semua data
+            if (is_null($perPage) || $perPage < 1) {
+                $goods = $query->get();
+            } else {
+                $goods = $query->paginate($perPage);
+            }
 
             return response()->json([
-                $goods
+                'data' => $goods
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
