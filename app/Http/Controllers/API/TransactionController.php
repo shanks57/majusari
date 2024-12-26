@@ -492,13 +492,13 @@ class TransactionController extends Controller
             $sales = TransactionDetail::with('goods')->where('transaction_id', $id)->get();
 
             // Render PDF menggunakan view yang ada
-            $pdf = PDF::loadView('print-page.print-invoice', [
+            $pdf = PDF::loadView('print-page.print-invoice-api', [
                 'sales' => $sales,
                 'transaction' => $transaction
-            ])->setPaper('a2', 'portrait')->setOptions([
+            ])->setPaper('a4', 'portrait')->setOptions([
                 'isHtml5ParserEnabled' => true,
                 'isRemoteEnabled' => true,
-                'defaultPaperSize' => 'a2',
+                'defaultPaperSize' => 'a4',
                 'margin_top' => 0,
                 'margin_bottom' => 0,
                 'margin_left' => 0,
@@ -569,6 +569,10 @@ class TransactionController extends Controller
                 'transaction' => [
                     'id' => $transaction->id,
                     'code' => $transaction->code,
+                    'date' => $transaction->date,
+                    'customer_name' => $transaction->customer->name,
+                    'customer_address' => $transaction->customer->address,
+                    'employement' => $transaction->user->name,
                 ],
                 'goodsDetails' => $goodsDetails,
             ], 200);
