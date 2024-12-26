@@ -100,7 +100,7 @@
                     <tr>
                         @foreach ($row as $sale)
                         <td style="width: 2.5cm; height: 2.5cm; padding: 0.1cm;">
-                            <img src="{{ asset('app.tokoemasmajusarimalang.com/storage/' . $sale->goods->image) }}" alt="{{ $sale->goods->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <img src="{{ asset('https://app.tokoemasmajusarimalang.com/storage/' . $sale->goods->image) }}" alt="{{ $sale->goods->name }}" style="width: 1.5cm; height: 1.5cm; object-fit: cover;">
                         </td>
                         @endforeach
                     </tr>
