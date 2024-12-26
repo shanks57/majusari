@@ -131,3 +131,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/goods/safe/export-pdf', [SafeStorageController::class, 'downloadPdf']);
     Route::get('/goods/safe/export-excel', [SafeStorageController::class, 'exportExcel']);
 });
+
+Route::get('sales/{id}/print-nota', [TransactionController::class, 'printNota']);
