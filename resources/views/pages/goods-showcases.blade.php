@@ -181,34 +181,23 @@
 
 <script>
     document.addEventListener('alpine:init', () => {
-        Alpine.data('imageUploader', (existingImageUrl) => ({
-            imageUrl: existingImageUrl || '',
+        Alpine.data('imageUploader', () => ({
+            imageUrl: '',
             dragging: false,
-            selectedFile: null,
 
-            handleDrop(event) {
-                this.dragging = false;
-                const file = event.dataTransfer.files[0];
-                if (file) {
-                    this.readFile(file);
-                    this.selectedFile = file;
-                    this.updateFileInput(file);
-                }
+            openCamera() {
+                this.$refs.cameraInput.click();
+            },
+
+            openGallery() {
+                this.$refs.galleryInput.click();
             },
 
             handleFileSelect(event) {
                 const file = event.target.files[0];
                 if (file) {
                     this.readFile(file);
-                    this.selectedFile = file;
                 }
-            },
-
-            updateFileInput(file) {
-                // Create a new DataTransfer object to set the files
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                this.$refs.fileInput.files = dataTransfer.files;
             },
 
             readFile(file) {
@@ -219,7 +208,7 @@
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    alert('Please upload a valid image file.');
+                    alert('Silakan pilih file gambar yang valid.');
                 }
             }
         }));

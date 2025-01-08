@@ -40,16 +40,31 @@
 
                 <div class="px-4 mb-4">
                     <div x-data="imageUploader" class="w-full mx-auto">
-                        <!-- Drag and Drop Container -->
+                        <!-- Buttons for Camera and Gallery -->
+                        <div class="flex justify-center gap-4 mb-4">
+                            <!-- Tombol Kamera (Hanya Tampil di Mobile) -->
+                            <button type="button" class="px-4 py-2 text-white bg-blue-500 rounded md:hidden"
+                                x-on:click="openCamera">Gunakan Kamera</button>
+
+                            <!-- Tombol Galeri (Tampil di Semua Perangkat) -->
+                            <button type="button" class="px-4 py-2 text-white bg-gray-500 rounded"
+                                x-on:click="openGallery">Pilih dari Galeri</button>
+                        </div>
+
+
+                        <!-- File Input for Camera -->
+                        <input type="file" name="cameraImage" accept="image/*" capture="environment" required
+                            class="hidden" x-ref="cameraInput" x-on:change="handleFileSelect">
+
+                        <!-- File Input for Gallery -->
+                        <input type="file" name="galleryImage" accept="image/*" required
+                            class="hidden" x-ref="galleryInput" x-on:change="handleFileSelect">
+
+                        <!-- Drag and Drop or Preview -->
                         <div x-on:dragover.prevent="dragging = true" x-on:dragleave.prevent="dragging = false"
                             x-on:drop.prevent="handleDrop($event)"
-                            :class="{' border-indigo-500': dragging, '': !dragging}"
+                            :class="{'border-indigo-500': dragging, '': !dragging}"
                             class="relative flex items-center justify-center w-full h-36 py-4 bg-gray-100 border-2 border-dashed border-[#D0D5DD] rounded-lg cursor-pointer">
-
-                            <!-- File Input (Hidden) -->
-                            <input type="file" name="image" accept="image/*" required
-                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                x-on:change="handleFileSelect" x-ref="fileInput">
 
                             <!-- Image Preview -->
                             <template x-if="imageUrl">
@@ -58,10 +73,9 @@
 
                             <!-- Placeholder -->
                             <template x-if="!imageUrl">
-                                <div class="text-center ">
+                                <div class="text-center">
                                     <i class="text-4xl ph ph-image"></i>
-                                    <p class="text-[#344054] text-sm">Tarik gambar etalase ke area ini atau klik untuk
-                                        memilih</p>
+                                    <p class="text-[#344054] text-sm">Image preview</p>
                                 </div>
                             </template>
                         </div>
@@ -69,7 +83,7 @@
                     @error('image')
                     <span class="text-sm text-red-500">{{ $message }}</span>
                     @enderror
-                </div>
+                </div>  
 
                 <div class="px-4 mb-4">
                     <label for="name" class="block text-sm text-gray-600">Nama Barang</label>
