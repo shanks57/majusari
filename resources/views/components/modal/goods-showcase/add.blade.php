@@ -53,11 +53,11 @@
 
 
                         <!-- File Input for Camera -->
-                        <input type="file" name="cameraImage" accept="image/*" capture="environment" required
+                        <input type="file" name="image" accept="image/*" capture="environment"
                             class="hidden" x-ref="cameraInput" x-on:change="handleFileSelect">
 
                         <!-- File Input for Gallery -->
-                        <input type="file" name="galleryImage" accept="image/*" required
+                        <input type="file" name="image" accept="image/*"
                             class="hidden" x-ref="galleryInput" x-on:change="handleFileSelect">
 
                         <!-- Drag and Drop or Preview -->
