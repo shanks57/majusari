@@ -81,16 +81,18 @@ class GoodShowcaseController extends Controller
             'bid_rate' => 'required|numeric|min:0',
             'ask_price' => 'required|numeric|min:0',
             'bid_price' => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type_id' => 'required|exists:goods_types,id',
             'tray_id' => 'required|exists:trays,id',
             'position' => 'required|string|max:255',
             'date_entry' => 'required|date',
+            'camera_image' => 'nullable|image|max:2048', // Maksimal 2MB
+            'gallery_image' => 'nullable|image|max:2048', // Maksimal 2MB
         ]);
 
         try {
             // Handle the image upload
-            $imagePath = $request->file('image')->store('goods_images', 'public');
+            $file = $request->file('camera_image') ?? $request->file('gallery_image');
+            $imagePath = $file->store('goods_images', 'public');
 
             $good = new Goods();
 
