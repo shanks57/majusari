@@ -14,6 +14,7 @@ use Milon\Barcode\DNS1D;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Intervention\Image\Laravel\Facades\Image;
 
 class GoodShowcaseController extends Controller
 {
@@ -91,8 +92,29 @@ class GoodShowcaseController extends Controller
 
         try {
             // Handle the image upload
-            $file = $request->file('camera_image') ?? $request->file('gallery_image');
-            $imagePath = $file->store('goods_images', 'public');
+            $image = $request->file('camera_image') ?? $request->file('gallery_image');
+            
+            if ($image) {
+                // Tentukan nama file dengan timestamp dan nama asli file
+                $fileName = time() . '_' . $image->getClientOriginalName();
+
+                // Tentukan path penyimpanan
+                $filePath = storage_path('app/public/goods_images/' . $fileName);
+
+                // Buat direktori jika belum ada
+                if (!file_exists(storage_path('app/public/goods_images'))) {
+                    mkdir(storage_path('app/public/goods_images'), 0755, true);
+                }
+
+                // Resize dan simpan gambar langsung ke goods_images
+                $img = Image::read($image->path());
+                $img->resize(400, 400, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($filePath, 50); // Simpan dengan kualitas kompresi 85
+
+                // Kembalikan path untuk penyimpanan di database
+                $publicPath = 'goods_images/' . $fileName;
+            }
 
             $good = new Goods();
 
@@ -109,7 +131,7 @@ class GoodShowcaseController extends Controller
             $good->bid_rate = $request->bid_rate;
             $good->ask_price = $request->ask_price;
             $good->bid_price = $request->bid_price;
-            $good->image = $imagePath;
+            $good->image = $publicPath;
             $good->type_id = $request->type_id;
             $good->tray_id = $request->tray_id;
             $good->position = $request->position;

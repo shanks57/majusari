@@ -59,7 +59,7 @@
                             <button type="button" aria-haspopup="dialog" aria-expanded="false"
                                 aria-controls="hs-image-goods-modal-{{ $goodShowcase->id }}"
                                 data-hs-overlay="#hs-image-goods-modal-{{ $goodShowcase->id }}">
-                                <img src="{{ asset('storage/' . $goodShowcase->image) }}" class="rounded-full size-10"
+                                <img src="{{ asset('storage/' . $goodShowcase->image) }}" class="rounded-full size-10" class="lazyload"
                                     alt="{{ $goodShowcase->name }}">
                             </button>
                             {{-- modal image sale --}}
