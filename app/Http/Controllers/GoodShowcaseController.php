@@ -14,15 +14,48 @@ use Milon\Barcode\DNS1D;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Intervention\Image\Laravel\Facades\Image;
 
 class GoodShowcaseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $goodShowcases = Goods::where('availability', 1)
-            ->where('safe_status', 0)
-            ->latest()
-            ->get();
+        $paginate = $request->get('paginate', 10);
+
+        $query = Goods::where('availability', 1)
+            ->where('safe_status', 0);
+
+        // Filter berdasarkan input dari form
+        if ($request->has('code') && $request->code != '') {
+            $query->where('code', 'LIKE', '%' . $request->code . '%');
+        }
+
+        if ($request->has('date_entry') && $request->date_entry != '') {
+            $query->where('date_entry', 'LIKE', '%' . $request->date_entry . '%');
+        }
+
+        if ($request->has('name') && $request->name != '') {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        if ($request->has('size') && $request->size != '') {
+            $query->where('size', 'LIKE', '%' . $request->size . '%');
+        }
+
+        if ($request->has('goods_type') && $request->goods_type != '') {
+            $query->whereHas('goodsType', function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->goods_type . '%');
+            });
+        }
+
+        if ($request->has('ask_price') && $request->ask_price != '') {
+            $query->where('ask_price', $request->ask_price);
+        }
+
+        $goodShowcases = $query->latest()
+        ->paginate($paginate)
+        ->onEachSide(0);
+
         $types = GoodsType::where('status', 1)->get();
         $brands = Merk::where('status', 1)->get();
 
@@ -63,7 +96,7 @@ class GoodShowcaseController extends Controller
         $totalItemsInShowcase = $goodsInShowcase->count();
         $totalWeightInShowcase = $goodsInShowcase->sum('size');
 
-        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase'));
+        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase','paginate'));
     }
 
     public function store(Request $request)
@@ -91,8 +124,29 @@ class GoodShowcaseController extends Controller
 
         try {
             // Handle the image upload
-            $file = $request->file('camera_image') ?? $request->file('gallery_image');
-            $imagePath = $file->store('goods_images', 'public');
+            $image = $request->file('camera_image') ?? $request->file('gallery_image');
+            
+            if ($image) {
+                // Tentukan nama file dengan timestamp dan nama asli file
+                $fileName = time() . '_' . $image->getClientOriginalName();
+
+                // Tentukan path penyimpanan
+                $filePath = storage_path('app/public/goods_images/' . $fileName);
+
+                // Buat direktori jika belum ada
+                if (!file_exists(storage_path('app/public/goods_images'))) {
+                    mkdir(storage_path('app/public/goods_images'), 0755, true);
+                }
+
+                // Resize dan simpan gambar langsung ke goods_images
+                $img = Image::read($image->path());
+                $img->resize(400, 400, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($filePath, 50); // Simpan dengan kualitas kompresi 85
+
+                // Kembalikan path untuk penyimpanan di database
+                $publicPath = 'goods_images/' . $fileName;
+            }
 
             $good = new Goods();
 
@@ -109,7 +163,7 @@ class GoodShowcaseController extends Controller
             $good->bid_rate = $request->bid_rate;
             $good->ask_price = $request->ask_price;
             $good->bid_price = $request->bid_price;
-            $good->image = $imagePath;
+            $good->image = $publicPath;
             $good->type_id = $request->type_id;
             $good->tray_id = $request->tray_id;
             $good->position = $request->position;

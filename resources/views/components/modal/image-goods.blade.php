@@ -11,7 +11,7 @@
                 </h3>
             </div>
             <div class="flex justify-center">
-                <img src="{{ asset('storage/' . $goodShowcase->image) }}" class="rounded size-80"
+                <img src="{{ asset('storage/' . $goodShowcase->image) }}" class="rounded size-80" class="lazyload"
                     alt="{{ $goodShowcase->name }}">
             </div>
             <div class="flex justify-center text-sm text-[#151617] gap-3">

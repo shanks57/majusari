@@ -1,5 +1,5 @@
 @section('title', 'Etalase')
-@include('components.datatables')
+{{-- @include('components.datatables') --}}
 <x-layout>
     <x-header title="Etalase" subtitle="Etalase">
         @role('superadmin|home_employee')
@@ -9,12 +9,7 @@
         @endrole
     </x-header>
     <div class="container py-4 mx-auto">
-        <div class="relative w-full mx-auto mb-4">
-            <input type="text" id="searchEtalase"
-                class="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#79799B]"
-                placeholder="Cari di etalase">
-            <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
-        </div>
+        
 
         <div class="inline-flex justify-center w-full mx-auto rounded-md" role="group">
             <a href="{{ route('goods.showcase.export-pdf', ['uniqueCode' => date('YmdHis')]) }}" class="p-3 font-normal text-white bg-gray-400 rounded-s-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
@@ -31,18 +26,68 @@
         <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
+                    <form action="{{ route('goods.showcase') }}" method="GET">
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
                             <input type="checkbox" id="select-all">
                         </th>
-                        <th class="py-3 px-6 text-left !font-normal">Kode Barang</th>
-                        <th class="py-3 px-6 text-left !font-normal">Tanggal Masuk</th>
+                        <th class="py-3 px-4 text-left !font-normal">Kode Barang
+                             <input 
+                                type="text" 
+                                name="code" 
+                                placeholder="" 
+                                value="{{ request('code') }}" 
+                                onchange="this.form.submit()" 
+                                class="border p-1 text-sm text-black rounded-md">
+                        </th>
+                        <th class="py-3 px-4 text-left !font-normal">Tanggal Masuk
+                            <input 
+                                type="date" 
+                                name="date_entry" 
+                                placeholder="" 
+                                value="{{ request('date_entry') }}" 
+                                onchange="this.form.submit()" 
+                                class="border p-1 text-sm text-black rounded-md">
+                        </th>
                         <th class="py-3 px-6 text-left !font-normal">Gambar</th>
-                        <th class="py-3 px-6 text-left !font-normal">Barang & Merek</th>
-                        <th class="py-3 px-6 text-left !font-normal">Berat & Kadar</th>
-                        <th class="py-3 px-6 text-left !font-normal">Kategori</th>
-                        <th class="py-3 px-6 text-left !font-normal">Harga Jual & Nilai Tukar</th>
+                        <th class="py-3 px-4 text-left !font-normal">Barang & Merek
+                           <input 
+                                type="text" 
+                                name="name" 
+                                placeholder="" 
+                                value="{{ request('name') }}" 
+                                onchange="this.form.submit()" 
+                                class="border p-1 text-sm text-black rounded-md">
+                        </th>
+                        <th class="py-3 px-4 text-left !font-normal">Berat & Kadar
+                             <input 
+                                type="number" 
+                                name="size" 
+                                placeholder="" 
+                                value="{{ request('size') }}" 
+                                onchange="this.form.submit()" 
+                                class="border p-1 text-sm text-black rounded-md">
+                        </th>
+                        <th class="py-3 px-4 text-left !font-normal">Kategori
+                            <input 
+                                type="text" 
+                                name="goods_type" 
+                                placeholder="" 
+                                value="{{ request('goods_type') }}" 
+                                onchange="this.form.submit()" 
+                                class="border p-1 text-sm text-black rounded-md">
+                        </th>
+                        <th class="py-3 px-4 text-left !font-normal">Harga Jual & Nilai Tukar
+                             <input 
+                                type="number" 
+                                name="ask_price" 
+                                placeholder="" 
+                                value="{{ request('ask_price') }}" 
+                                onchange="this.form.submit()" 
+                                class="border p-1 text-sm text-black rounded-md">
+                        </th>
                         <th class="py-3 px-6 text-center !font-normal"></th>
+                    </form>
                     </tr>
                 </thead>
                 <tbody class="text-sm font-light text-gray-600">
@@ -59,7 +104,7 @@
                             <button type="button" aria-haspopup="dialog" aria-expanded="false"
                                 aria-controls="hs-image-goods-modal-{{ $goodShowcase->id }}"
                                 data-hs-overlay="#hs-image-goods-modal-{{ $goodShowcase->id }}">
-                                <img src="{{ asset('storage/' . $goodShowcase->image) }}" class="rounded-full size-10"
+                                <img src="{{ asset('storage/' . $goodShowcase->image) }}" class="rounded-full size-10" class="lazyload"
                                     alt="{{ $goodShowcase->name }}">
                             </button>
                             {{-- modal image sale --}}
@@ -143,15 +188,24 @@
 
         </div>
         <div
-            class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
-            <div id="dataTableInfo" class="px-4 py-3"></div>
-            <div class="flex items-center space-x-8">
-                <div id="dataTableLength" class="flex items-center"></div>
-                <div class="flex items-center justify-between px-2.5 py-3">
-                    <div id="dataTableInfoEntry" class=""></div>
-                    <div id="dataTablePagination" class="flex items-center px-4"></div>
-                </div>
-            </div>
+            class="flex items-center justify-between p-4 mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
+                    <div>Menamdipilkan {{ $goodShowcases->count() }} Data Etalase</div>
+                    <div class="flex items-center justify-between">
+                        <span class="mr-2">Baris diper halaman</span> 
+                        <form action="/goods/showcases" method="GET">
+                            <select class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-6 py-2.5" name="paginate" onchange="this.form.submit()">
+                                <option value="10" {{ $paginate == 10 ? 'selected' : '' }}>10</option>
+                                <option value="20" {{ $paginate == 20 ? 'selected' : '' }}>20</option>
+                                <option value="30" {{ $paginate == 30 ? 'selected' : '' }}>30</option>
+                                <option value="40" {{ $paginate == 40 ? 'selected' : '' }}>40</option>
+                                <option value="50" {{ $paginate == 50 ? 'selected' : '' }}>50</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        
+                        <span>{{ $goodShowcases->links() }}</span>
+                    </div>
         </div>
         <div class="grid grid-cols-3 gap-10">
             <div class="p-4 bg-white border rounded-lg">
