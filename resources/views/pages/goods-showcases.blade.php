@@ -1,5 +1,5 @@
 @section('title', 'Etalase')
-@include('components.datatables')
+{{-- @include('components.datatables') --}}
 <x-layout>
     <x-header title="Etalase" subtitle="Etalase">
         @role('superadmin|home_employee')
@@ -9,12 +9,7 @@
         @endrole
     </x-header>
     <div class="container py-4 mx-auto">
-        <div class="relative w-full mx-auto mb-4">
-            <input type="text" id="searchEtalase"
-                class="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#79799B]"
-                placeholder="Cari di etalase">
-            <i class="ph ph-magnifying-glass absolute left-3 top-3 text-[#2D2F30]"></i>
-        </div>
+        
 
         <div class="inline-flex justify-center w-full mx-auto rounded-md" role="group">
             <a href="{{ route('goods.showcase.export-pdf', ['uniqueCode' => date('YmdHis')]) }}" class="p-3 font-normal text-white bg-gray-400 rounded-s-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
@@ -143,15 +138,24 @@
 
         </div>
         <div
-            class="flex items-center justify-between mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
-            <div id="dataTableInfo" class="px-4 py-3"></div>
-            <div class="flex items-center space-x-8">
-                <div id="dataTableLength" class="flex items-center"></div>
-                <div class="flex items-center justify-between px-2.5 py-3">
-                    <div id="dataTableInfoEntry" class=""></div>
-                    <div id="dataTablePagination" class="flex items-center px-4"></div>
-                </div>
-            </div>
+            class="flex items-center justify-between p-4 mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
+                    <div>Menamdipilkan {{ $goodShowcases->count() }} Data Etalase</div>
+                    <div class="flex items-center justify-between">
+                        <span class="mr-2">Baris diper halaman</span> 
+                        <form action="/goods/showcases" method="GET">
+                            <select class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-6 py-2.5" name="paginate" onchange="this.form.submit()">
+                                <option value="10" {{ $paginate == 10 ? 'selected' : '' }}>10</option>
+                                <option value="20" {{ $paginate == 20 ? 'selected' : '' }}>20</option>
+                                <option value="30" {{ $paginate == 30 ? 'selected' : '' }}>30</option>
+                                <option value="40" {{ $paginate == 40 ? 'selected' : '' }}>40</option>
+                                <option value="50" {{ $paginate == 50 ? 'selected' : '' }}>50</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        
+                        <span>{{ $goodShowcases->links() }}</span>
+                    </div>
         </div>
         <div class="grid grid-cols-3 gap-10">
             <div class="p-4 bg-white border rounded-lg">

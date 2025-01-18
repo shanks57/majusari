@@ -18,12 +18,15 @@ use Intervention\Image\Laravel\Facades\Image;
 
 class GoodShowcaseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $paginate = $request->get('paginate', 10);
+
         $goodShowcases = Goods::where('availability', 1)
             ->where('safe_status', 0)
             ->latest()
-            ->get();
+            ->paginate($paginate)->onEachSide(0);
+
         $types = GoodsType::where('status', 1)->get();
         $brands = Merk::where('status', 1)->get();
 
@@ -64,7 +67,7 @@ class GoodShowcaseController extends Controller
         $totalItemsInShowcase = $goodsInShowcase->count();
         $totalWeightInShowcase = $goodsInShowcase->sum('size');
 
-        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase'));
+        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase','paginate'));
     }
 
     public function store(Request $request)
