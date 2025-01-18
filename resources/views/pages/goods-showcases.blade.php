@@ -206,7 +206,7 @@
                     </div>
                     <div class="flex items-center justify-between">
                         
-                        <span>{{ $goodShowcases->links() }}</span>
+                        <span>{{ $goodShowcases->appends(request()->all())->links() }}</span>
                     </div>
         </div>
         <div class="grid grid-cols-3 gap-10">
