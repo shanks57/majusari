@@ -115,8 +115,8 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::patch('/goods/{id}/move-to-safe', [GoodShowcaseController::class, 'moveToSafe'])->name('goods.moveToSafe');
         Route::delete('/goods/{id}/showcases', [GoodShowcaseController::class, 'destroy'])->name('goods-showcase.destroy');
         Route::get('/goods/{id}/print-barcode', [GoodShowcaseController::class, 'printBarcode'])->name('goods-showcase.printBarcode');
-        Route::get('/goods/showcases/export-pdf/{uniqueCode}', [GoodShowcaseController::class, 'downloadPdf'])->name('goods.showcase.export-pdf');
-        Route::get('/goods/showcases/export-excel{uniqueCode}', [GoodShowcaseController::class, 'exportExcel'])->name('goods.showcase.export-excel');
+        Route::get('/goods/showcases/export-pdf', [GoodShowcaseController::class, 'downloadPdf'])->name('goods.showcase.export-pdf');
+        Route::get('/goods/showcases/export-excel', [GoodShowcaseController::class, 'exportExcel'])->name('goods.showcase.export-excel');
         Route::get('/goods/showcases/print', [GoodShowcaseController::class, 'print'])->name('goods.showcase.print');
     // end route /goods/showcases
 

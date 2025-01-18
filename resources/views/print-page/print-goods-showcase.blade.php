@@ -23,9 +23,9 @@
     <meta name="theme-color" content="#ffffff">
     <script type="text/javascript">
         window.print();
-        window.addEventListener('afterprint', function () {
-            window.location.href = '/goods/showcases';
-        });
+        // window.addEventListener('afterprint', function () {
+        //     window.location.href = '/goods/showcases';
+        // });
 
     </script>
     <style>
