@@ -22,10 +22,39 @@ class GoodShowcaseController extends Controller
     {
         $paginate = $request->get('paginate', 10);
 
-        $goodShowcases = Goods::where('availability', 1)
-            ->where('safe_status', 0)
-            ->latest()
-            ->paginate($paginate)->onEachSide(0);
+        $query = Goods::where('availability', 1)
+            ->where('safe_status', 0);
+
+        // Filter berdasarkan input dari form
+        if ($request->has('code') && $request->code != '') {
+            $query->where('code', 'LIKE', '%' . $request->code . '%');
+        }
+
+        if ($request->has('date_entry') && $request->date_entry != '') {
+            $query->where('date_entry', 'LIKE', '%' . $request->date_entry . '%');
+        }
+
+        if ($request->has('name') && $request->name != '') {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        if ($request->has('size') && $request->size != '') {
+            $query->where('size', 'LIKE', '%' . $request->size . '%');
+        }
+
+        if ($request->has('goods_type') && $request->goods_type != '') {
+            $query->whereHas('goodsType', function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->goods_type . '%');
+            });
+        }
+
+        if ($request->has('ask_price') && $request->ask_price != '') {
+            $query->where('ask_price', $request->ask_price);
+        }
+
+        $goodShowcases = $query->latest()
+        ->paginate($paginate)
+        ->onEachSide(0);
 
         $types = GoodsType::where('status', 1)->get();
         $brands = Merk::where('status', 1)->get();
