@@ -316,29 +316,91 @@ class GoodShowcaseController extends Controller
         }
     }
 
-    public function downloadPdf()
+    public function downloadPdf(Request $request)
     {
-        $goodsShowcase = Goods::where('availability', 1)
-            ->where('safe_status', 0)
-            ->get();
+        // dd($request->all());
+        // Sama seperti di index, terapkan filter
+        $query = Goods::where('availability', 1)
+            ->where('safe_status', 0);
 
+        if ($request->has('code') && $request->code != '') {
+            $query->where('code', 'LIKE', '%' . $request->code . '%');
+        }
+
+        if ($request->has('date_entry') && $request->date_entry != '') {
+            $query->where('date_entry', 'LIKE', '%' . $request->date_entry . '%');
+        }
+
+        if ($request->has('name') && $request->name != '') {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        if ($request->has('size') && $request->size != '') {
+            $query->where('size', 'LIKE', '%' . $request->size . '%');
+        }
+
+        if ($request->has('goods_type') && $request->goods_type != '') {
+            $query->whereHas('goodsType', function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->goods_type . '%');
+            });
+        }
+
+        if ($request->has('ask_price') && $request->ask_price != '') {
+            $query->where('ask_price', $request->ask_price);
+        }
+
+        // Ambil data berdasarkan filter
+        $goodsShowcase = $query->get();
+        // dd($goodsShowcase);
+
+        // Generate PDF
         $pdf = PDF::loadView('/pdf-page/goods-showcase', compact('goodsShowcase'))
             ->setPaper('a4', 'landscape');
 
+        // Unduh PDF
         return $pdf->download(now()->format('His') . '-Laporan-Data-Barang-Etalase.pdf');
     }
 
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
+        $filters = $request->all();
         $fileName = now()->format('His') . '-Laporan-Data-Barang-Etalase.xlsx';
-        return Excel::download(new GoodsShowcaseExport, $fileName);
+        return Excel::download(new GoodsShowcaseExport($filters), $fileName);
     }
 
-    public function print()
+    public function print(Request $request)
     {
-        $goodsShowcase = Goods::where('availability', 1)
-            ->where('safe_status', 0)
-            ->get();
+        $query = Goods::where('availability', 1)
+            ->where('safe_status', 0);
+
+        if ($request->has('code') && $request->code != '') {
+            $query->where('code', 'LIKE', '%' . $request->code . '%');
+        }
+
+        if ($request->has('date_entry') && $request->date_entry != '') {
+            $query->where('date_entry', 'LIKE', '%' . $request->date_entry . '%');
+        }
+
+        if ($request->has('name') && $request->name != '') {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        if ($request->has('size') && $request->size != '') {
+            $query->where('size', 'LIKE', '%' . $request->size . '%');
+        }
+
+        if ($request->has('goods_type') && $request->goods_type != '') {
+            $query->whereHas('goodsType', function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->goods_type . '%');
+            });
+        }
+
+        if ($request->has('ask_price') && $request->ask_price != '') {
+            $query->where('ask_price', $request->ask_price);
+        }
+
+        // Ambil data berdasarkan filter
+        $goodsShowcase = $query->get();
 
         return view('/print-page/print-goods-showcase', compact('goodsShowcase'));
     }

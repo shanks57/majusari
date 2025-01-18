@@ -11,14 +11,16 @@
     <div class="container py-4 mx-auto">
         
 
+    <form action="{{ route('goods.showcase') }}" method="GET">
+
         <div class="inline-flex justify-center w-full mx-auto rounded-md" role="group">
-            <a href="{{ route('goods.showcase.export-pdf', ['uniqueCode' => date('YmdHis')]) }}" class="p-3 font-normal text-white bg-gray-400 rounded-s-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
+            <a href="{{ route('goods.showcase.export-pdf', request()->all()) }}" class="p-3 font-normal text-white bg-gray-400 rounded-s-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
                 PDF
             </a>
-            <a href="{{ route('goods.showcase.export-excel', ['uniqueCode' => date('YmdHis')]) }}" class="px-2.5 py-3 font-normal text-white bg-gray-400 hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
+            <a href="{{ route('goods.showcase.export-excel', request()->all()) }}" class="px-2.5 py-3 font-normal text-white bg-gray-400 hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
                 Excel
             </a>
-            <a href="{{ route('goods.showcase.print') }}" class="p-3 font-normal text-white bg-gray-400 rounded-e-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
+            <a href="{{ route('goods.showcase.print', request()->all()) }}" target="_blank" class="p-3 font-normal text-white bg-gray-400 rounded-e-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
                 Print
             </a>
         </div>
@@ -26,7 +28,7 @@
         <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
-                    <form action="{{ route('goods.showcase') }}" method="GET">
+                    
                     <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
                             <input type="checkbox" id="select-all">
@@ -38,7 +40,7 @@
                                 placeholder="" 
                                 value="{{ request('code') }}" 
                                 onchange="this.form.submit()" 
-                                class="border p-1 text-sm text-black rounded-md">
+                                class="p-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-4 text-left !font-normal">Tanggal Masuk
                             <input 
@@ -47,7 +49,7 @@
                                 placeholder="" 
                                 value="{{ request('date_entry') }}" 
                                 onchange="this.form.submit()" 
-                                class="border p-1 text-sm text-black rounded-md">
+                                class="p-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-6 text-left !font-normal">Gambar</th>
                         <th class="py-3 px-4 text-left !font-normal">Barang & Merek
@@ -57,7 +59,7 @@
                                 placeholder="" 
                                 value="{{ request('name') }}" 
                                 onchange="this.form.submit()" 
-                                class="border p-1 text-sm text-black rounded-md">
+                                class="p-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-4 text-left !font-normal">Berat & Kadar
                              <input 
@@ -66,7 +68,7 @@
                                 placeholder="" 
                                 value="{{ request('size') }}" 
                                 onchange="this.form.submit()" 
-                                class="border p-1 text-sm text-black rounded-md">
+                                class="p-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-4 text-left !font-normal">Kategori
                             <input 
@@ -75,7 +77,7 @@
                                 placeholder="" 
                                 value="{{ request('goods_type') }}" 
                                 onchange="this.form.submit()" 
-                                class="border p-1 text-sm text-black rounded-md">
+                                class="p-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-4 text-left !font-normal">Harga Jual & Nilai Tukar
                              <input 
@@ -84,10 +86,10 @@
                                 placeholder="" 
                                 value="{{ request('ask_price') }}" 
                                 onchange="this.form.submit()" 
-                                class="border p-1 text-sm text-black rounded-md">
+                                class="p-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-6 text-center !font-normal"></th>
-                    </form>
+
                     </tr>
                 </thead>
                 <tbody class="text-sm font-light text-gray-600">
@@ -192,7 +194,7 @@
                     <div>Menamdipilkan {{ $goodShowcases->count() }} Data Etalase</div>
                     <div class="flex items-center justify-between">
                         <span class="mr-2">Baris diper halaman</span> 
-                        <form action="/goods/showcases" method="GET">
+                        
                             <select class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-6 py-2.5" name="paginate" onchange="this.form.submit()">
                                 <option value="10" {{ $paginate == 10 ? 'selected' : '' }}>10</option>
                                 <option value="20" {{ $paginate == 20 ? 'selected' : '' }}>20</option>
@@ -200,7 +202,7 @@
                                 <option value="40" {{ $paginate == 40 ? 'selected' : '' }}>40</option>
                                 <option value="50" {{ $paginate == 50 ? 'selected' : '' }}>50</option>
                             </select>
-                        </form>
+                        
                     </div>
                     <div class="flex items-center justify-between">
                         
@@ -209,11 +211,11 @@
         </div>
         <div class="grid grid-cols-3 gap-10">
             <div class="p-4 bg-white border rounded-lg">
-                <p class="text-neutral-500 text-sm">Total Barang</p>
+                <p class="text-sm text-neutral-500">Total Barang</p>
                 <p class="text-3xl">{{$totalItemsInShowcase}}</p>
             </div>
             <div class="p-4 bg-white border rounded-lg">
-                <p class="text-neutral-500 text-sm">Total Berat Keseluruhan Barang</p>
+                <p class="text-sm text-neutral-500">Total Berat Keseluruhan Barang</p>
                 <p class="text-3xl">{{$totalWeightInShowcase}}</p>
             </div>
             <div class="p-4 bg-white border rounded-lg">
@@ -224,7 +226,7 @@
                 @endforeach
             </div>
         </div>
-
+    </form>
     </div>
 </x-layout>
 @include('components.modal.error-form-modal')
