@@ -32,6 +32,15 @@ class GoodsShowcaseExport implements FromCollection, WithStyles, WithHeadings
         if (!empty($this->filters['name'])) {
             $query->where('name', 'LIKE', '%' . $this->filters['name'] . '%');
         }
+
+        if (!empty($this->filters['size'])) {
+            $query->where('size', 'LIKE', '%' . $this->filters['size'] . '%');
+        }
+
+        if (!empty($this->filters['ask_price'])) {
+            $query->where('ask_price', 'LIKE', '%' . $this->filters['ask_price'] . '%');
+        }
+        
         if (!empty($this->filters['date_entry'])) {
             $query->where('date_entry', 'LIKE', '%' . $this->filters['date_entry'] . '%');
         }
