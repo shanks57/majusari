@@ -33,60 +33,60 @@
                         <th class="px-6 py-3 text-left">
                             <input type="checkbox" id="select-all">
                         </th>
-                        <th class="py-3 px-4 text-left !font-normal">Kode Barang
+                        <th class="py-3 px-4 !font-normal text-center">Kode Barang
                              <input 
                                 type="text" 
                                 name="code" 
                                 placeholder="" 
                                 value="{{ request('code') }}" 
                                 onchange="this.form.submit()" 
-                                class="p-1 text-sm text-black border rounded-md">
+                                class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
-                        <th class="py-3 px-4 text-left !font-normal">Tanggal Masuk
+                        <th class="py-3 px-4 !font-normal text-center">Tanggal Masuk
                             <input 
                                 type="date" 
                                 name="date_entry" 
                                 placeholder="" 
                                 value="{{ request('date_entry') }}" 
                                 onchange="this.form.submit()" 
-                                class="p-1 text-sm text-black border rounded-md">
+                                class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-6 text-left !font-normal">Gambar</th>
-                        <th class="py-3 px-4 text-left !font-normal">Barang & Merek
+                        <th class="py-3 px-4 !font-normal text-center">Barang
                            <input 
                                 type="text" 
                                 name="name" 
                                 placeholder="" 
                                 value="{{ request('name') }}" 
                                 onchange="this.form.submit()" 
-                                class="p-1 text-sm text-black border rounded-md">
+                                class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
-                        <th class="py-3 px-4 text-left !font-normal">Berat & Kadar
+                        <th class="py-3 px-4 !font-normal text-center">Berat
                              <input 
                                 type="number" 
                                 name="size" 
                                 placeholder="" 
                                 value="{{ request('size') }}" 
                                 onchange="this.form.submit()" 
-                                class="p-1 text-sm text-black border rounded-md">
+                                class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
-                        <th class="py-3 px-4 text-left !font-normal">Kategori
+                        <th class="py-3 px-4 !font-normal text-center">Kategori
                             <input 
                                 type="text" 
                                 name="goods_type" 
                                 placeholder="" 
                                 value="{{ request('goods_type') }}" 
                                 onchange="this.form.submit()" 
-                                class="p-1 text-sm text-black border rounded-md">
+                                class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
-                        <th class="py-3 px-4 text-left !font-normal">Harga Jual & Nilai Tukar
+                        <th class="py-3 px-4 !font-normal text-center">Harga
                              <input 
                                 type="number" 
                                 name="ask_price" 
                                 placeholder="" 
                                 value="{{ request('ask_price') }}" 
                                 onchange="this.form.submit()" 
-                                class="p-1 text-sm text-black border rounded-md">
+                                class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-6 text-center !font-normal"></th>
 
