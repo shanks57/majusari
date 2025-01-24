@@ -125,11 +125,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sales/export-pdf', [TransactionController::class, 'exportPDF']);
     Route::get('sales/{id}/print-nota', [TransactionController::class, 'printNota']);
 
-    Route::get('/goods/showcases/export-pdf', [GoodsController::class, 'downloadPdf']);
+ 
+});
+   Route::get('/goods/showcases/export-pdf', [GoodsController::class, 'downloadPdf']);
     Route::get('/goods/showcases/export-excel', [GoodsController::class, 'exportExcel']);
 
     Route::get('/goods/safe/export-pdf', [SafeStorageController::class, 'downloadPdf']);
     Route::get('/goods/safe/export-excel', [SafeStorageController::class, 'exportExcel']);
-});
-
 Route::get('sales/{id}/print-nota', [TransactionController::class, 'printNota']);

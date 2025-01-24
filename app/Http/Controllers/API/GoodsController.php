@@ -13,6 +13,7 @@ use Milon\Barcode\DNS2D;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\GoodsShowcaseExport;
+use App\Exports\GoodsShowcaseExportApi;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class GoodsController extends Controller
@@ -392,7 +393,7 @@ class GoodsController extends Controller
         $fileName = "Laporan-Data-Barang-Etalase_{$timestamp}.xlsx";
 
         // Generate file Excel
-        $excelData = Excel::raw(new GoodsShowcaseExport, \Maatwebsite\Excel\Excel::XLSX);
+        $excelData = Excel::raw(new GoodsShowcaseExportApi, \Maatwebsite\Excel\Excel::XLSX);
 
         return response($excelData, 200, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
