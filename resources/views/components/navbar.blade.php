@@ -1,6 +1,6 @@
-<nav class="px-[80px] py-6 bg-white flex justify-between items-center border-b">
-    <a href="/" class="text-2xl font-semibold font-inter">Majusari</a>
-    <div class="flex items-center justify-center gap-2 text-lg font-medium leading-7">
+<nav class="px-4 md:px-[80px] py-6 bg-white grid grid-cols-2 md:flex justify-between items-center border-b gap-4">
+    <a href="/" class="text-lg md:text-2xl font-semibold font-inter">Majusari</a>
+    <div class="hidden md:flex items-center justify-center gap-2 text-lg font-medium leading-7">
         <a href="/"
             class="px-6 py-3 rounded-md  {{ request()->is('/') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
             Dashboard
@@ -45,7 +45,7 @@
         </a>
 
     </div>
-    <div class="flex items-center gap-6">
+    <div class="hidden md:flex items-center gap-6">
 
         @php
         $notificationCount = \App\Models\Cart::whereNotNull('complaint')
@@ -124,6 +124,123 @@
             </div>
         </div>
     </div>
+    <button type="button" class="md:hidden block ml-auto" id="mobile-menu-button" onclick="toggleMobileMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+    </button>
+    <div class="md:hidden hidden col-span-2" id="mobile-menu">
+        <div class="flex flex-col gap-4">
+            <a href="/"
+                class="px-6 py-3 rounded-md  {{ request()->is('/') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
+                Dashboard
+            </a>
+            @role('superadmin')
+            <x-dropdown
+                class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('master/*') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
+                title="Master">
+                <div class="py-1" role="none">
+                    <a href="/master/showcases"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white">
+                        Etalase
+                    </a>
+                    <a href="/master/types"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white">
+                        Jenis Barang
+                    </a>
+                    <a href="/master/brands"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white">
+                        Merk Barang
+                    </a>
+                    <a href="/master/customers"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white">
+                        Pelanggan
+                    </a>
+                    <a href="/master/employees"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white">
+                        Pegawai
+                    </a>
+                </div>
+            </x-dropdown>
+            @endrole
+            <x-dropdown
+                class="px-6 py-3 rounded-md flex items-center gap-1 {{ request()->is('goods/*') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}"
+                title="Barang">
+                <div class="py-1" role="none">
+                    <a href="/goods/showcases" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                        id="menu-item-0">Etalase</a>
+                    @role('superadmin')
+                    <a href="/goods/trays" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                        id="menu-item-1">Detail Baki</a>
+                    <a href="/goods/safe" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                        id="menu-item-2">Brankas</a>
+                    @endrole
+                </div>
+            </x-dropdown>
+
+            <a href="/sales"
+                class="px-6 py-3 rounded-md  {{ request()->is('sales') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
+                Penjualan
+            </a>
+        </div>
+    </div>
+    <div id="mobile-menu-content" class="md:hidden hidden ">
+        <div class="flex flex-col gap-4">
+            <a href="/cart"
+                class="px-6 py-3 rounded-md  {{ request()->is('carts') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
+                Keranjang
+            </a>
+            <a href="{{ route('notification') }}"
+                class="px-6 py-3 rounded-md {{ request()->is('notification') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100 hover:text-purple-700' }}">
+                Notifikasi
+                @php
+                $notificationCount = \App\Models\Cart::whereNotNull('complaint')
+                ->where('status_price', 2)
+                ->count();
+                @endphp
+                @if ($notificationCount > 0)
+                <span
+                    class="ml-2 inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-pink-500 rounded-full">
+                    {{ $notificationCount > 99 ? '99+' : $notificationCount }}
+                </span>
+                @endif
+            </a>
+
+            <a href="/profile"
+                class="px-6 py-3 rounded-md  {{ request()->is('profile') ? 'bg-purple-100 text-purple-700 font-semibold' : 'bg-white hover:bg-purple-100  hover:text-purple-700' }}">
+                Profil
+            </a>
+            <button type="button"
+                class="flex w-full items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-logout-modal"
+                data-hs-overlay="#hs-logout-modal">
+                Logout
+            </button>
+        </div>
+    </div>
+    <script>
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.add('hidden');
+            }
+
+            const mobileMenuContent = document.getElementById('mobile-menu-content');
+
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenuContent.classList.add('hidden');
+            } else {
+                mobileMenuContent.classList.remove('hidden');
+            }
+        }
+    </script>
+
 </nav>
 
 @include('components.modal.modal-logout')

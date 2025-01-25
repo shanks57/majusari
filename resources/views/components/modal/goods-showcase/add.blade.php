@@ -83,7 +83,7 @@
                     @error('image')
                     <span class="text-sm text-red-500">{{ $message }}</span>
                     @enderror
-                </div>  
+                </div>
 
                 <div class="px-4 mb-4">
                     <label for="name" class="block text-sm text-gray-600">Nama Barang</label>

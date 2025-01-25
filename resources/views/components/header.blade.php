@@ -1,4 +1,4 @@
-<div class="flex items-center justify-between">
+<div class="flex flex-wrap gap-4 items-center justify-between">
     <div>
         <h2 class="text-3xl tracking-wide">{{ $title }}</h2>
         <div class="flex gap-3 mt-4">

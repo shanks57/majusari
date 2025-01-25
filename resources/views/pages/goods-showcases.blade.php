@@ -190,8 +190,8 @@
 
         </div>
         <div
-            class="flex items-center justify-between p-4 mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
-                    <div>Menamdipilkan {{ $goodShowcases->count() }} Data Etalase</div>
+            class="flex flex-wrap gap-4 items-center justify-between p-4 mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
+                    <div>Menampilkan {{ $goodShowcases->count() }} Data Etalase</div>
                     <div class="flex items-center justify-between">
                         <span class="mr-2">Baris diper halaman</span> 
                         
@@ -209,7 +209,7 @@
                         <span>{{ $goodShowcases->appends(request()->all())->links() }}</span>
                     </div>
         </div>
-        <div class="grid grid-cols-3 gap-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div class="p-4 bg-white border rounded-lg">
                 <p class="text-sm text-neutral-500">Total Barang</p>
                 <p class="text-3xl">{{$totalItemsInShowcase}}</p>

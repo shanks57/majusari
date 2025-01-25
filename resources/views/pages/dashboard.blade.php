@@ -12,7 +12,7 @@
     <x-header title="Dashboard" subtitle="Dashboard">
     </x-header>
 
-    <div x-data="{ activeTab: 'summary' }" class="flex p-1 mt-4 mb-6 bg-gray-100 rounded-lg w-fit">
+    <div x-data="{ activeTab: 'summary' }" class="flex flex-wrap p-1 mt-4 mb-6 bg-gray-100 rounded-lg w-fit">
         <button id="tab-summary" @click="activeTab = 'summary'" :class="{'bg-white': activeTab === 'summary'}"
             class="px-4 py-2 rounded tab-button"
             :class="{'active': activeTab === 'summary', 'bg-white': activeTab !== 'summary'}">Ringkasan</button>
@@ -89,8 +89,8 @@
                 <div class="mt-3 text-xs text-gray-400">Total barang terjual</div>
             </div>
         </div>
-        <div class="grid grid-cols-12 gap-4 pb-4">
-            <div class="col-span-7 p-4 bg-white border rounded-lg">
+        <div class="grid grid-cols-1  md:grid-cols-12 gap-4 pb-4">
+            <div class="md:col-span-7 p-4 bg-white border rounded-lg">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-semibold">Ringkasan Penjualan</h2>
                     <a href="/sales" class="flex items-center text-sm hover:underline">
@@ -120,7 +120,7 @@
                 </div>
                 <canvas id="sales-chart" class="h-64 mt-4"></canvas>
             </div>
-            <div class="col-span-5 px-6 pt-6 pb-4 bg-white border rounded-xl">
+            <div class="md:col-span-5 px-6 pt-6 pb-4 bg-white border rounded-xl">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="mb-1 text-xl font-bold">Kurs Emas</h2>
