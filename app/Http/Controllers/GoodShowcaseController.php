@@ -118,8 +118,8 @@ class GoodShowcaseController extends Controller
             'tray_id' => 'required|exists:trays,id',
             'position' => 'required|string|max:255',
             'date_entry' => 'required|date',
-            'camera_image' => 'nullable|image|max:2048', // Maksimal 2MB
-            'gallery_image' => 'nullable|image|max:2048', // Maksimal 2MB
+            'camera_image' => 'nullable|image|max:4096', // Maksimal 4MB
+            'gallery_image' => 'nullable|image|max:4096', // Maksimal 4MB
         ]);
 
         try {
@@ -214,7 +214,7 @@ class GoodShowcaseController extends Controller
             'bid_price' => 'required|numeric',
             'type_id' => 'required|exists:goods_types,id',
             'date_entry' => 'required|date',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
         ]);
 
         try {
