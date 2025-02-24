@@ -32,15 +32,15 @@ class GoodsShowcaseExport implements FromCollection, WithStyles, WithHeadings
         if (!empty($this->filters['name'])) {
             $query->where('name', 'LIKE', '%' . $this->filters['name'] . '%');
         }
-
         if (!empty($this->filters['size'])) {
             $query->where('size', 'LIKE', '%' . $this->filters['size'] . '%');
         }
-
+        if (!empty($this->filters['rate'])) {
+            $query->where('rate', 'LIKE', '%' . $this->filters['rate'] . '%');
+        }
         if (!empty($this->filters['ask_price'])) {
             $query->where('ask_price', 'LIKE', '%' . $this->filters['ask_price'] . '%');
         }
-        
         if (!empty($this->filters['date_entry'])) {
             $query->where('date_entry', 'LIKE', '%' . $this->filters['date_entry'] . '%');
         }
@@ -50,6 +50,15 @@ class GoodsShowcaseExport implements FromCollection, WithStyles, WithHeadings
             });
         }
 
+        // **Sorting Data**
+        $sortBy = $this->filters['order_by'] ?? 'date_entry'; // Default sort by 'date_entry'
+        $sortDirection = $this->filters['sort'] ?? 'desc'; // Default descending
+
+        if (in_array($sortBy, ['code', 'date_entry', 'name', 'size', 'rate', 'ask_price']) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortBy, $sortDirection);
+        }
+
+        // **Ambil Data**
         return $query->get()->map(function ($goods) {
             return [
                 'code' => $goods->code,
