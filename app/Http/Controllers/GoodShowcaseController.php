@@ -310,6 +310,19 @@ class GoodShowcaseController extends Controller
         }
     }
 
+    public function deleteMultiple(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'Tidak ada item yang dipilih.']);
+        }
+
+        Goods::whereIn('id', $ids)->delete();
+
+        return response()->json(['success' => true, 'message' => 'Item berhasil dihapus.']);
+    }
+
     public function printBarcode($id)
     {
         try {

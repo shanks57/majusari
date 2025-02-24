@@ -24,7 +24,10 @@
             </a>
         </div>
 
-        <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
+        <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg" x-data="multiDelete()">
+             <button @click="deleteSelected()" class="px-4 py-2 bg-red-600 text-white rounded">
+                Hapus Terpilih
+            </button>
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
                     @php
@@ -35,7 +38,7 @@
                     <input type="hidden" name="sort_direction" value="{{ request('sort_direction', 'desc') }}">
                     <tr class="w-full bg-[#79799B] text-white text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
-                            <input type="checkbox" id="select-all">
+                            <input type="checkbox" id="select-all" @click="toggleAll">
                         </th>
                         <th class="py-3 px-4 !font-normal text-center">
                             Kode Barang
@@ -119,93 +122,96 @@
                     </tr>
                 </thead>
                 <tbody class="text-sm font-light text-gray-600">
+
                     @foreach ($goodShowcases as $goodShowcase)
-                    <tr class="border-b border-gray-200 hover:bg-gray-100">
-                        <td class="px-6 py-3 text-left">
-                            <input type="checkbox" class="select-row">
-                        </td>
-                        <td class="px-6 py-3 text-left">{{ $goodShowcase->code }}</td>
-                        <td class="px-6 py-3 text-left">
-                            {{ \Carbon\Carbon::parse($goodShowcase->date_entry)->translatedFormat('d F Y') }}
-                        </td>
-                        <td class="px-6 py-3 text-left">
-                            <button type="button" aria-haspopup="dialog" aria-expanded="false"
-                                aria-controls="hs-image-goods-modal-{{ $goodShowcase->id }}"
-                                data-hs-overlay="#hs-image-goods-modal-{{ $goodShowcase->id }}">
-                                <img src="{{ asset('storage/' . $goodShowcase->image) }}" class="rounded-full size-10" class="lazyload"
-                                    alt="{{ $goodShowcase->name }}">
-                            </button>
-                            {{-- modal image sale --}}
-                            @include('components.modal.image-goods')
-                        </td>
-                        <td class="px-6 py-3 text-left truncate max-w-20">
-                            {{ $goodShowcase->name }} - {{ $goodShowcase->merk->name }}
-                        </td>
-                        <td class="px-6 py-3 text-left">
-                            {{ $goodShowcase->size }} gr
-                        </td>
-                        <td class="px-6 py-3 text-left">
-                            <span
-                                class="bg-[#FFF6ED] text-[#C4320A] leading-6 rounded-xl px-2">{{ $goodShowcase->rate }}%</span>
-                        </td>
-                        <td class="px-6 py-3 text-left truncate max-w-20">{{ $goodShowcase->goodsType->name }}</td>
-                        <td class="flex flex-col px-6 py-3 text-left">
-                            <span><i class="ph ph-arrow-line-up-right text-[#027A48]"></i> Jual
-                                {{ 'Rp.' . number_format($goodShowcase->ask_price, 0, ',', '.') }}
-                                <span
-                                    class="bg-[#ECFDF3] text-[#027A48] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->ask_rate }}%
-                                </span>
-                            </span>
-                            <span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i> Bawah
-                                {{ 'Rp.' . number_format($goodShowcase->bid_price, 0, ',', '.') }}
-                                <span
-                                    class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->bid_rate }}%
-                                </span>
-                            </span>
-                        </td>
-                        <td class="px-6 py-3 text-center">
-                            <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
-                                <button id="hs-dropright" type="button"
-                                    class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]"
-                                    aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
-                                    <i class="ph ph-dots-three-outline-vertical"></i> Opsi
+
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="px-6 py-3 text-left">
+                                <input type="checkbox" class="select-row" x-model="selectedItems" value="{{ $goodShowcase->id }}">
+                            </td>
+                            <td class="px-6 py-3 text-left">{{ $goodShowcase->code }}</td>
+                            <td class="px-6 py-3 text-left">
+                                {{ \Carbon\Carbon::parse($goodShowcase->date_entry)->translatedFormat('d F Y') }}
+                            </td>
+                            <td class="px-6 py-3 text-left">
+                                <button type="button" aria-haspopup="dialog" aria-expanded="false"
+                                    aria-controls="hs-image-goods-modal-{{ $goodShowcase->id }}"
+                                    data-hs-overlay="#hs-image-goods-modal-{{ $goodShowcase->id }}">
+                                    <img src="{{ asset('storage/' . $goodShowcase->image) }}" class="rounded-full size-10" class="lazyload"
+                                        alt="{{ $goodShowcase->name }}">
                                 </button>
-                                <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl p-3"
-                                    role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
-                                    <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
-                                        href="{{ route('goods-showcase.printBarcode', ['id' => $goodShowcase->id]) }}">
-                                        <i class="ph ph-barcode"></i>
-                                        Cetak Barcode
-                                    </a>
-                                    @role('superadmin')
-                                    <button type="button"
-                                        class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 "
-                                        aria-haspopup="dialog" aria-expanded="false"
-                                        aria-controls="hs-move-to-safe-modal-{{ $goodShowcase->id }}"
-                                        data-hs-overlay="#hs-move-to-safe-modal-{{ $goodShowcase->id }}">
-                                        <i class="ph ph-vault"></i>
-                                        Pindahkan Ke Brankas
+                                {{-- modal image sale --}}
+                                @include('components.modal.image-goods')
+                            </td>
+                            <td class="px-6 py-3 text-left truncate max-w-20">
+                                {{ $goodShowcase->name }} - {{ $goodShowcase->merk->name }}
+                            </td>
+                            <td class="px-6 py-3 text-left">
+                                {{ $goodShowcase->size }} gr
+                            </td>
+                            <td class="px-6 py-3 text-left">
+                                <span
+                                    class="bg-[#FFF6ED] text-[#C4320A] leading-6 rounded-xl px-2">{{ $goodShowcase->rate }}%</span>
+                            </td>
+                            <td class="px-6 py-3 text-left truncate max-w-20">{{ $goodShowcase->goodsType->name }}</td>
+                            <td class="flex flex-col px-6 py-3 text-left">
+                                <span><i class="ph ph-arrow-line-up-right text-[#027A48]"></i> Jual
+                                    {{ 'Rp.' . number_format($goodShowcase->ask_price, 0, ',', '.') }}
+                                    <span
+                                        class="bg-[#ECFDF3] text-[#027A48] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->ask_rate }}%
+                                    </span>
+                                </span>
+                                <span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i> Bawah
+                                    {{ 'Rp.' . number_format($goodShowcase->bid_price, 0, ',', '.') }}
+                                    <span
+                                        class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->bid_rate }}%
+                                    </span>
+                                </span>
+                            </td>
+                            <td class="px-6 py-3 text-center">
+                                <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
+                                    <button id="hs-dropright" type="button"
+                                        class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]"
+                                        aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                                        <i class="ph ph-dots-three-outline-vertical"></i> Opsi
                                     </button>
-                                    <button type="button" class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 w-full"
-                                        aria-haspopup="dialog" aria-expanded="false"
-                                        aria-controls="hs-edit-modal-{{ $goodShowcase->id }}"
-                                        data-hs-overlay="#hs-edit-modal-{{ $goodShowcase->id }}">
-                                        <i class="ph ph-pencil-line"></i>
-                                        Edit
-                                    </button>
-                                    <button type="button"
-                                        class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054]  w-full focus:outline-none focus:bg-gray-100"
-                                        aria-haspopup="dialog" aria-expanded="false"
-                                        aria-controls="hs-delete-modal-{{ $goodShowcase->id }}"
-                                        data-hs-overlay="#hs-delete-modal-{{ $goodShowcase->id }}">
-                                        <i class="ph ph-trash"></i>
-                                        Hapus
-                                    </button>
-                                    @endrole
+                                    <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl p-3"
+                                        role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
+                                        <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
+                                            href="{{ route('goods-showcase.printBarcode', ['id' => $goodShowcase->id]) }}">
+                                            <i class="ph ph-barcode"></i>
+                                            Cetak Barcode
+                                        </a>
+                                        @role('superadmin')
+                                        <button type="button"
+                                            class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 "
+                                            aria-haspopup="dialog" aria-expanded="false"
+                                            aria-controls="hs-move-to-safe-modal-{{ $goodShowcase->id }}"
+                                            data-hs-overlay="#hs-move-to-safe-modal-{{ $goodShowcase->id }}">
+                                            <i class="ph ph-vault"></i>
+                                            Pindahkan Ke Brankas
+                                        </button>
+                                        <button type="button" class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100 w-full"
+                                            aria-haspopup="dialog" aria-expanded="false"
+                                            aria-controls="hs-edit-modal-{{ $goodShowcase->id }}"
+                                            data-hs-overlay="#hs-edit-modal-{{ $goodShowcase->id }}">
+                                            <i class="ph ph-pencil-line"></i>
+                                            Edit
+                                        </button>
+                                        <button type="button"
+                                            class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054]  w-full focus:outline-none focus:bg-gray-100"
+                                            aria-haspopup="dialog" aria-expanded="false"
+                                            aria-controls="hs-delete-modal-{{ $goodShowcase->id }}"
+                                            data-hs-overlay="#hs-delete-modal-{{ $goodShowcase->id }}">
+                                            <i class="ph ph-trash"></i>
+                                            Hapus
+                                        </button>
+                                        @endrole
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+
+                        </tr>
 
                     {{-- modal pindah ke brankas --}}
                     @include('components.modal.goods-showcase.modal-move-to-safe')
@@ -298,4 +304,43 @@
             }
         }));
     });
+</script>
+
+<script>
+function multiDelete() {
+    return {
+        selectedItems: [],
+        toggleAll() {
+            let checkboxes = document.querySelectorAll('.select-row');
+            if (this.selectedItems.length === checkboxes.length) {
+                this.selectedItems = [];
+            } else {
+                this.selectedItems = [...checkboxes].map(cb => cb.value);
+            }
+        },
+        deleteSelected() {
+            if (this.selectedItems.length === 0) {
+                alert('Pilih setidaknya satu item untuk dihapus.');
+                return;
+            }
+            if (confirm('Apakah Anda yakin ingin menghapus item yang dipilih?')) {
+                fetch('{{ route('goodShowcases.deleteMultiple') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ids: this.selectedItems })
+                }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Gagal menghapus item.');
+                    }
+                });
+            }
+        }
+    };
+}
 </script>
