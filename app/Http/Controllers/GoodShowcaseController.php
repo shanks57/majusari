@@ -21,46 +21,55 @@ class GoodShowcaseController extends Controller
     public function index(Request $request)
     {
         $paginate = $request->get('paginate', 10);
+        $sortField = $request->get('sort_field', 'created_at');
+        $sortDirection = $request->get('sort_direction', 'desc');
 
         $query = Goods::where('availability', 1)
             ->where('safe_status', 0);
 
         // Filter berdasarkan input dari form
-        if ($request->has('code') && $request->code != '') {
+        if ($request->filled('code')) {
             $query->where('code', 'LIKE', '%' . $request->code . '%');
         }
 
-        if ($request->has('date_entry') && $request->date_entry != '') {
+        if ($request->filled('date_entry')) {
             $query->where('date_entry', 'LIKE', '%' . $request->date_entry . '%');
         }
 
-        if ($request->has('name') && $request->name != '') {
+        if ($request->filled('name')) {
             $query->where('name', 'LIKE', '%' . $request->name . '%');
         }
 
-        if ($request->has('size') && $request->size != '') {
+        if ($request->filled('size')) {
             $query->where('size', 'LIKE', '%' . $request->size . '%');
         }
 
-        if ($request->has('goods_type') && $request->goods_type != '') {
+        if ($request->filled('rate')) {
+            $query->where('rate', 'LIKE', '%' . $request->rate . '%');
+        }
+
+        if ($request->filled('goods_type')) {
             $query->whereHas('goodsType', function ($q) use ($request) {
                 $q->where('name', 'LIKE', '%' . $request->goods_type . '%');
             });
         }
 
-        if ($request->has('ask_price') && $request->ask_price != '') {
+        if ($request->filled('ask_price')) {
             $query->where('ask_price', $request->ask_price);
         }
 
-        $goodShowcases = $query->latest()
-        ->paginate($paginate)
-        ->onEachSide(0);
+        // Sorting berdasarkan request
+        if (in_array($sortField, ['code', 'date_entry', 'name', 'size', 'rate', 'ask_price'])) {
+            $query->orderBy($sortField, $sortDirection);
+        } else {
+            $query->latest();
+        }
+
+        $goodShowcases = $query->paginate($paginate)->onEachSide(0);
 
         $types = GoodsType::where('status', 1)->get();
         $brands = Merk::where('status', 1)->get();
-
         $showcases = Showcase::all();
-
         $trays = Tray::select('id', 'code', 'showcase_id', 'capacity')->get();
 
         $occupiedPositions = Goods::select('tray_id', 'position')
@@ -96,7 +105,12 @@ class GoodShowcaseController extends Controller
         $totalItemsInShowcase = $goodsInShowcase->count();
         $totalWeightInShowcase = $goodsInShowcase->sum('size');
 
-        return view('pages.goods-showcases', compact('goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase','paginate'));
+        return view('pages.goods-showcases', compact(
+            'goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 
+            'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 
+            'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase', 
+            'paginate'
+        ));
     }
 
     public function store(Request $request)
@@ -318,7 +332,6 @@ class GoodShowcaseController extends Controller
 
     public function downloadPdf(Request $request)
     {
-        // dd($request->all());
         // Sama seperti di index, terapkan filter
         $query = Goods::where('availability', 1)
             ->where('safe_status', 0);
@@ -339,6 +352,10 @@ class GoodShowcaseController extends Controller
             $query->where('size', 'LIKE', '%' . $request->size . '%');
         }
 
+        if ($request->has('rate') && $request->rate != '') {
+            $query->where('rate', 'LIKE', '%' . $request->rate . '%');
+        }
+
         if ($request->has('goods_type') && $request->goods_type != '') {
             $query->whereHas('goodsType', function ($q) use ($request) {
                 $q->where('name', 'LIKE', '%' . $request->goods_type . '%');
@@ -349,9 +366,16 @@ class GoodShowcaseController extends Controller
             $query->where('ask_price', $request->ask_price);
         }
 
+        // Sorting berdasarkan request
+        $sortBy = $request->get('order_by', 'date_entry'); // Default sort by 'date_entry'
+        $sortDirection = $request->get('sort', 'desc'); // Default descending
+
+        if (in_array($sortBy, ['code', 'date_entry', 'name', 'size', 'rate', 'ask_price']) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortBy, $sortDirection);
+        }
+
         // Ambil data berdasarkan filter
         $goodsShowcase = $query->get();
-        // dd($goodsShowcase);
 
         // Generate PDF
         $pdf = PDF::loadView('/pdf-page/goods-showcase', compact('goodsShowcase'))
@@ -389,6 +413,10 @@ class GoodShowcaseController extends Controller
             $query->where('size', 'LIKE', '%' . $request->size . '%');
         }
 
+        if ($request->has('rate') && $request->rate != '') {
+            $query->where('rate', 'LIKE', '%' . $request->rate . '%');
+        }
+
         if ($request->has('goods_type') && $request->goods_type != '') {
             $query->whereHas('goodsType', function ($q) use ($request) {
                 $q->where('name', 'LIKE', '%' . $request->goods_type . '%');
@@ -397,6 +425,13 @@ class GoodShowcaseController extends Controller
 
         if ($request->has('ask_price') && $request->ask_price != '') {
             $query->where('ask_price', $request->ask_price);
+        }
+
+        $sortBy = request()->get('order_by', 'date_entry'); // Default sort by 'date_entry'
+        $sortDirection = request()->get('sort', 'desc'); // Default descending
+
+        if (in_array($sortBy, ['code', 'date_entry', 'name', 'size', 'rate', 'ask_price']) && in_array($sortDirection, ['asc', 'desc'])) {
+            $query->orderBy($sortBy, $sortDirection);
         }
 
         // Ambil data berdasarkan filter

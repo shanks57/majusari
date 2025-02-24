@@ -12,7 +12,6 @@
         
 
     <form action="{{ route('goods.showcase') }}" method="GET">
-
         <div class="inline-flex justify-center w-full mx-auto rounded-md" role="group">
             <a href="{{ route('goods.showcase.export-pdf', request()->all()) }}" class="p-3 font-normal text-white bg-gray-400 rounded-s-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
                 PDF
@@ -28,68 +27,95 @@
         <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg">
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
                 <thead>
-                    
-                    <tr class="w-full bg-[#79799B] text-white  text-sm leading-normal">
+                    @php
+                        $sortField = request('sort_field', 'created_at');
+                        $sortDirection = request('sort_direction', 'desc');
+                    @endphp
+                    <input type="hidden" name="sort_field" value="{{ request('sort_field', 'created_at') }}">
+                    <input type="hidden" name="sort_direction" value="{{ request('sort_direction', 'desc') }}">
+                    <tr class="w-full bg-[#79799B] text-white text-sm leading-normal">
                         <th class="px-6 py-3 text-left">
                             <input type="checkbox" id="select-all">
                         </th>
-                        <th class="py-3 px-4 !font-normal text-center">Kode Barang
-                             <input 
-                                type="text" 
-                                name="code" 
-                                placeholder="" 
-                                value="{{ request('code') }}" 
-                                onchange="this.form.submit()" 
-                                class="p-1 mt-1 text-sm text-black border rounded-md">
+                        <th class="py-3 px-4 !font-normal text-center">
+                            Kode Barang
+                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'code', 'sort_direction' => ($sortField === 'code' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                @if($sortField === 'code')
+                                    {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
+                                @else
+                                    🔼🔽
+                                @endif
+                            </a>
+                            <input type="text" name="code" value="{{ request('code') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
-                        <th class="py-3 px-4 !font-normal text-center">Tanggal Masuk
-                            <input 
-                                type="date" 
-                                name="date_entry" 
-                                placeholder="" 
-                                value="{{ request('date_entry') }}" 
-                                onchange="this.form.submit()" 
-                                class="p-1 mt-1 text-sm text-black border rounded-md">
+                        <th class="py-3 px-4 !font-normal text-center">
+                            Tanggal Masuk
+                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'date_entry', 'sort_direction' => ($sortField === 'date_entry' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                @if($sortField === 'date_entry')
+                                    {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
+                                @else
+                                    🔼🔽
+                                @endif
+                            </a>
+                            <input type="date" name="date_entry" value="{{ request('date_entry') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-6 text-left !font-normal">Gambar</th>
-                        <th class="py-3 px-4 !font-normal text-center">Barang
-                           <input 
-                                type="text" 
-                                name="name" 
-                                placeholder="" 
-                                value="{{ request('name') }}" 
-                                onchange="this.form.submit()" 
-                                class="p-1 mt-1 text-sm text-black border rounded-md">
+                        <th class="py-3 px-4 !font-normal text-center">
+                            Barang
+                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'name', 'sort_direction' => ($sortField === 'name' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                @if($sortField === 'name')
+                                    {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
+                                @else
+                                    🔼🔽
+                                @endif
+                            </a>
+                            <input type="text" name="name" value="{{ request('name') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
-                        <th class="py-3 px-4 !font-normal text-center">Berat
-                             <input 
-                                type="number" 
-                                name="size" 
-                                placeholder="" 
-                                value="{{ request('size') }}" 
-                                onchange="this.form.submit()" 
-                                class="p-1 mt-1 text-sm text-black border rounded-md">
+                        <th class="py-3 px-4 !font-normal text-center">
+                            Berat
+                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'size', 'sort_direction' => ($sortField === 'size' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                @if($sortField === 'size')
+                                    {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
+                                @else
+                                    🔼🔽
+                                @endif
+                            </a>
+                            <input type="number" name="size" value="{{ request('size') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
-                        <th class="py-3 px-4 !font-normal text-center">Kategori
-                            <input 
-                                type="text" 
-                                name="goods_type" 
-                                placeholder="" 
-                                value="{{ request('goods_type') }}" 
-                                onchange="this.form.submit()" 
-                                class="p-1 mt-1 text-sm text-black border rounded-md">
+                        <th class="py-3 px-4 !font-normal text-center">
+                            Kadar
+                           <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'rate', 'sort_direction' => ($sortField === 'rate' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                @if($sortField === 'rate')
+                                    {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
+                                @else
+                                    🔼🔽
+                                @endif
+                            </a>
+                            <input type="number" name="rate" value="{{ request('rate') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
-                        <th class="py-3 px-4 !font-normal text-center">Harga
-                             <input 
-                                type="number" 
-                                name="ask_price" 
-                                placeholder="" 
-                                value="{{ request('ask_price') }}" 
-                                onchange="this.form.submit()" 
-                                class="p-1 mt-1 text-sm text-black border rounded-md">
+                        <th class="py-3 px-4 !font-normal text-center">
+                            Kategori
+                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'goods_type', 'sort_direction' => ($sortField === 'goods_type' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                @if($sortField === 'goods_type')
+                                    {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
+                                @else
+                                    🔼🔽
+                                @endif
+                            </a>
+                            <input type="text" name="goods_type" value="{{ request('goods_type') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                        </th>
+                        <th class="py-3 px-4 !font-normal text-center">
+                            Harga
+                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'ask_price', 'sort_direction' => ($sortField === 'ask_price' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                @if($sortField === 'ask_price')
+                                    {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
+                                @else
+                                    🔼🔽
+                                @endif
+                            </a>
+                            <input type="number" name="ask_price" value="{{ request('ask_price') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-6 text-center !font-normal"></th>
-
                     </tr>
                 </thead>
                 <tbody class="text-sm font-light text-gray-600">
@@ -116,8 +142,11 @@
                             {{ $goodShowcase->name }} - {{ $goodShowcase->merk->name }}
                         </td>
                         <td class="px-6 py-3 text-left">
-                            {{ $goodShowcase->size }} gr <span
-                                class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->rate }}%</span>
+                            {{ $goodShowcase->size }} gr
+                        </td>
+                        <td class="px-6 py-3 text-left">
+                            <span
+                                class="bg-[#FFF6ED] text-[#C4320A] leading-6 rounded-xl px-2">{{ $goodShowcase->rate }}%</span>
                         </td>
                         <td class="px-6 py-3 text-left truncate max-w-20">{{ $goodShowcase->goodsType->name }}</td>
                         <td class="flex flex-col px-6 py-3 text-left">
