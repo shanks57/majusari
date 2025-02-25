@@ -12,7 +12,7 @@ use Milon\Barcode\DNS1D;
 use Milon\Barcode\DNS2D;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Exports\GoodsShowcaseExport;
+use Illuminate\Support\Facades\Response;
 use App\Exports\GoodsShowcaseExportApi;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -368,22 +368,15 @@ class GoodsController extends Controller
             ->where('safe_status', 0)
             ->get();
 
-        // Load view dan generate PDF
-        $pdf = PDF::loadView('/pdf-page/goods-showcase', compact('goodsShowcase'))
-            ->setPaper('a4', 'landscape');
+        // Render tampilan ke PDF
+        $pdf = Pdf::loadView('pdf.goods_showcase', compact('goodsShowcase'))
+        ->setPaper('a4', 'landscape');
 
-        $timestamp = now()->format('Y-m-d_H-i-s');
-        $fileName = "Laporan-Data-Barang-Etalase_{$timestamp}.pdf";
-
-        return response($pdf->output(), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => (new ResponseHeaderBag())->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $fileName
-            ),
-            'Cache-Control' => 'no-store, no-cache',
-            'Pragma' => 'no-cache',
-        ]);
+            // Kembalikan respons PDF
+            return Response::make($pdf->output(), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="goods_showcase.pdf"',
+            ]);
     }
 
     public function exportExcel()

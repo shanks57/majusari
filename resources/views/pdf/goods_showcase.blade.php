@@ -73,25 +73,4 @@
         </tbody>
     </table>
 </body>
-<script>
-    fetch('http://your-api.test/api/export-goods-showcase', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/pdf',
-        },
-    })
-    .then(response => response.blob())
-    .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'goods_showcase.pdf';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-    })
-    .catch(error => console.error('Error:', error));
-
-</script>
 </html>
