@@ -25,7 +25,7 @@
         </div>
 
         <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg" x-data="multiDelete()">
-             <button @click="deleteSelected()" class="px-4 py-2 bg-red-600 text-white rounded">
+             <button @click="deleteSelected()" class="m-2 px-4 py-2 bg-red-600 text-white rounded">
                 Hapus Terpilih
             </button>
             <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
@@ -49,7 +49,7 @@
                                     🔼🔽
                                 @endif
                             </a>
-                            <input type="text" name="code" value="{{ request('code') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            <input type="text" name="code" value="{{ request('code') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-4 !font-normal text-center">
                             Tanggal Masuk
@@ -60,7 +60,7 @@
                                     🔼🔽
                                 @endif
                             </a>
-                            <input type="date" name="date_entry" value="{{ request('date_entry') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            <input type="date" name="date_entry" value="{{ request('date_entry') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-6 text-left !font-normal">Gambar</th>
                         <th class="py-3 px-4 !font-normal text-center">
@@ -72,7 +72,7 @@
                                     🔼🔽
                                 @endif
                             </a>
-                            <input type="text" name="name" value="{{ request('name') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            <input type="text" name="name" value="{{ request('name') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-4 !font-normal text-center">
                             Berat
@@ -83,7 +83,7 @@
                                     🔼🔽
                                 @endif
                             </a>
-                            <input type="number" name="size" value="{{ request('size') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            <input type="number" name="size" value="{{ request('size') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-4 !font-normal text-center">
                             Kadar
@@ -94,18 +94,18 @@
                                     🔼🔽
                                 @endif
                             </a>
-                            <input type="number" name="rate" value="{{ request('rate') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            <input type="number" name="rate" value="{{ request('rate') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-4 !font-normal text-center">
                             Kategori
-                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'goods_type', 'sort_direction' => ($sortField === 'goods_type' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
-                                @if($sortField === 'goods_type')
+                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'type_id', 'sort_direction' => ($sortField === 'type_id' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                @if($sortField === 'type_id')
                                     {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
                                 @else
                                     🔼🔽
                                 @endif
                             </a>
-                            <input type="text" name="goods_type" value="{{ request('goods_type') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            <input type="text" name="goods_type" value="{{ request('goods_type') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-4 !font-normal text-center">
                             Harga
@@ -116,7 +116,7 @@
                                     🔼🔽
                                 @endif
                             </a>
-                            <input type="number" name="ask_price" value="{{ request('ask_price') }}" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            <input type="number" name="ask_price" value="{{ request('ask_price') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
                         </th>
                         <th class="py-3 px-6 text-center !font-normal"></th>
                     </tr>
@@ -307,7 +307,7 @@
 </script>
 
 <script>
-function multiDelete() {
+    function multiDelete() {
     return {
         selectedItems: [],
         toggleAll() {
@@ -334,7 +334,10 @@ function multiDelete() {
                 }).then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        location.reload();
+                        // Ambil URL saat ini dan hapus parameter halaman (jika ada)
+                        let url = new URL(window.location.href);
+                        url.searchParams.delete('page'); // Hapus param page agar tetap di halaman pertama setelah delete
+                        window.location.href = url.toString(); // Refresh dengan mempertahankan filter pencarian
                     } else {
                         alert('Gagal menghapus item.');
                     }
@@ -343,4 +346,5 @@ function multiDelete() {
         }
     };
 }
+
 </script>

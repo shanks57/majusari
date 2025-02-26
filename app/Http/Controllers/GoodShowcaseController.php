@@ -61,6 +61,10 @@ class GoodShowcaseController extends Controller
         // Sorting berdasarkan request
         if (in_array($sortField, ['code', 'date_entry', 'name', 'size', 'rate', 'ask_price'])) {
             $query->orderBy($sortField, $sortDirection);
+        } elseif ($sortField === 'type_id') {
+            $query->join('goods_types', 'goods.type_id', '=', 'goods_types.id')
+                ->orderBy('goods_types.name', $sortDirection)
+                ->select('goods.*'); // Pastikan memilih kolom dari tabel goods agar tidak ada konflik
         } else {
             $query->latest();
         }
