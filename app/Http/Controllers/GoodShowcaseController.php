@@ -75,6 +75,7 @@ class GoodShowcaseController extends Controller
         $brands = Merk::where('status', 1)->get();
         $showcases = Showcase::all();
         $trays = Tray::select('id', 'code', 'showcase_id', 'capacity')->get();
+        $goldRate = GoldRate::latest()->first()->new_price;
 
         $occupiedPositions = Goods::select('tray_id', 'position')
             ->where('availability', 1)
@@ -113,7 +114,7 @@ class GoodShowcaseController extends Controller
             'goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 
             'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 
             'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase', 
-            'paginate'
+            'paginate','goldRate'
         ));
     }
 
@@ -248,7 +249,7 @@ class GoodShowcaseController extends Controller
                     if (file_exists($existingImagePath)) {
                         unlink($existingImagePath);
                     }
-                }
+                } 
 
                 // Upload new image
                 $imagePath = $request->file('image')->store('goods_images', 'public');

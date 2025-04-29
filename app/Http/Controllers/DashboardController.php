@@ -67,7 +67,7 @@ class DashboardController extends Controller
                 'hasGoldRateToday' => $hasGoldRateToday,
                 'cardGoodsSummary' => $cardGoodsSummary,
                 'customer_stats' => [
-                    'total_items' => $customers,
+                    'total_items' => $customers, 
                 ],
                 'goods_in_showcase_stats' => [
                     'total_items' => $totalItemsInShowcase,

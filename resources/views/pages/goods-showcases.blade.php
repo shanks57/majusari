@@ -167,6 +167,27 @@
                                         class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->bid_rate }}%
                                     </span>
                                 </span>
+                                <span class="font-bold">Harga Hari ini</span>
+                                
+                                @php
+                                    $ask_rate = $goodShowcase->ask_rate / 100;
+                                    $bid_rate = $goodShowcase->bid_rate / 100;
+                                    $ask_price_today = $ask_rate * $goodShowcase->size * $goldRate;
+                                    $bid_price_today = $bid_rate * $goodShowcase->size * $goldRate;
+                                @endphp
+
+                                <span><i class="ph ph-arrow-line-up-right text-[#027A48]"></i> Jual
+                                    {{ 'Rp.' . number_format($ask_price_today, 0, ',', '.') }}
+                                    <span
+                                        class="bg-[#ECFDF3] text-[#027A48] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->ask_rate }}%
+                                    </span>
+                                </span>
+                                <span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i> Bawah
+                                    {{ 'Rp.' . number_format($bid_price_today, 0, ',', '.') }}
+                                    <span
+                                        class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->bid_rate }}%
+                                    </span>
+                                </span>
                             </td>
                             <td class="px-6 py-3 text-center">
                                 <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
@@ -174,7 +195,7 @@
                                         class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]"
                                         aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
                                         <i class="ph ph-dots-three-outline-vertical"></i> Opsi
-                                    </button>
+                                    </button> 
                                     <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl p-3"
                                         role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
                                         <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
