@@ -167,27 +167,7 @@
                                         class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->bid_rate }}%
                                     </span>
                                 </span>
-                                <span class="font-bold">Harga Hari ini</span>
-                                
-                                @php
-                                    $ask_rate = $goodShowcase->ask_rate / 100;
-                                    $bid_rate = $goodShowcase->bid_rate / 100;
-                                    $ask_price_today = $ask_rate * $goodShowcase->size * $goldRate;
-                                    $bid_price_today = $bid_rate * $goodShowcase->size * $goldRate;
-                                @endphp
-
-                                <span><i class="ph ph-arrow-line-up-right text-[#027A48]"></i> Jual
-                                    {{ 'Rp.' . number_format($ask_price_today, 0, ',', '.') }}
-                                    <span
-                                        class="bg-[#ECFDF3] text-[#027A48] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->ask_rate }}%
-                                    </span>
-                                </span>
-                                <span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i> Bawah
-                                    {{ 'Rp.' . number_format($bid_price_today, 0, ',', '.') }}
-                                    <span
-                                        class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->bid_rate }}%
-                                    </span>
-                                </span>
+                                <span class="font-bold">Kurs Emas {{ 'Rp.' . number_format($goodShowcase->kurs_emas, 0, ',', '.') }}</span>
                             </td>
                             <td class="px-6 py-3 text-center">
                                 <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">

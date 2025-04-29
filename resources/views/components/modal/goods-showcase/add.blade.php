@@ -38,6 +38,7 @@
             <form action="{{ route('goods.showcaseStore') }}" method="post" enctype="multipart/form-data">
                 @csrf
 
+                <input type="hidden" name="kurs_emas" value="{{ $goldRate ?? '' }}">     
                 <div class="px-4 mb-4">
                     <div x-data="imageUploader" class="w-full mx-auto">
                         <!-- Buttons for Camera and Gallery -->
@@ -50,6 +51,7 @@
                             <button type="button" class="px-4 py-2 text-white bg-gray-500 rounded"
                                 x-on:click="openGallery">Pilih dari Galeri</button>
                         </div>
+
 
 
                         <!-- File Input for Camera -->

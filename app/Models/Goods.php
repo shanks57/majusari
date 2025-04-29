@@ -37,7 +37,8 @@ class Goods extends Model
         'availability',
         'safe_status',
         'date_entry',
-        'unit'
+        'unit',
+        'kurs_emas'
     ];
 
     protected $dates = ['deleted_at'];

@@ -131,6 +131,7 @@ class GoodShowcaseController extends Controller
             'merk_id' => 'required|exists:merks,id',
             'ask_rate' => 'required|numeric|min:0',
             'bid_rate' => 'required|numeric|min:0',
+            'kurs_emas' => 'required|numeric|min:0',
             'ask_price' => 'required|numeric|min:0',
             'bid_price' => 'required|numeric|min:0',
             'type_id' => 'required|exists:goods_types,id',
@@ -182,6 +183,7 @@ class GoodShowcaseController extends Controller
             $good->bid_rate = $request->bid_rate;
             $good->ask_price = $request->ask_price;
             $good->bid_price = $request->bid_price;
+            $good->kurs_emas = $request->kurs_emas;
             $good->image = $publicPath;
             $good->type_id = $request->type_id;
             $good->tray_id = $request->tray_id;
