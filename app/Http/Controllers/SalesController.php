@@ -41,7 +41,7 @@ class SalesController extends Controller
         }
 
         // Ambil data penjualan
-        $sales = $query->get();
+        $sales = $query->get(); 
         $totalItems = $sales->sum(function($sale) {
             return $sale->details->count();
         });

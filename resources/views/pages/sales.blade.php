@@ -61,7 +61,10 @@
                             <input type="checkbox" id="select-all">
                         </th>
                         <th class="py-3 px-6 text-left !font-normal">Nota</th>
-                        <th class="py-3 px-6 text-left !font-normal">Tgl Penjualan</th>
+                        <th class="py-3 px-6 text-left !font-normal">Gambar</th>
+                        <th class="py-3 px-6 text-left !font-normal">Nama</th>
+                        <th class="py-3 px-6 text-left !font-normal">Ukuran-Rate</th>
+                        <th class="py-3 px-6 text-left !font-normal">Harga Bawah</th>
                         <th class="py-3 px-6 text-left !font-normal">Pegawai</th>
                         <th class="py-3 px-6 text-center !font-normal"></th>
                     </tr>
@@ -81,52 +84,29 @@
                         <td class="px-6 py-3 font-bold bg-[#F9F5FF]">{{ $currentDate }}</td>
                         <td class="bg-[#F9F5FF]"></td>
                         <td class="bg-[#F9F5FF]"></td>
+                        <td class="bg-[#F9F5FF]"></td>
+                        <td class="bg-[#F9F5FF]"></td>
+                        <td class="bg-[#F9F5FF]"></td>
                     </tr>
                     @php
                     $lastDate = $currentDate;
                     @endphp
                     @endif
 
-                    <tr class="py-3 main-row" data-sale-id="{{ $sale->id }}">
-                        <td class="px-6 py-3 text-left">
-                            <input type="checkbox" class="select-row">
-                        </td>
-                        <td class="px-6 py-3 font-bold text-left">
-                            {{ $sale->code }}
-                        </td>
-                        <td class="px-6 py-3 text-transparent">
-                            {{ $currentDate }}
-                        </td>
-                        <td class="px-6 py-3 text-left">
-                            {{ $sale->user->name }}
-                        </td>
-                        <td class="px-6 py-3 text-center">
-                            <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
-                                <button id="hs-dropright" type="button"
-                                    class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg border border-[#DCDCDC]"
-                                    aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
-                                    <i class="ph ph-dots-three-outline-vertical"></i> Opsi
-                                </button>
-                                <div class="hs-dropdown-menu hidden w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 z-10 bg-white shadow-md rounded-xl px-3 py-1"
-                                    role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
-                                    <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
-                                        href="{{ route('sale.printNota', $sale->id) }}">
-                                        <i class="ph ph-printer"></i>
-                                        Cetak Nota
-                                    </a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
+                
                     {{-- start expand row --}}
                     @php
                     $detailCount = $sale->details->count();
                     @endphp                   
                     @foreach($sale->details as $index => $detail)
-                    <tr class="hidden detail-row" data-ignore="true">
-                        <td class="px-6 py-3">
+                    <tr class="">
                             <div class="flex items-center">
+                                <td class="px-6 py-3 text-left">
+                                    <input type="checkbox" class="select-row">
+                                </td>
+                                <td class="px-6 py-3 font-bold text-left">
+                                    {{ $sale->code }}
+                                </td>
                                 <td class="px-6 py-3 text-left">
                                     <button type="button" aria-haspopup="dialog" aria-expanded="false"
                                         aria-controls="hs-image-sale-modal-{{ $detail->id }}"
@@ -153,8 +133,27 @@
                                         </span>
                                     </span>
                                 </td>
+                                <td class="px-6 py-3 text-left">
+                                    {{ $sale->user->name }}
+                                </td>
+                                <td class="px-6 py-3 text-center">
+                                    <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
+                                        <button id="hs-dropright" type="button"
+                                            class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg border border-[#DCDCDC]"
+                                            aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                                            <i class="ph ph-dots-three-outline-vertical"></i> Opsi
+                                        </button>
+                                        <div class="hs-dropdown-menu hidden w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 z-10 bg-white shadow-md rounded-xl px-3 py-1"
+                                            role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
+                                            <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
+                                                href="{{ route('sale.printNota', $sale->id) }}">
+                                                <i class="ph ph-printer"></i>
+                                                Cetak Nota
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
                             </div>
-                        </td>
                     </tr>
                     @endforeach
                     {{-- end expand row --}}
