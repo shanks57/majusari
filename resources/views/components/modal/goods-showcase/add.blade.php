@@ -52,7 +52,27 @@
                                 x-on:click="openGallery">Pilih dari Galeri</button>
                         </div>
 
+                        <!-- kamera desktop in mobile browser -->
+                        <div class="mb-4">
+                            <video id="camera" autoplay playsinline style="width: 100%; max-width: 480px; border: 2px solid #ccc; border-radius: 10px;"></video>
+                        </div>
 
+                            <!-- Tombol Kontrol -->
+                        <div class="mb-4 flex gap-4">
+                            <button type="button" onclick="flipCamera()" style="padding: 8px 16px;">🔄 Ganti Kamera</button>
+                            <button type="button" onclick="capturePhoto()" style="padding: 8px 16px;">📸 Ambil Foto</button>
+                        </div>
+
+                            <!-- Preview Foto -->
+                        <div id="previewWrapper" class="mb-4" style="display:none;">
+                            <p>📷 Preview Foto:</p>
+                            <img id="preview" style="width: 100%; max-width: 480px; border: 2px solid #ccc; border-radius: 10px;" />
+                        </div>
+
+                            <!-- Hidden Canvas dan Input -->
+                        <canvas id="canvas" style="display:none;"></canvas>
+                        <input type="hidden" name="camera_image" id="photoInput" x-ref="cameraInput" x-on:change="handleFileSelect"/>
+                        <!-- End of kamera desktop in mobile browser -->
 
                         <!-- File Input for Camera -->
                         <input type="file" name="camera_image" accept="image/*" capture="environment"
@@ -332,6 +352,7 @@
             </form>
         </div>
     </div>
+    
 </div>
 
 <script>
@@ -427,4 +448,89 @@
             }
         }
     }
+</script>
+
+<script>
+    let currentStream;
+    let useFrontCamera = true;
+
+    async function openCamera() {
+        if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+        }
+
+        const constraints = {
+            video: {
+                facingMode: useFrontCamera ? 'user' : 'environment'
+            },
+            audio: false
+        };
+
+        try {
+            currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+            const video = document.getElementById('camera');
+            video.srcObject = currentStream;
+        } catch (err) {
+            alert("Tidak bisa mengakses kamera: " + err.message);
+        }
+    }
+
+    function flipCamera() {
+        useFrontCamera = !useFrontCamera;
+        openCamera();
+    }
+
+    function capturePhoto() {
+        const video = document.getElementById('camera');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg');
+
+        // Tampilkan preview
+        const previewImg = document.getElementById('photoPreview');
+        const previewWrapper = document.getElementById('previewWrapper');
+        previewImg.src = dataUrl;
+        previewWrapper.style.display = 'block';
+
+        // Simpan ke input hidden
+        document.querySelector('input[name="camera_image"]').value = dataUrl;
+    }
+
+    function openGallery() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const dataUrl = event.target.result;
+
+                    // Preview
+                    const previewImg = document.getElementById('photoPreview');
+                    const previewWrapper = document.getElementById('previewWrapper');
+                    previewImg.src = dataUrl;
+                    previewWrapper.style.display = 'block';
+
+                    // Simpan ke input hidden
+                    document.querySelector('input[name="camera_image"]').value = dataUrl;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        input.click();
+    }
+
+    // Auto start kamera saat mode desktop di mobile
+    document.addEventListener('DOMContentLoaded', () => {
+        openCamera();
+    });
 </script>
