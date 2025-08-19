@@ -14,7 +14,10 @@ use Milon\Barcode\DNS1D;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Intervention\Image\Laravel\Facades\Image;
+// use Intervention\Image\Laravel\Facades\Image;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class GoodShowcaseController extends Controller
 {
@@ -138,35 +141,74 @@ class GoodShowcaseController extends Controller
             'tray_id' => 'required|exists:trays,id',
             'position' => 'required|string|max:255',
             'date_entry' => 'required|date',
-            'camera_image' => 'nullable|image|max:4096', // Maksimal 4MB
-            'gallery_image' => 'nullable|image|max:4096', // Maksimal 4MB
         ]);
 
         try {
-            // Handle the image upload
-            $image = $request->file('camera_image') ?? $request->file('gallery_image');
-            
-            if ($image) {
-                // Tentukan nama file dengan timestamp dan nama asli file
-                $fileName = time() . '_' . $image->getClientOriginalName();
+                // Handle the image upload
+                $image = $request->file('camera_image') ?? $request->file('gallery_image');
+                
+                if ($uploadedFile) {
+                    // === MODE FILE ===
+                    $request->validate([
+                        'camera_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:4096',
+                        'gallery_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:4096',
+                    ]);
 
-                // Tentukan path penyimpanan
-                $filePath = storage_path('app/public/goods_images/' . $fileName);
+                    $ext = $uploadedFile->getClientOriginalExtension() ?: 'jpg';
+                    $fileName = now()->timestamp.'_'.Str::random(8).'.'.$ext;
 
-                // Buat direktori jika belum ada
-                if (!file_exists(storage_path('app/public/goods_images'))) {
-                    mkdir(storage_path('app/public/goods_images'), 0755, true);
+                    $img = Image::read($uploadedFile->getRealPath());
+                } else {
+                    // === MODE BASE64 ===
+                    $b64 = $request->input('camera_image') ?? $request->input('gallery_image');
+
+                    // Validasi dasar: harus data URL gambar
+                    Validator::make(
+                        ['img' => $b64],
+                        ['img' => ['required','string','regex:/^data:image\/(png|jpe?g|webp|gif);base64,/i']]
+                    )->validate();
+
+                    // Batasi ukuran ~4 MB (file rule pakai KB; base64 kita hitung manual)
+                    // Perkiraan ukuran byte dari base64: floor(len * 3 / 4) - padding
+                    [$meta, $data] = explode(',', $b64, 2);
+                    $len = strlen($data);
+                    $padding = substr_count(substr($data, -2), '=');
+                    $bytes = intdiv($len * 3, 4) - $padding;
+                    if ($bytes > 4 * 1024 * 1024) {
+                        return back()->withErrors(['camera_image' => 'Ukuran gambar melebihi 4MB.']);
+                    }
+
+                    $binary = base64_decode($data, true);
+                    if ($binary === false) {
+                        return back()->withErrors(['camera_image' => 'Data gambar tidak valid.']);
+                    }
+
+                    $ext = str_contains($meta, 'image/png') ? 'png' :
+                        (str_contains($meta, 'image/webp') ? 'webp' :
+                        (str_contains($meta, 'image/gif') ? 'gif' : 'jpg'));
+
+                    $fileName = now()->timestamp.'_'.Str::random(8).'.'.$ext;
+
+                    $img = Image::read($binary);
                 }
 
-                // Resize dan simpan gambar langsung ke goods_images
-                $img = Image::read($image->path());
-                $img->resize(400, 400, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save($filePath, 50); // Simpan dengan kualitas kompresi 85
+                // 2) Proses & simpan
+                // orient() untuk mengikuti EXIF (foto HP sering sideways)
+                $img->orient();
 
-                // Kembalikan path untuk penyimpanan di database
-                $publicPath = 'goods_images/' . $fileName;
-            }
+                // Resize 400px sisi terpanjang, tetap proporsi (tanpa pecah)
+                $img->resize(400, 400, function ($c) {
+                    $c->aspectRatio();
+                    $c->upsize();
+                });
+
+                // Simpan ke disk 'public' agar bisa diakses via /storage/...
+                // Kualitas 50 (0-100) agar hemat ukuran
+                $path = 'goods_images/'.$fileName;
+                Storage::disk('public')->put($path, (string) $img->encode());
+
+                // $publicPath simpan ke DB
+                $publicPath = $path;
 
             $good = new Goods();
 
