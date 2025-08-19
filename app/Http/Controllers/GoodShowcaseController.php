@@ -138,8 +138,8 @@ class GoodShowcaseController extends Controller
             'tray_id' => 'required|exists:trays,id',
             'position' => 'required|string|max:255',
             'date_entry' => 'required|date',
-            'camera_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:4096', // Maksimal 4MB
-            'gallery_image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:4096', // Maksimal 4MB
+            'camera_image' => 'nullable|image|max:9096', // Maksimal 4MB
+            'gallery_image' => 'nullable|image|max:9096', // Maksimal 4MB
         ]);
 
         try {
