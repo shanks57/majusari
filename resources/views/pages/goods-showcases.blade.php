@@ -155,19 +155,33 @@
                             </td>
                             <td class="px-6 py-3 text-left truncate max-w-20">{{ $goodShowcase->goodsType->name }}</td>
                             <td class="flex flex-col px-6 py-3 text-left">
+                                @php
+                                    $basePrice = $goldRate; // harga per gram hari ini 
+                                    $askRate   = $goodShowcase->ask_rate / 100; // ubah jadi desimal
+                                    $askSize   = $goodShowcase->size; // jumlah gram
+                                    $askPriceUpdate  = $basePrice * $askRate * $askSize;
+                                @endphp
+
                                 <span><i class="ph ph-arrow-line-up-right text-[#027A48]"></i> Jual
-                                    {{ 'Rp.' . number_format($goodShowcase->ask_price, 0, ',', '.') }}
+                                    <span class="font-bold">{{ 'Rp. ' . number_format($askPriceUpdate, 0, ',', '.') }}</span>
                                     <span
                                         class="bg-[#ECFDF3] text-[#027A48] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->ask_rate }}%
                                     </span>
                                 </span>
+                                @php
+                                    $basePriceToday = $goldRate; // harga per gram hari ini 
+                                    $bidRate   = $goodShowcase->bid_rate / 100; // ubah jadi desimal
+                                    $bidSize   = $goodShowcase->size; // jumlah gram
+                                    $bidPriceUpdate  = $basePriceToday * $bidRate * $bidSize;
+                                @endphp
                                 <span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i> Bawah
-                                    {{ 'Rp.' . number_format($goodShowcase->bid_price, 0, ',', '.') }}
-                                    <span
+                                    <span class="font-bold">{{ 'Rp. ' . number_format($bidPriceUpdate, 0, ',', '.') }}</span>
+                                <span
                                         class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->bid_rate }}%
                                     </span>
                                 </span>
-                                <span class="font-bold">Kurs Emas {{ 'Rp.' . number_format($goodShowcase->kurs_emas, 0, ',', '.') }}</span>
+                                <span class="">Harga Jual Awal : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->ask_price, 0, ',', '.') }}</span>  (Kurs Emas : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->kurs_emas, 0, ',', '.') }}</span>)</span>
+                                <span class="">Harga Bawah Awal : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->bid_price, 0, ',', '.') }}</span> (Kurs Emas : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->kurs_emas, 0, ',', '.') }}</span>)</span>
                             </td>
                             <td class="px-6 py-3 text-center">
                                 <div class="hs-dropdown [--placement:bottom-right] relative inline-flex">
