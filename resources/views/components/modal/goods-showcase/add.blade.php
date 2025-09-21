@@ -35,7 +35,7 @@
                 </button>
             </div>
             <div class="border-b border-[#D0D5DD]"></div>
-            <form action="{{ route('goods.showcaseStore') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('goods.showcaseStore') }}" enctype="multipart/form-data" method="post">
                 @csrf
 
                 <input type="hidden" name="kurs_emas" value="{{ $goldRate ?? '' }}">     
@@ -44,7 +44,7 @@
                         <!-- Buttons for Camera and Gallery -->
                         <div class="flex justify-center gap-4 mb-4">
                             <!-- Tombol Kamera (Hanya Tampil di Mobile) -->
-                            <button type="button" class="px-4 py-2 text-white bg-blue-500 rounded md:hidden"
+                            <button type="button" class="px-4 py-2 text-white bg-blue-500 rounded"
                                 x-on:click="openCamera">Gunakan Kamera</button>
 
                             <!-- Tombol Galeri (Tampil di Semua Perangkat) -->
@@ -71,12 +71,12 @@
 
                             <!-- Hidden Canvas dan Input -->
                         <canvas id="canvas" style="display:none;"></canvas>
-                        <input type="hidden" name="camera_image" id="photoInput" x-ref="cameraInput" x-on:change="handleFileSelect"/>
+                        <input type="file" name="camera_image" id="photoInput" x-ref="cameraInput" x-on:change="handleFileSelect" capture="environment"/>
                         <!-- End of kamera desktop in mobile browser -->
 
                         <!-- File Input for Camera -->
-                        <input type="file" name="camera_image" accept="image/*" capture="environment"
-                            class="hidden" x-ref="cameraInput" x-on:change="handleFileSelect">
+                        <!-- <input type="file" name="camera_image" accept="image/*" capture="environment"
+                            class="hidden" x-ref="cameraInput" x-on:change="handleFileSelect"> -->
 
                         <!-- File Input for Gallery -->
                         <input type="file" name="gallery_image" accept="image/*"
@@ -116,16 +116,6 @@
                     <span class="text-sm text-red-500">{{ $message }}</span>
                     @enderror
                 </div>
-
-                <!-- <div class="px-4 mb-4">
-                    <label for="code" class="block text-sm text-gray-600">Kode Barang</label>
-                    <input type="text" id="code" name="code" x-model="form.code"
-                        class="w-full px-3 py-2 mt-1 border rounded-lg" placeholder="Masukkan Kode Barang" required
-                        max="10">
-                    @error('code')
-                    <span class="text-sm text-red-500">{{ $message }}</span>
-                    @enderror
-                </div> -->
 
                 <div class="px-4 mb-4">
                     <label for="category" class="block text-sm text-gray-600">Kategori</label>
@@ -480,54 +470,56 @@
         openCamera();
     }
 
-    function capturePhoto() {
-        const video = document.getElementById('camera');
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+function capturePhoto() {
+    const video = document.getElementById('camera');
+    const canvas = document.getElementById('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        const dataUrl = canvas.toDataURL('image/jpeg');
+    canvas.toBlob(blob => {
+        if (!blob) return;
 
-        // Tampilkan preview
-        const previewImg = document.getElementById('photoPreview');
+        const file = new File([blob], "camera.jpg", { type: "image/jpeg" });
+
+        // Preview foto
+        const previewImg = document.getElementById('preview');
         const previewWrapper = document.getElementById('previewWrapper');
-        previewImg.src = dataUrl;
+        previewImg.src = URL.createObjectURL(file);
         previewWrapper.style.display = 'block';
 
-        // Simpan ke input hidden
-        document.querySelector('input[name="camera_image"]').value = dataUrl;
-    }
+        // Masukkan ke input file agar Laravel terima sebagai file upload
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.querySelector('input[name="camera_image"]').files = dataTransfer.files;
+    }, 'image/jpeg');
+}
 
-    function openGallery() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
+function openGallery() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
 
-        input.onchange = e => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const dataUrl = event.target.result;
+    input.onchange = e => {
+        const file = e.target.files[0];
+        if (file) {
+            // Preview
+            const previewImg = document.getElementById('preview');
+            const previewWrapper = document.getElementById('previewWrapper');
+            previewImg.src = URL.createObjectURL(file);
+            previewWrapper.style.display = 'block';
 
-                    // Preview
-                    const previewImg = document.getElementById('photoPreview');
-                    const previewWrapper = document.getElementById('previewWrapper');
-                    previewImg.src = dataUrl;
-                    previewWrapper.style.display = 'block';
+            // Simpan ke input file
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.querySelector('input[name="camera_image"]').files = dataTransfer.files;
+        }
+    };
 
-                    // Simpan ke input hidden
-                    document.querySelector('input[name="camera_image"]').value = dataUrl;
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
-        input.click();
-    }
+    input.click();
+}
 
     // Auto start kamera saat mode desktop di mobile
     document.addEventListener('DOMContentLoaded', () => {

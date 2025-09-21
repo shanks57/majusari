@@ -138,9 +138,15 @@ class GoodShowcaseController extends Controller
             'tray_id' => 'required|exists:trays,id',
             'position' => 'required|string|max:255',
             'date_entry' => 'required|date',
-            'camera_image' => 'nullable|image|max:4096', // Maksimal 4MB
+            'camera_image' => 'required|image|mimes:jpeg,png,jpg|max:4096', // Maksimal 4MB
             'gallery_image' => 'nullable|image|max:4096', // Maksimal 4MB
         ]);
+
+        // if ($request->hasFile('camera_image')) {
+        //     $path = $request->file('camera_image')->store('showcase', 'public');
+        //     $validated['camera_image'] = $path;
+        //     dd($validated);
+        // }
 
         try {
             // Handle the image upload
