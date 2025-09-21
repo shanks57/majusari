@@ -120,6 +120,9 @@ class GoodShowcaseController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->isMethod('get')) {
+            return redirect()->route('goods.showcase');
+        }
         $request->validate([
             'name' => 'required|string|max:255',
             'unit' => 'required|string|max:255',
