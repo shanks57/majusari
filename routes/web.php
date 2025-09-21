@@ -110,6 +110,9 @@ Route::middleware('auth', 'verified')->group(function () {
 
     // start route /goods/showcases
         Route::get('/goods/showcases', [GoodShowcaseController::class, 'index'])->name("goods.showcase");
+        Route::get('/goods/showcases-store', function () {
+            return redirect()->route('goods.showcase');
+        });
         Route::post('/goods/showcases-store', [GoodShowcaseController::class, 'store'])->name('goods.showcaseStore');
         Route::patch('/goods-showcase/{id}/update', [GoodShowcaseController::class, 'update'])->name('goods.showcaseUpdate');
         Route::patch('/goods/{id}/move-to-safe', [GoodShowcaseController::class, 'moveToSafe'])->name('goods.moveToSafe');
