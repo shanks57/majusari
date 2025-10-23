@@ -263,7 +263,7 @@ class GoodShowcaseController extends Controller
                 $img = Image::read($image->path());
                 $img->resize(400, 400, function ($constraint) {
                     $constraint->aspectRatio();
-                })->save($filePath, 50); // Simpan dengan kualitas kompresi 85
+                })->save($filePath, 20); // Simpan dengan kualitas kompresi 20
 
                 // Kembalikan path untuk penyimpanan di database
                 $publicPath = 'goods_images/' . $fileName;
