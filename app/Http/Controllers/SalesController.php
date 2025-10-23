@@ -67,7 +67,7 @@ class SalesController extends Controller
             $query = Transaction::query()
                 ->with([
                     'details.goods' => function ($q) {
-                        $q->select('id', 'name', 'color', 'merk_id')
+                        $q->select('id', 'name', 'color', 'merk_id', 'code', 'image', 'rate', 'size', 'bid_rate')
                         ->with(['merk:id,company']); // eager load merk juga
                     },
                 ]);
