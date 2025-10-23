@@ -271,7 +271,7 @@
             <div class="p-4 bg-white border rounded-lg">
                 @foreach ($cardGoodsSummary as $summary)
                 <p class="mb-2">
-                    Kadar <b>{{ $summary->rate }}%</b> : Total Berat <b>{{ number_format($summary->total_weight, 2) }}gr</b>, Total Barang <b>{{ $summary->total_items }}pcs</b>
+                    Kadar <b>{{ $summary['rate'] }}%</b> : Total Berat <b>{{ number_format($summary['total_weight'], 2) }}gr</b>, Total Barang <b>{{ $summary['total_items'] }}pcs</b>
                 </p>
                 @endforeach
             </div>

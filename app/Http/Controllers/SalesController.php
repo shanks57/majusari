@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Goods;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,31 +23,70 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class SalesController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     $query = Transaction::with('details.goods')->orderBy('created_at', 'desc');
+
+    //     // Ambil input tanggal dari request
+    //     $dateStart = $request->input('date_start');
+    //     $dateEnd = $request->input('date_end');
+
+    //     // Jika tanggal mulai ada, tambahkan ke query
+    //     if ($dateStart) {
+    //         $query->whereDate('created_at', '>=', Carbon::parse($dateStart));
+    //     }
+
+    //     // Jika tanggal akhir ada, tambahkan ke query
+    //     if ($dateEnd) {
+    //         $query->whereDate('created_at', '<=', Carbon::parse($dateEnd));
+    //     }
+
+    //     // Ambil data penjualan
+    //     $sales = $query->get(); 
+    //     $totalItems = $sales->sum(function($sale) {
+    //         return $sale->details->count();
+    //     });
+
+    //     $title = 'Penjualan';
+
+    //     return view('pages.sales', compact('sales', 'title', 'totalItems'));
+    // }
+
     public function index(Request $request)
     {
-        $query = Transaction::with('details.goods')->orderBy('created_at', 'desc');
-
-        // Ambil input tanggal dari request
+        $title = 'Penjualan';
         $dateStart = $request->input('date_start');
         $dateEnd = $request->input('date_end');
+        $page = $request->get('page', 1);
 
-        // Jika tanggal mulai ada, tambahkan ke query
-        if ($dateStart) {
-            $query->whereDate('created_at', '>=', Carbon::parse($dateStart));
-        }
+        // Cache key unik berdasarkan tanggal & halaman
+        $cacheKey = "sales:{$dateStart}:{$dateEnd}:page:{$page}";
 
-        // Jika tanggal akhir ada, tambahkan ke query
-        if ($dateEnd) {
-            $query->whereDate('created_at', '<=', Carbon::parse($dateEnd));
-        }
+        // Cache selama 5 menit (bisa disesuaikan)
+        $sales = Cache::remember($cacheKey, 300, function () use ($dateStart, $dateEnd) {
+            $query = Transaction::query()
+                ->with([
+                    'details.goods' => function ($q) {
+                        $q->select('id', 'name', 'color', 'merk_id')
+                        ->with(['merk:id,company']); // eager load merk juga
+                    },
+                ]);
 
-        // Ambil data penjualan
-        $sales = $query->get(); 
-        $totalItems = $sales->sum(function($sale) {
-            return $sale->details->count();
+            if ($dateStart) {
+                $query->whereDate('created_at', '>=', $dateStart);
+            }
+            if ($dateEnd) {
+                $query->whereDate('created_at', '<=', $dateEnd);
+            }
+
+            return $query->latest('created_at')->paginate(20)->onEachSide(0);
         });
 
-        $title = 'Penjualan';
+        // Hitung total item (cache juga)
+        $totalItemsKey = "sales_total_items:{$dateStart}:{$dateEnd}";
+        $totalItems = Cache::remember($totalItemsKey, 300, function () use ($sales) {
+            return TransactionDetail::whereIn('transaction_id', $sales->pluck('id'))->count();
+        });
 
         return view('pages.sales', compact('sales', 'title', 'totalItems'));
     }

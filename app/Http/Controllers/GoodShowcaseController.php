@@ -18,103 +18,195 @@ use Intervention\Image\Laravel\Facades\Image;
 
 class GoodShowcaseController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     $paginate = $request->get('paginate', 10);
+    //     $sortField = $request->get('sort_field', 'created_at');
+    //     $sortDirection = $request->get('sort_direction', 'desc');
+
+    //     $query = Goods::where('availability', 1)
+    //         ->where('safe_status', 0);
+
+    //     // Filter berdasarkan input dari form
+    //     if ($request->filled('code')) {
+    //         $query->where('code', 'LIKE', '%' . $request->code . '%');
+    //     }
+
+    //     if ($request->filled('date_entry')) {
+    //         $query->where('date_entry', 'LIKE', '%' . $request->date_entry . '%');
+    //     }
+
+    //     if ($request->filled('name')) {
+    //         $query->where('name', 'LIKE', '%' . $request->name . '%');
+    //     }
+
+    //     if ($request->filled('size')) {
+    //         $query->where('size', 'LIKE', '%' . $request->size . '%');
+    //     }
+
+    //     if ($request->filled('rate')) {
+    //         $query->where('rate', 'LIKE', '%' . $request->rate . '%');
+    //     }
+
+    //     if ($request->filled('goods_type')) {
+    //         $query->whereHas('goodsType', function ($q) use ($request) {
+    //             $q->where('name', 'LIKE', '%' . $request->goods_type . '%');
+    //         });
+    //     }
+
+    //     if ($request->filled('ask_price')) {
+    //         $query->where('ask_price', $request->ask_price);
+    //     }
+
+    //     // Sorting berdasarkan request
+    //     if (in_array($sortField, ['code', 'date_entry', 'name', 'size', 'rate', 'ask_price'])) {
+    //         $query->orderBy($sortField, $sortDirection);
+    //     } elseif ($sortField === 'type_id') {
+    //         $query->join('goods_types', 'goods.type_id', '=', 'goods_types.id')
+    //             ->orderBy('goods_types.name', $sortDirection)
+    //             ->select('goods.*'); // Pastikan memilih kolom dari tabel goods agar tidak ada konflik
+    //     } else {
+    //         $query->latest();
+    //     }
+
+    //     $goodShowcases = $query->paginate($paginate)->onEachSide(0);
+
+    //     $types = GoodsType::where('status', 1)->get();
+    //     $brands = Merk::where('status', 1)->get();
+    //     $showcases = Showcase::all();
+    //     $trays = Tray::select('id', 'code', 'showcase_id', 'capacity')->get();
+    //     $goldRate = GoldRate::latest()->first()->new_price;
+
+    //     $occupiedPositions = Goods::select('tray_id', 'position')
+    //         ->where('availability', 1)
+    //         ->where('safe_status', 0)
+    //         ->get()
+    //         ->groupBy('tray_id')
+    //         ->map(function ($goods) {
+    //             return $goods->pluck('position')->toArray();
+    //         })
+    //         ->toArray();
+
+    //     $title = 'Barang';
+    //     $lastKurs = GoldRate::latest('created_at')->first();
+    //     $lastKursPrice = $lastKurs ? $lastKurs->new_price : 0;
+
+    //     $latestAddedGoods = Goods::where('availability', 1)
+    //         ->where('safe_status', 0)
+    //         ->latest('created_at')
+    //         ->first();
+
+    //     $cardGoodsSummary = Goods::select('rate')
+    //         ->selectRaw('SUM(size) as total_weight')
+    //         ->selectRaw('COUNT(*) as total_items')
+    //         ->where('availability', 1)
+    //         ->where('safe_status', 0)
+    //         ->groupBy('rate')
+    //         ->get();
+
+    //     $goodsInShowcase = Goods::where('availability', true)
+    //         ->where('safe_status', false)
+    //         ->get();
+    //     $totalItemsInShowcase = $goodsInShowcase->count();
+    //     $totalWeightInShowcase = $goodsInShowcase->sum('size');
+
+    //     return view('pages.goods-showcases', compact(
+    //         'goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 
+    //         'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 
+    //         'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase', 
+    //         'paginate','goldRate'
+    //     ));
+    // }
+
     public function index(Request $request)
     {
         $paginate = $request->get('paginate', 10);
         $sortField = $request->get('sort_field', 'created_at');
         $sortDirection = $request->get('sort_direction', 'desc');
 
-        $query = Goods::where('availability', 1)
-            ->where('safe_status', 0);
+        // Ambil field filter
+        $filters = $request->only(['code', 'date_entry', 'name', 'size', 'rate', 'goods_type', 'ask_price']);
 
-        // Filter berdasarkan input dari form
-        if ($request->filled('code')) {
-            $query->where('code', 'LIKE', '%' . $request->code . '%');
+        // Query dasar
+        $query = Goods::query()
+            ->where('availability', 1)
+            ->where('safe_status', 0)
+            ->with('goodsType:id,name'); // eager load relasi yang diperlukan
+
+        // Gunakan filter dinamis
+        foreach ($filters as $key => $value) {
+            if (!$value) continue;
+
+            if ($key === 'goods_type') {
+                $query->whereHas('goodsType', fn($q) => $q->where('name', 'LIKE', "%{$value}%"));
+            } elseif ($key === 'ask_price') {
+                $query->where('ask_price', $value);
+            } else {
+                $query->where($key, 'LIKE', "%{$value}%");
+            }
         }
 
-        if ($request->filled('date_entry')) {
-            $query->where('date_entry', 'LIKE', '%' . $request->date_entry . '%');
-        }
-
-        if ($request->filled('name')) {
-            $query->where('name', 'LIKE', '%' . $request->name . '%');
-        }
-
-        if ($request->filled('size')) {
-            $query->where('size', 'LIKE', '%' . $request->size . '%');
-        }
-
-        if ($request->filled('rate')) {
-            $query->where('rate', 'LIKE', '%' . $request->rate . '%');
-        }
-
-        if ($request->filled('goods_type')) {
-            $query->whereHas('goodsType', function ($q) use ($request) {
-                $q->where('name', 'LIKE', '%' . $request->goods_type . '%');
-            });
-        }
-
-        if ($request->filled('ask_price')) {
-            $query->where('ask_price', $request->ask_price);
-        }
-
-        // Sorting berdasarkan request
+        // Sorting
         if (in_array($sortField, ['code', 'date_entry', 'name', 'size', 'rate', 'ask_price'])) {
             $query->orderBy($sortField, $sortDirection);
         } elseif ($sortField === 'type_id') {
             $query->join('goods_types', 'goods.type_id', '=', 'goods_types.id')
                 ->orderBy('goods_types.name', $sortDirection)
-                ->select('goods.*'); // Pastikan memilih kolom dari tabel goods agar tidak ada konflik
+                ->select('goods.*');
         } else {
-            $query->latest();
+            $query->orderBy('created_at', 'desc');
         }
 
+        // Hasil utama
         $goodShowcases = $query->paginate($paginate)->onEachSide(0);
 
-        $types = GoodsType::where('status', 1)->get();
-        $brands = Merk::where('status', 1)->get();
-        $showcases = Showcase::all();
+        // Ambil data pendukung — sekali query per tabel
+        $types = GoodsType::select('id', 'name')->where('status', 1)->get();
+        $brands = Merk::select('id', 'name')->where('status', 1)->where('status', 1)->get();
+        $showcases = Showcase::select('id', 'name')->get();
         $trays = Tray::select('id', 'code', 'showcase_id', 'capacity')->get();
-        $goldRate = GoldRate::latest()->first()->new_price;
 
-        $occupiedPositions = Goods::select('tray_id', 'position')
+        // Gold rate (ambil sekali)
+        $lastKurs = GoldRate::latest('created_at')->first();
+        $lastKursPrice = $lastKurs?->new_price ?? 0;
+        $goldRate = $lastKursPrice;
+
+        // Ambil semua goods sekali, untuk data yang sering diulang
+        $goodsBaseQuery = Goods::select('tray_id', 'position', 'rate', 'size', 'created_at')
             ->where('availability', 1)
             ->where('safe_status', 0)
-            ->get()
+            ->get();
+
+        // Map posisi tray
+        $occupiedPositions = $goodsBaseQuery
             ->groupBy('tray_id')
-            ->map(function ($goods) {
-                return $goods->pluck('position')->toArray();
-            })
+            ->map(fn($items) => $items->pluck('position')->toArray())
             ->toArray();
 
-        $title = 'Barang';
-        $lastKurs = GoldRate::latest('created_at')->first();
-        $lastKursPrice = $lastKurs ? $lastKurs->new_price : 0;
+        // Barang terakhir ditambahkan
+        $latestAddedGoods = $goodsBaseQuery->sortByDesc('created_at')->first();
 
-        $latestAddedGoods = Goods::where('availability', 1)
-            ->where('safe_status', 0)
-            ->latest('created_at')
-            ->first();
-
-        $cardGoodsSummary = Goods::select('rate')
-            ->selectRaw('SUM(size) as total_weight')
-            ->selectRaw('COUNT(*) as total_items')
-            ->where('availability', 1)
-            ->where('safe_status', 0)
+        // Ringkasan kartu
+        $cardGoodsSummary = $goodsBaseQuery
             ->groupBy('rate')
-            ->get();
+            ->map(fn($group) => [
+                'rate' => $group->first()->rate,
+                'total_weight' => $group->sum('size'),
+                'total_items' => $group->count(),
+            ])
+            ->values();
 
-        $goodsInShowcase = Goods::where('availability', true)
-            ->where('safe_status', false)
-            ->get();
-        $totalItemsInShowcase = $goodsInShowcase->count();
-        $totalWeightInShowcase = $goodsInShowcase->sum('size');
+        // Total barang di showcase
+        $totalItemsInShowcase = $goodsBaseQuery->count();
+        $totalWeightInShowcase = $goodsBaseQuery->sum('size');
+
+        $title = 'Barang';
 
         return view('pages.goods-showcases', compact(
             'goodShowcases', 'title', 'types', 'brands', 'showcases', 'trays', 
             'occupiedPositions', 'lastKursPrice', 'latestAddedGoods', 
             'cardGoodsSummary', 'totalItemsInShowcase', 'totalWeightInShowcase', 
-            'paginate','goldRate'
+            'paginate', 'goldRate'
         ));
     }
 

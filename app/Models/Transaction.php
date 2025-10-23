@@ -33,4 +33,12 @@ class Transaction extends Model
     {
         return $this->hasMany(TransactionDetail::class);
     }
+
+    // app/Models/Transaction.php
+    protected static function booted()
+    {
+        static::created(function () {
+            Cache::flush(); // atau hapus key tertentu kalau mau lebih selektif
+        });
+    }
 }

@@ -16,7 +16,7 @@
             </div>
             <div class="flex justify-center text-sm text-[#151617] gap-3">
                 <p class="">{{ $detail->goods->name }} - {{$detail->goods->color}}</p>
-                <p>{{ $detail->goods->merk->company }}</p>
+                <p>{{ $detail->goods->merk?->company }}</p>
             </div>
             <div class="flex items-center justify-center ">
                 <button type="button"
