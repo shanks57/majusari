@@ -58,34 +58,46 @@ class SalesController extends Controller
         $dateStart = $request->input('date_start');
         $dateEnd = $request->input('date_end');
         $page = $request->get('page', 1);
+        $perPage = 20;
 
         // Cache key unik berdasarkan tanggal & halaman
-        $cacheKey = "sales:{$dateStart}:{$dateEnd}:page:{$page}";
+        $cacheKey = "sales:{$dateStart}:{$dateEnd}";
 
-        // Cache selama 5 menit (bisa disesuaikan)
-        $sales = Cache::remember($cacheKey, 300, function () use ($dateStart, $dateEnd) {
+        // Ambil semua data transaksi dari cache (tanpa pagination)
+        $salesData = Cache::remember($cacheKey, 300, function () use ($dateStart, $dateEnd) {
             $query = Transaction::query()
                 ->with([
                     'details.goods' => function ($q) {
                         $q->select('id', 'name', 'color', 'merk_id', 'code', 'image', 'rate', 'size', 'bid_rate')
-                        ->with(['merk:id,company']); // eager load merk juga
+                        ->with(['merk:id,company']);
                     },
                 ]);
 
             if ($dateStart) {
-                $query->whereDate('created_at', '>=', $dateStart);
+                // Gunakan >= datetime agar pakai index
+                $query->where('created_at', '>=', $dateStart . ' 00:00:00');
             }
             if ($dateEnd) {
-                $query->whereDate('created_at', '<=', $dateEnd);
+                // Gunakan <= datetime agar pakai index
+                $query->where('created_at', '<=', $dateEnd . ' 23:59:59');
             }
 
-            return $query->latest('created_at')->paginate(20)->onEachSide(0);
+            return $query->latest('created_at')->get();
         });
 
-        // Hitung total item (cache juga)
+        // Pagination manual
+        $sales = new LengthAwarePaginator(
+            $salesData->forPage($page, $perPage),
+            $salesData->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        // Hitung total items langsung dari cached collection
         $totalItemsKey = "sales_total_items:{$dateStart}:{$dateEnd}";
-        $totalItems = Cache::remember($totalItemsKey, 300, function () use ($sales) {
-            return TransactionDetail::whereIn('transaction_id', $sales->pluck('id'))->count();
+        $totalItems = Cache::remember($totalItemsKey, 300, function () use ($salesData) {
+            return $salesData->sum(fn($sale) => $sale->details->count());
         });
 
         return view('pages.sales', compact('sales', 'title', 'totalItems'));
