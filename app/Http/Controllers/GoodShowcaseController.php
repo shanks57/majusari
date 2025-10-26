@@ -163,7 +163,7 @@ class GoodShowcaseController extends Controller
         // Ambil data pendukung — sekali query per tabel
         $types = GoodsType::select('id', 'name')->where('status', 1)->get();
         $brands = Merk::select('id', 'name')->where('status', 1)->where('status', 1)->get();
-        $showcases = Showcase::select('id', 'name')->get();
+        $showcases = Showcase::all();
         $trays = Tray::select('id', 'code', 'showcase_id', 'capacity')->get();
 
         // Gold rate (ambil sekali)
