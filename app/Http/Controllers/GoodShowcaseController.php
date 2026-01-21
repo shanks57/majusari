@@ -25,7 +25,8 @@ class GoodShowcaseController extends Controller
         $sortDirection = $request->get('sort_direction', 'desc');
 
         $query = Goods::where('availability', 1)
-            ->where('safe_status', 0);
+            ->where('safe_status', 0)
+            ->whereNotNull('tray_id');
 
         // Filter berdasarkan input dari form
         if ($request->filled('code')) {

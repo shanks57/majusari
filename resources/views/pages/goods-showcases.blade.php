@@ -9,121 +9,121 @@
         @endrole
     </x-header>
     <div class="container py-4 mx-auto">
-        
 
-    <form action="{{ route('goods.showcase') }}" method="GET">
-        <div class="inline-flex justify-center w-full mx-auto rounded-md" role="group">
-            <a href="{{ route('goods.showcase.export-pdf', request()->all()) }}" class="p-3 font-normal text-white bg-gray-400 rounded-s-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
-                PDF
-            </a>
-            <a href="{{ route('goods.showcase.export-excel', request()->all()) }}" class="px-2.5 py-3 font-normal text-white bg-gray-400 hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
-                Excel
-            </a>
-            <a href="{{ route('goods.showcase.print', request()->all()) }}" target="_blank" class="p-3 font-normal text-white bg-gray-400 rounded-e-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
-                Print
-            </a>
-        </div>
 
-        <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg" x-data="multiDelete()">
-             <button @click="deleteSelected()" class="m-2 px-4 py-2 bg-red-600 text-white rounded">
-                Hapus Terpilih
-            </button>
-            <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
-                <thead>
-                    @php
+        <form action="{{ route('goods.showcase') }}" method="GET">
+            <div class="inline-flex justify-center w-full mx-auto rounded-md" role="group">
+                <a href="{{ route('goods.showcase.export-pdf', request()->all()) }}" class="p-3 font-normal text-white bg-gray-400 rounded-s-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
+                    PDF
+                </a>
+                <a href="{{ route('goods.showcase.export-excel', request()->all()) }}" class="px-2.5 py-3 font-normal text-white bg-gray-400 hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
+                    Excel
+                </a>
+                <a href="{{ route('goods.showcase.print', request()->all()) }}" target="_blank" class="p-3 font-normal text-white bg-gray-400 rounded-e-xl hover:bg-gray-500 focus:z-10 focus:ring-1 focus:ring-gray-500">
+                    Print
+                </a>
+            </div>
+
+            <div class="mt-4 overflow-hidden overflow-x-auto border border-gray-200 rounded-t-lg shadow-lg" x-data="multiDelete()">
+                <button @click="deleteSelected()" class="m-2 px-4 py-2 bg-red-600 text-white rounded">
+                    Hapus Terpilih
+                </button>
+                <table id="etalaseTable" class="min-w-full bg-white border border-gray-200 display">
+                    <thead>
+                        @php
                         $sortField = request('sort_field', 'created_at');
                         $sortDirection = request('sort_direction', 'desc');
-                    @endphp
-                    <input type="hidden" name="sort_field" value="{{ request('sort_field', 'created_at') }}">
-                    <input type="hidden" name="sort_direction" value="{{ request('sort_direction', 'desc') }}">
-                    <tr class="w-full bg-[#79799B] text-white text-sm leading-normal">
-                        <th class="px-6 py-3 text-left">
-                            <input type="checkbox" id="select-all" @click="toggleAll">
-                        </th>
-                        <th class="py-3 px-4 !font-normal text-center">
-                            Kode Barang
-                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'code', 'sort_direction' => ($sortField === 'code' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
-                                @if($sortField === 'code')
+                        @endphp
+                        <input type="hidden" name="sort_field" value="{{ request('sort_field', 'created_at') }}">
+                        <input type="hidden" name="sort_direction" value="{{ request('sort_direction', 'desc') }}">
+                        <tr class="w-full bg-[#79799B] text-white text-sm leading-normal">
+                            <th class="px-6 py-3 text-left">
+                                <input type="checkbox" id="select-all" @click="toggleAll">
+                            </th>
+                            <th class="py-3 px-4 !font-normal text-center">
+                                Kode Barang
+                                <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'code', 'sort_direction' => ($sortField === 'code' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                    @if($sortField === 'code')
                                     {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
-                                @else
+                                    @else
                                     🔼🔽
-                                @endif
-                            </a>
-                            <input type="text" name="code" value="{{ request('code') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
-                        </th>
-                        <th class="py-3 px-4 !font-normal text-center">
-                            Tanggal Masuk
-                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'date_entry', 'sort_direction' => ($sortField === 'date_entry' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
-                                @if($sortField === 'date_entry')
+                                    @endif
+                                </a>
+                                <input type="text" name="code" value="{{ request('code') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            </th>
+                            <th class="py-3 px-4 !font-normal text-center">
+                                Tanggal Masuk
+                                <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'date_entry', 'sort_direction' => ($sortField === 'date_entry' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                    @if($sortField === 'date_entry')
                                     {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
-                                @else
+                                    @else
                                     🔼🔽
-                                @endif
-                            </a>
-                            <input type="date" name="date_entry" value="{{ request('date_entry') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
-                        </th>
-                        <th class="py-3 px-6 text-left !font-normal">Gambar</th>
-                        <th class="py-3 px-4 !font-normal text-center">
-                            Barang
-                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'name', 'sort_direction' => ($sortField === 'name' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
-                                @if($sortField === 'name')
+                                    @endif
+                                </a>
+                                <input type="date" name="date_entry" value="{{ request('date_entry') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            </th>
+                            <th class="py-3 px-6 text-left !font-normal">Gambar</th>
+                            <th class="py-3 px-4 !font-normal text-center">
+                                Barang
+                                <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'name', 'sort_direction' => ($sortField === 'name' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                    @if($sortField === 'name')
                                     {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
-                                @else
+                                    @else
                                     🔼🔽
-                                @endif
-                            </a>
-                            <input type="text" name="name" value="{{ request('name') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
-                        </th>
-                        <th class="py-3 px-4 !font-normal text-center">
-                            Berat
-                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'size', 'sort_direction' => ($sortField === 'size' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
-                                @if($sortField === 'size')
+                                    @endif
+                                </a>
+                                <input type="text" name="name" value="{{ request('name') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            </th>
+                            <th class="py-3 px-4 !font-normal text-center">
+                                Berat
+                                <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'size', 'sort_direction' => ($sortField === 'size' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                    @if($sortField === 'size')
                                     {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
-                                @else
+                                    @else
                                     🔼🔽
-                                @endif
-                            </a>
-                            <input type="number" name="size" value="{{ request('size') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
-                        </th>
-                        <th class="py-3 px-4 !font-normal text-center">
-                            Kadar
-                           <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'rate', 'sort_direction' => ($sortField === 'rate' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
-                                @if($sortField === 'rate')
+                                    @endif
+                                </a>
+                                <input type="number" name="size" value="{{ request('size') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            </th>
+                            <th class="py-3 px-4 !font-normal text-center">
+                                Kadar
+                                <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'rate', 'sort_direction' => ($sortField === 'rate' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                    @if($sortField === 'rate')
                                     {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
-                                @else
+                                    @else
                                     🔼🔽
-                                @endif
-                            </a>
-                            <input type="number" name="rate" value="{{ request('rate') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
-                        </th>
-                        <th class="py-3 px-4 !font-normal text-center">
-                            Kategori
-                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'type_id', 'sort_direction' => ($sortField === 'type_id' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
-                                @if($sortField === 'type_id')
+                                    @endif
+                                </a>
+                                <input type="number" name="rate" value="{{ request('rate') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            </th>
+                            <th class="py-3 px-4 !font-normal text-center">
+                                Kategori
+                                <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'type_id', 'sort_direction' => ($sortField === 'type_id' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                    @if($sortField === 'type_id')
                                     {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
-                                @else
+                                    @else
                                     🔼🔽
-                                @endif
-                            </a>
-                            <input type="text" name="goods_type" value="{{ request('goods_type') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
-                        </th>
-                        <th class="py-3 px-4 !font-normal text-center">
-                            Harga
-                            <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'ask_price', 'sort_direction' => ($sortField === 'ask_price' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
-                                @if($sortField === 'ask_price')
+                                    @endif
+                                </a>
+                                <input type="text" name="goods_type" value="{{ request('goods_type') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            </th>
+                            <th class="py-3 px-4 !font-normal text-center">
+                                Harga
+                                <a href="{{ request()->fullUrlWithQuery(['sort_field' => 'ask_price', 'sort_direction' => ($sortField === 'ask_price' && $sortDirection === 'asc') ? 'desc' : 'asc']) }}">
+                                    @if($sortField === 'ask_price')
                                     {{ $sortDirection === 'asc' ? '🔼' : '🔽' }}
-                                @else
+                                    @else
                                     🔼🔽
-                                @endif
-                            </a>
-                            <input type="number" name="ask_price" value="{{ request('ask_price') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
-                        </th>
-                        <th class="py-3 px-6 text-center !font-normal"></th>
-                    </tr>
-                </thead>
-                <tbody class="text-sm font-light text-gray-600">
+                                    @endif
+                                </a>
+                                <input type="number" name="ask_price" value="{{ request('ask_price') }}" onkeydown="if(event.key === 'Enter') event.preventDefault();" onchange="this.form.submit()" class="p-1 mt-1 text-sm text-black border rounded-md">
+                            </th>
+                            <th class="py-3 px-6 text-center !font-normal"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm font-light text-gray-600">
 
-                    @foreach ($goodShowcases as $goodShowcase)
+                        @foreach ($goodShowcases as $goodShowcase)
 
                         <tr class="border-b border-gray-200 hover:bg-gray-100">
                             <td class="px-6 py-3 text-left">
@@ -144,7 +144,7 @@
                                 @include('components.modal.image-goods')
                             </td>
                             <td class="px-6 py-3 text-left truncate max-w-20">
-                                {{ $goodShowcase->name }} - {{ $goodShowcase->merk->name }}
+                                {{ $goodShowcase->name }} - {{ $goodShowcase->merk?->name ?? 'N/A' }}
                             </td>
                             <td class="px-6 py-3 text-left">
                                 {{ $goodShowcase->size }} gr
@@ -156,10 +156,10 @@
                             <td class="px-6 py-3 text-left truncate max-w-20">{{ $goodShowcase->goodsType->name }}</td>
                             <td class="flex flex-col px-6 py-3 text-left">
                                 @php
-                                    $basePrice = $goldRate; // harga per gram hari ini 
-                                    $askRate   = $goodShowcase->ask_rate / 100; // ubah jadi desimal
-                                    $askSize   = $goodShowcase->size; // jumlah gram
-                                    $askPriceUpdate  = $basePrice * $askRate * $askSize;
+                                $basePrice = $goldRate; // harga per gram hari ini
+                                $askRate = $goodShowcase->ask_rate / 100; // ubah jadi desimal
+                                $askSize = $goodShowcase->size; // jumlah gram
+                                $askPriceUpdate = $basePrice * $askRate * $askSize;
                                 @endphp
 
                                 <span><i class="ph ph-arrow-line-up-right text-[#027A48]"></i> Jual
@@ -169,18 +169,18 @@
                                     </span>
                                 </span>
                                 @php
-                                    $basePriceToday = $goldRate; // harga per gram hari ini 
-                                    $bidRate   = $goodShowcase->bid_rate / 100; // ubah jadi desimal
-                                    $bidSize   = $goodShowcase->size; // jumlah gram
-                                    $bidPriceUpdate  = $basePriceToday * $bidRate * $bidSize;
+                                $basePriceToday = $goldRate; // harga per gram hari ini
+                                $bidRate = $goodShowcase->bid_rate / 100; // ubah jadi desimal
+                                $bidSize = $goodShowcase->size; // jumlah gram
+                                $bidPriceUpdate = $basePriceToday * $bidRate * $bidSize;
                                 @endphp
                                 <span><i class="ph ph-arrow-line-down-right text-[#C4320A]"></i> Bawah
                                     <span class="font-bold">{{ 'Rp. ' . number_format($bidPriceUpdate, 0, ',', '.') }}</span>
-                                <span
+                                    <span
                                         class="bg-[#FFF6ED] text-[#C4320A] text-xs leading-6 rounded-xl px-2">{{ $goodShowcase->bid_rate }}%
                                     </span>
                                 </span>
-                                <span class="">Harga Jual Awal : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->ask_price, 0, ',', '.') }}</span>  (Kurs Emas : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->kurs_emas, 0, ',', '.') }}</span>)</span>
+                                <span class="">Harga Jual Awal : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->ask_price, 0, ',', '.') }}</span> (Kurs Emas : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->kurs_emas, 0, ',', '.') }}</span>)</span>
                                 <span class="">Harga Bawah Awal : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->bid_price, 0, ',', '.') }}</span> (Kurs Emas : <span class="font-bold">{{ 'Rp.' . number_format($goodShowcase->kurs_emas, 0, ',', '.') }}</span>)</span>
                             </td>
                             <td class="px-6 py-3 text-center">
@@ -189,7 +189,7 @@
                                         class="px-3 py-1 text-[#464646] bg-[#F9F9F9] rounded-lg boreder-s border border-[#DCDCDC]"
                                         aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
                                         <i class="ph ph-dots-three-outline-vertical"></i> Opsi
-                                    </button> 
+                                    </button>
                                     <div class="hs-dropdown-menu w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10 bg-white shadow-md rounded-xl p-3"
                                         role="menu" aria-orientation="vertical" aria-labelledby="hs-dropright">
                                         <a class="flex items-center gap-x-3.5 py-2 rounded-lg text-sm text-[#344054] focus:outline-none focus:bg-gray-100"
@@ -228,55 +228,55 @@
 
                         </tr>
 
-                    {{-- modal pindah ke brankas --}}
-                    @include('components.modal.goods-showcase.modal-move-to-safe')
-                    {{-- modal edit --}}
-                    @include('components.modal.goods-showcase.edit')
-                    {{-- modal hapus --}}
-                    @include('components.modal.goods-showcase.modal-delete')
-                    @endforeach
-                </tbody>
-            </table>
+                        {{-- modal pindah ke brankas --}}
+                        @include('components.modal.goods-showcase.modal-move-to-safe')
+                        {{-- modal edit --}}
+                        @include('components.modal.goods-showcase.edit')
+                        {{-- modal hapus --}}
+                        @include('components.modal.goods-showcase.modal-delete')
+                        @endforeach
+                    </tbody>
+                </table>
 
-        </div>
-        <div
-            class="flex flex-wrap gap-4 items-center justify-between p-4 mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
-                    <div>Menampilkan {{ $goodShowcases->count() }} Data Etalase</div>
-                    <div class="flex items-center justify-between">
-                        <span class="mr-2">Baris diper halaman</span> 
-                        
-                            <select class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-6 py-2.5" name="paginate" onchange="this.form.submit()">
-                                <option value="10" {{ $paginate == 10 ? 'selected' : '' }}>10</option>
-                                <option value="20" {{ $paginate == 20 ? 'selected' : '' }}>20</option>
-                                <option value="30" {{ $paginate == 30 ? 'selected' : '' }}>30</option>
-                                <option value="40" {{ $paginate == 40 ? 'selected' : '' }}>40</option>
-                                <option value="50" {{ $paginate == 50 ? 'selected' : '' }}>50</option>
-                            </select>
-                        
-                    </div>
-                    <div class="flex items-center justify-between">
-                        
-                        <span>{{ $goodShowcases->appends(request()->all())->links() }}</span>
-                    </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div class="p-4 bg-white border rounded-lg">
-                <p class="text-sm text-neutral-500">Total Barang</p>
-                <p class="text-3xl">{{$totalItemsInShowcase}}</p>
             </div>
-            <div class="p-4 bg-white border rounded-lg">
-                <p class="text-sm text-neutral-500">Total Berat Keseluruhan Barang</p>
-                <p class="text-3xl">{{$totalWeightInShowcase}}</p>
+            <div
+                class="flex flex-wrap gap-4 items-center justify-between p-4 mb-16 text-sm leading-5 text-[#282833] bg-white rounded-b-lg border-b border-r border-l border-gray-200">
+                <div>Menampilkan {{ $goodShowcases->count() }} Data Etalase</div>
+                <div class="flex items-center justify-between">
+                    <span class="mr-2">Baris diper halaman</span>
+
+                    <select class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-6 py-2.5" name="paginate" onchange="this.form.submit()">
+                        <option value="10" {{ $paginate == 10 ? 'selected' : '' }}>10</option>
+                        <option value="20" {{ $paginate == 20 ? 'selected' : '' }}>20</option>
+                        <option value="30" {{ $paginate == 30 ? 'selected' : '' }}>30</option>
+                        <option value="40" {{ $paginate == 40 ? 'selected' : '' }}>40</option>
+                        <option value="50" {{ $paginate == 50 ? 'selected' : '' }}>50</option>
+                    </select>
+
+                </div>
+                <div class="flex items-center justify-between">
+
+                    <span>{{ $goodShowcases->appends(request()->all())->links() }}</span>
+                </div>
             </div>
-            <div class="p-4 bg-white border rounded-lg">
-                @foreach ($cardGoodsSummary as $summary)
-                <p class="mb-2">
-                    Kadar <b>{{ $summary['rate'] }}%</b> : Total Berat <b>{{ number_format($summary['total_weight'], 2) }}gr</b>, Total Barang <b>{{ $summary['total_items'] }}pcs</b>
-                </p>
-                @endforeach
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="p-4 bg-white border rounded-lg">
+                    <p class="text-sm text-neutral-500">Total Barang</p>
+                    <p class="text-3xl">{{$totalItemsInShowcase}}</p>
+                </div>
+                <div class="p-4 bg-white border rounded-lg">
+                    <p class="text-sm text-neutral-500">Total Berat Keseluruhan Barang</p>
+                    <p class="text-3xl">{{$totalWeightInShowcase}}</p>
+                </div>
+                <div class="p-4 bg-white border rounded-lg">
+                    @foreach ($cardGoodsSummary as $summary)
+                    <p class="mb-2">
+                        Kadar <b>{{ $summary['rate'] }}%</b> : Total Berat <b>{{ number_format($summary['total_weight'], 2) }}gr</b>, Total Barang <b>{{ $summary['total_items'] }}pcs</b>
+                    </p>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
     </div>
 </x-layout>
 @include('components.modal.error-form-modal')
@@ -323,43 +323,44 @@
 
 <script>
     function multiDelete() {
-    return {
-        selectedItems: [],
-        toggleAll() {
-            let checkboxes = document.querySelectorAll('.select-row');
-            if (this.selectedItems.length === checkboxes.length) {
-                this.selectedItems = [];
-            } else {
-                this.selectedItems = [...checkboxes].map(cb => cb.value);
+        return {
+            selectedItems: [],
+            toggleAll() {
+                let checkboxes = document.querySelectorAll('.select-row');
+                if (this.selectedItems.length === checkboxes.length) {
+                    this.selectedItems = [];
+                } else {
+                    this.selectedItems = [...checkboxes].map(cb => cb.value);
+                }
+            },
+            deleteSelected() {
+                if (this.selectedItems.length === 0) {
+                    alert('Pilih setidaknya satu item untuk dihapus.');
+                    return;
+                }
+                if (confirm('Apakah Anda yakin ingin menghapus item yang dipilih?')) {
+                    fetch('{{ route("goodShowcases.deleteMultiple") }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                ids: this.selectedItems
+                            })
+                        }).then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Ambil URL saat ini dan hapus parameter halaman (jika ada)
+                                let url = new URL(window.location.href);
+                                url.searchParams.delete('page'); // Hapus param page agar tetap di halaman pertama setelah delete
+                                window.location.href = url.toString(); // Refresh dengan mempertahankan filter pencarian
+                            } else {
+                                alert('Gagal menghapus item.');
+                            }
+                        });
+                }
             }
-        },
-        deleteSelected() {
-            if (this.selectedItems.length === 0) {
-                alert('Pilih setidaknya satu item untuk dihapus.');
-                return;
-            }
-            if (confirm('Apakah Anda yakin ingin menghapus item yang dipilih?')) {
-                fetch('{{ route('goodShowcases.deleteMultiple') }}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ids: this.selectedItems })
-                }).then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Ambil URL saat ini dan hapus parameter halaman (jika ada)
-                        let url = new URL(window.location.href);
-                        url.searchParams.delete('page'); // Hapus param page agar tetap di halaman pertama setelah delete
-                        window.location.href = url.toString(); // Refresh dengan mempertahankan filter pencarian
-                    } else {
-                        alert('Gagal menghapus item.');
-                    }
-                });
-            }
-        }
-    };
-}
-
+        };
+    }
 </script>

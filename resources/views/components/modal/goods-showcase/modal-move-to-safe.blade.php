@@ -19,13 +19,13 @@
                         <img src="{{ asset('storage/' . $goodShowcase->image) }}"
                             class="object-cover rounded-lg size-14" alt="{{ $goodShowcase->name }}">
                         <div class="flex flex-col items-start gap-1 mr-4">
-                            <span class="text-sm truncate max-w-28">{{ $goodShowcase->tray->showcase->name}} - {{ $goodShowcase->goodsType->name }} ({{ $goodShowcase->rate }}%) </span>
-                            <span class="text-sm truncate max-w-28">Merek {{ $goodShowcase->merk->name }} </span>
+                            <span class="text-sm truncate max-w-28">{{ $goodShowcase->tray?->showcase?->name ?? 'N/A'}} - {{ $goodShowcase->goodsType->name }} ({{ $goodShowcase->rate }}%) </span>
+                            <span class="text-sm truncate max-w-28">Merek {{ $goodShowcase->merk?->name ?? 'N/A' }} </span>
                             <span class="text-xs">{{ $goodShowcase->size }}gr </span>
                         </div>
                     </div>
                     <div class="flex flex-col items-start gap-1">
-                        <span class="text-sm font-semibold">{{ $goodShowcase->tray->showcase->name}} Baki {{ $goodShowcase->tray->code}}</span>
+                        <span class="text-sm font-semibold">{{ $goodShowcase->tray?->showcase?->name ?? 'N/A'}} Baki {{ $goodShowcase->tray?->code ?? 'N/A'}}</span>
                         <span class="text-xs text-[#9A9A9A] font-inter">
                             {{ \Carbon\Carbon::parse($goodShowcase->date_entry)->translatedFormat('d F Y') }}
                         </span>
@@ -37,8 +37,8 @@
                     @csrf
                     @method('PATCH')
                     <button type="submit"
-                    class="flex items-center px-4 py-3 gap-1.5 text-sm font-medium rounded-lg bg-[#6634BB] text-[#F8F8F8]">
-                    <span>Ya <i class="ph ph-check"></i></span>
+                        class="flex items-center px-4 py-3 gap-1.5 text-sm font-medium rounded-lg bg-[#6634BB] text-[#F8F8F8]">
+                        <span>Ya <i class="ph ph-check"></i></span>
                     </button>
                 </form>
                 <button type="button"
