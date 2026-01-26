@@ -25,15 +25,15 @@ class DashboardController extends Controller
 
             // Stats for goods in showcase
             $goodsInShowcase = Goods::where('availability', true)
-                                    ->where('safe_status', false)
-                                    ->get();
+                ->where('safe_status', false)
+                ->get();
             $totalItemsInShowcase = $goodsInShowcase->count();
             $totalWeightInShowcase = $goodsInShowcase->sum('size');
 
             // Stats for goods in safe storage
             $goodsInSafeStorage = Goods::where('availability', true)
-                                       ->where('safe_status', true)
-                                       ->get();
+                ->where('safe_status', true)
+                ->get();
             $totalItemsInSafeStorage = $goodsInSafeStorage->count();
             $totalWeightInSafeStorage = $goodsInSafeStorage->sum('size');
 
@@ -62,12 +62,12 @@ class DashboardController extends Controller
                 ->get();
 
             return view('pages.dashboard', [
-    
+
                 'goldRates' => $goldRates,
                 'hasGoldRateToday' => $hasGoldRateToday,
                 'cardGoodsSummary' => $cardGoodsSummary,
                 'customer_stats' => [
-                    'total_items' => $customers, 
+                    'total_items' => $customers,
                 ],
                 'goods_in_showcase_stats' => [
                     'total_items' => $totalItemsInShowcase,
@@ -84,8 +84,8 @@ class DashboardController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-            'message' => $e->getMessage()
-        ], 500);
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -123,8 +123,10 @@ class DashboardController extends Controller
 
     public function getTotalWeightByGoldRate()
     {
-        $totalWeightByRate = Goods::selectRaw('goods.rate as gold_rate, goods_types.name as type_name, SUM(goods.size) as total_weight')
+        $totalWeightByRate = Goods::selectRaw('goods.rate as gold_rate, goods_types.name as type_name, SUM(goods.size) as total_weight, COUNT(*) as total_items')
             ->join('goods_types', 'goods.type_id', '=', 'goods_types.id')
+            ->where('availability', 1)
+            ->where('safe_status', 0)
             ->groupBy('goods.rate', 'goods.type_id', 'goods_types.name')
             ->get();
 
@@ -254,7 +256,7 @@ class DashboardController extends Controller
 
     private function processChartSalesSummaryDetail($startDate, $endDate)
     {
-        try{
+        try {
             $data = [];
             $labels = [];
             $totalSales = 0;
@@ -336,7 +338,7 @@ class DashboardController extends Controller
                 'data' => $data,
                 'totalSales' => $totalSales, // Sertakan total penjualan dalam response
             ];
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Error processing chart sales summary: ' . $e->getMessage());
             return response()->json(['error' => 'Server Error'], 500);
         }
@@ -445,7 +447,7 @@ class DashboardController extends Controller
                 'new_price' => $request->new_price,
             ]);
 
-             session()->flash('success', 'Berhasil update harga emas terbaru');
+            session()->flash('success', 'Berhasil update harga emas terbaru');
             return redirect()->route('dashboard-page');
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
