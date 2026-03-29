@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 
 class Transaction extends Model
 {
@@ -18,7 +19,7 @@ class Transaction extends Model
 
     protected $fillable = ['id', 'code', 'date', 'user_id', 'customer_id', 'total', 'payment_method'];
     protected $dates = ['date'];
-    
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
@@ -34,11 +35,10 @@ class Transaction extends Model
         return $this->hasMany(TransactionDetail::class);
     }
 
-    // app/Models/Transaction.php
     protected static function booted()
     {
         static::created(function () {
-            Cache::flush(); // atau hapus key tertentu kalau mau lebih selektif
+            Cache::flush();
         });
     }
 }
