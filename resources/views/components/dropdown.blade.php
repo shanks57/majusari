@@ -1,4 +1,4 @@
-<div x-data="{ open: false }" class="relative inline-block text-left">
+<div x-data="{ open: false }" @click.outside="open = false" class="relative inline-block text-left">
     <div>
         <button {{ $attributes }} type="button" @click="open = !open" id="menu-button" aria-expanded="true"
             aria-haspopup="true">
